@@ -1,0 +1,1 @@
+# FFTA-randomizer
