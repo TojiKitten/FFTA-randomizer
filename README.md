@@ -14,6 +14,6 @@ You will also see any lint errors in the console.
 
 ## Build
 
-### `npm run build`
+ `npm run build`
 
-Builds the app for production to the `build` folder and packeges it to a portable .exe in the `dist` folder.
+Builds the app for production to the `build` folder and packages it to a portable .exe in the `dist` folder.
