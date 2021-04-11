@@ -3,10 +3,10 @@
  */
 import * as path from "path";
 import * as url from "url";
-import { BrowserWindow, app } from "electron";
+import { BrowserWindow, app, dialog } from "electron";
+import * as fs from "fs";
 
 const ipc = require("electron").ipcMain;
-const fs = require("fs");
 
 let mainWindow: Electron.BrowserWindow | null;
 
@@ -23,8 +23,8 @@ function createWindow(): void {
     backgroundColor: "#FFFFFF",
     webPreferences: {
       nodeIntegration: true,
-      enableRemoteModule: true,
-      //contextIsolation: true,
+      enableRemoteModule: false,
+      contextIsolation: false,
     },
   });
 
@@ -74,22 +74,55 @@ app.on("activate", () => {
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
+
+//TODO filecontent placeholder
 let filecontent: Uint8Array;
 
-ipc.on("open-File", function (event, arg) {
-  //check if dialog got cancelled
-  if (!arg.canceled) {
-    let filepath = arg.filePaths[0];
+//
+//Open File Handling
+//
+
+ipc.on("open-file-dialog", function (event, options: any) {
+  const choosenfiles = dialog.showOpenDialogSync(mainWindow!, {
+    title: "Open Rom",
+    properties: ["openFile"],
+    filters: [
+      { name: "GBA ROM", extensions: ["gba"] },
+      { name: "All Files", extensions: ["*"] },
+    ],
+  });
+  openfile(choosenfiles);
+});
+
+function openfile(files: any) {
+  //look if actually selected a file
+  if (files !== undefined) {
+    let filepath = files[0];
+    //console.log(filepath)
     filecontent = fs.readFileSync(filepath);
     //console.log(filecontent);
   }
+}
+
+//
+//Save File Handling
+//
+
+ipc.on("save-file-dialog", function (event, options: any) {
+  const choosenfiles = dialog.showSaveDialogSync(mainWindow!, {
+    title: "Save Rom",
+    filters: [
+      { name: "GBA ROM", extensions: ["gba"] },
+      { name: "All Files", extensions: ["*"] },
+    ],
+  });
+  savefile(choosenfiles);
 });
 
-ipc.on("save-File", function (event, arg) {
+function savefile(filepath: any) {
   //check if dialog got cancelled
-  if (!arg.canceled) {
-    let filepath = arg.filePath;
+  if (filepath !== undefined) {
     fs.writeFileSync(filepath, filecontent, null);
-    console.log("file: " + filepath + " written");
+    //console.log("file: " + filepath + " written");
   }
-});
+}

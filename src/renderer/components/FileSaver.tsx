@@ -1,22 +1,12 @@
 import * as React from "react";
-const remote = require("electron").remote;
-const { dialog } = remote;
-const ipc = require('electron').ipcRenderer
+import { ipcRenderer } from "electron";
 
 export const FileSaver = () => {
   return (
     <div>
       <button
         onClick={() => {
-          dialog.showSaveDialog({
-            title: "Save Rom",
-            filters: [
-              { name: "GBA ROM", extensions: ["gba"] },
-              { name: "All Files", extensions: ["*"] },
-            ],
-          }).then((data) => {
-            ipc.send("save-File", data);
-          });
+          ipcRenderer.send("save-file-dialog");
         }}
       >
         Save Rom
