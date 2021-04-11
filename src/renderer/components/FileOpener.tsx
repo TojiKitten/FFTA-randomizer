@@ -1,12 +1,13 @@
 import * as React from "react";
-import { ipcRenderer } from "electron";
+// @ts-ignore:2339
+const {api} = window;
 
 export const FileOpener = () => {
   return (
     <div>
       <button
         onClick={() => {
-          ipcRenderer.send("open-file-dialog");
+          api.send("open-file-dialog", "null");
         }}
       >
         Open Rom

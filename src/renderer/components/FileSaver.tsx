@@ -1,12 +1,13 @@
 import * as React from "react";
-import { ipcRenderer } from "electron";
+// @ts-ignore
+const {api} = window;
 
 export const FileSaver = () => {
   return (
     <div>
       <button
         onClick={() => {
-          ipcRenderer.send("save-file-dialog");
+          api.send("save-file-dialog", "null");
         }}
       >
         Save Rom

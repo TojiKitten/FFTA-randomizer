@@ -22,9 +22,10 @@ function createWindow(): void {
     minWidth: 400,
     backgroundColor: "#FFFFFF",
     webPreferences: {
-      nodeIntegration: true,
+      nodeIntegration: false,
       enableRemoteModule: false,
-      contextIsolation: false,
+      contextIsolation: true,
+      preload: path.join(__dirname, "preload.bundle.js"),
     },
   });
 
