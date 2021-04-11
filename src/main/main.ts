@@ -77,14 +77,19 @@ app.on("activate", () => {
 let filecontent: Uint8Array;
 
 ipc.on("open-File", function (event, arg) {
-  let filepath = arg.filePaths[0];
-  //console.log(filepath));
-  filecontent = fs.readFileSync(filepath);
-  console.log(filecontent);
+  //check if dialog got cancelled
+  if (!arg.canceled) {
+    let filepath = arg.filePaths[0];
+    filecontent = fs.readFileSync(filepath);
+    //console.log(filecontent);
+  }
 });
 
 ipc.on("save-File", function (event, arg) {
-  let filepath = arg.filePath;
-  console.log(filepath);
-  fs.writeFileSync(filepath, filecontent, null);
+  //check if dialog got cancelled
+  if (!arg.canceled) {
+    let filepath = arg.filePath;
+    fs.writeFileSync(filepath, filecontent, null);
+    console.log("file: " + filepath + " written");
+  }
 });
