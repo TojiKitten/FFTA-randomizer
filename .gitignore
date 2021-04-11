@@ -1,24 +1,30 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+.vscode/
+dist/
+node_modules/
+out/
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
-
-# testing
-/coverage
-
-# production
-/build
-/dist
-
-# misc
-.DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
+# Logs
+logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Yarn Integrity file
+.yarn-integrity
+
+# Grunt intermediate storage (https://gruntjs.com/creating-plugins#storing-task-files)
+.grunt
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Windows thumbnail cache files
+Thumbs.db
+
+# OS X files
+.DS_Store
+._*

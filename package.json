@@ -1,62 +1,80 @@
 {
-  "name": "ffta-randomizer",
+  "name": "ffta_randomizer",
   "version": "0.1.0",
-  "private": true,
-  "description": "randomizer for the Game FFTA",
-  "author": "FGKeiji, TojiKitten",
-  "build": {
-    "appId": "<com.your_app>",
-    "win": {
-      "target": "portable"
-    }
+  "description": "randomizer for the game Final Fantasy Tactics Advance",
+  "main": "./dist/main.bundle.js",
+  "scripts": {
+    "start": "electron ./dist/main.bundle.js",
+    "dev": "rimraf dist && cross-env NODE_ENV=development webpack --watch --progress --color",
+    "prod": "rimraf dist && cross-env NODE_ENV=production webpack --progress --color",
+    "test": "mocha -r ts-node/register -r tsconfig-paths/register \"test/**/*.ts\"",
+    "build:win": "electron-builder build --win --x64"
   },
-  "main": "public/electron.js",
-  "homepage": "./",
+  "build": {
+    "appId": "com.toji.ffta_randomizer",
+    "productName": "FFTA Randomizer",
+    "directories": {
+      "app": "./dist/",
+      "output": "./out/"
+    },
+    "win": {
+      "target": "portable",
+      "asar": true
+    },
+    "buildVersion": "1"
+  },
+  "author": "FGKeiji, TojiKitten",
+  "license": "MIT",
   "dependencies": {
-    "@types/jest": "^26.0.22",
-    "@types/node": "^12.20.7",
-    "@types/react": "^17.0.3",
-    "@types/react-dom": "^17.0.3",
-    "cross-env": "^7.0.3",
-    "electron-is-dev": "^2.0.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-scripts": "4.0.3",
-    "typescript": "^4.2.4",
-    "yarn": "^1.22.10"
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0"
   },
   "devDependencies": {
-    "concurrently": "^6.0.1",
-    "electron": "^12.0.2",
-    "electron-builder": "^22.10.5",
-    "wait-on": "^5.3.0"
+    "@types/mocha": "^8.2.0",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@types/react-router": "^5.1.8",
+    "@types/react-router-dom": "^5.1.6",
+    "@typescript-eslint/eslint-plugin": "^4.11.0",
+    "@typescript-eslint/parser": "^4.11.0",
+    "copy-webpack-plugin": "^7.0.0",
+    "cross-env": "^7.0.3",
+    "css-loader": "^5.0.1",
+    "electron": "^11.1.1",
+    "electron-builder": "^22.9.1",
+    "eslint": "^7.16.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-import-resolver-webpack": "^0.13.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^4.5.0",
+    "lodash": "^4.17.20",
+    "mocha": "^8.2.1",
+    "rimraf": "^3.0.2",
+    "source-map-loader": "^2.0.0",
+    "spectron": "^13.0.0",
+    "style-loader": "^2.0.0",
+    "ts-loader": "^8.0.12",
+    "ts-node": "^9.1.1",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "^4.1.3",
+    "webpack": "^5.11.0",
+    "webpack-cli": "^4.3.0"
   },
-  "scripts": {
-    "react-start": "react-scripts start",
-    "react-build": "react-scripts build",
-    "react-test": "react-scripts test --env=jsdom",
-    "react-eject": "react-scripts eject",
-    "electron-build": "electron-builder",
-    "release": "yarn react-build && electron-builder --publish=always",
-    "build": "yarn react-build && yarn electron-build",
-    "start": "concurrently \"cross-env BROWSER=none yarn react-start\" \"wait-on http://localhost:3000 && electron .\""
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TojiKitten/FFTA-Randomizer2"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "keywords": [
+    "randomizer"
+  ],
+  "bugs": {
+    "url": "https://github.com/TojiKitten/FFTA-Randomizer2/issues"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+  "homepage": "https://github.com/TojiKitten/FFTA-Randomizer2#readme"
 }
