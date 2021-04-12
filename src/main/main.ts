@@ -97,9 +97,8 @@ ipc.on("open-file-dialog", function (event, options: any) {
 
 function openfile(files: any) {
   //look if actually selected a file
-  if (files !== undefined) {
+  if (files) {
     let filepath = files[0];
-    //console.log(filepath)
     filecontent = fs.readFileSync(filepath);
     //console.log(filecontent);
   }
@@ -122,7 +121,7 @@ ipc.on("save-file-dialog", function (event, options: any) {
 
 function savefile(filepath: any) {
   //check if dialog got cancelled
-  if (filepath !== undefined) {
+  if (filepath) {
     fs.writeFileSync(filepath, filecontent, null);
     //console.log("file: " + filepath + " written");
   }

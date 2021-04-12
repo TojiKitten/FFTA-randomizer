@@ -1,5 +1,6 @@
 import * as React from "react";
-// @ts-ignore:2339
+//window.api gets available at runtime so we can ignore that error
+// @ts-ignore
 const {api} = window;
 
 export const FileOpener = () => {
