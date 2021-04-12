@@ -3,9 +3,10 @@ import * as React from "react";
 // @ts-ignore
 const {api} = window;
 
-export const FileOpener = () => {
+let id: any
+export const FileOpener = (props: any) => {
+  id = props.id;
   return (
-    <div>
       <button
         onClick={() => {
           api.send("open-file-dialog", "null");
@@ -13,7 +14,6 @@ export const FileOpener = () => {
       >
         Open Rom
       </button>
-    </div>
   );
 };
 

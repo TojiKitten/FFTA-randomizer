@@ -5,7 +5,6 @@ const {api} = window;
 
 export const FileSaver = () => {
   return (
-    <div>
       <button
         onClick={() => {
           api.send("save-file-dialog", "null");
@@ -13,7 +12,6 @@ export const FileSaver = () => {
       >
         Save Rom
       </button>
-    </div>
   );
 };
 

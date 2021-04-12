@@ -1,3 +1,22 @@
-.app {
-  color: grey;
+body {
+  background: #151515;
+  color: #b4a5a5;
 }
+
+button {
+  background: #3c415f;
+  color: #b4a5a5;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 10px;
+  border-radius: 20px;
+  display: inline-block;
+  border: none;
+  transition: all 0.4s ease 0s;
+}
+
+button:hover {
+  text-shadow: 0px 0px 6px rgba(255, 255, 255, 1);
+  transition: all 0.4s ease 0s;
+}
+/*4thcolot: #301b3f*/

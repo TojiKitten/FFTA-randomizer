@@ -78,7 +78,7 @@ app.on("activate", () => {
 
 //TODO filecontent placeholder
 let filecontent: Uint8Array;
-
+let filepathTmp: string;
 //
 //Open File Handling
 //
@@ -100,6 +100,8 @@ function openfile(files: any) {
   if (files) {
     let filepath = files[0];
     filecontent = fs.readFileSync(filepath);
+    filepathTmp = filepath;
+    mainWindow!.webContents.send("FileName-Change", {'filepath': filepathTmp});
     //console.log(filecontent);
   }
 }
