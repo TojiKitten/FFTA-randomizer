@@ -47,9 +47,9 @@ export class FFTAData {
   }
 
   writeByte(offset: number, value: number): void {
-    console.log(this.rom[offset]);
+    //console.log(this.rom[offset]);
     this.rom.set([value], offset);
-    console.log(this.rom[offset]);
+    //console.log(this.rom[offset]);
   }
 }
 
