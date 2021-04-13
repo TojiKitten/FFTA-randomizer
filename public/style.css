@@ -61,3 +61,10 @@ body {
 .navBar-button-active {
   color: red;
 }
+
+.partyMember{
+  border: 1px solid gray;
+  width: 30%;
+  float: left;
+  margin: 1%;
+}
