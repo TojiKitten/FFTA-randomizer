@@ -1,0 +1,83 @@
+{
+  "knownItems": [
+    { "memory": "0x51D1A0", "displayName": "Shortsword", "femaleOnly": false },
+    {
+      "memory": "0x51D1C0",
+      "displayName": "Silver Sword",
+      "femaleOnly": false
+    },
+    {
+      "memory": "0x51D1E0",
+      "displayName": "Buster Sword",
+      "femaleOnly": false
+    },
+    {
+      "memory": "0x51D200",
+      "displayName": "Burglar Sword",
+      "femaleOnly": false
+    },
+    { "memory": "0x51D220", "displayName": "Gale Sword", "femaleOnly": false },
+    { "memory": "0x51D240", "displayName": "Blood Sword", "femaleOnly": false },
+    { "memory": "0x51D260", "displayName": "Restorer", "femaleOnly": false },
+    { "memory": "0x51D280", "displayName": "Vitanova", "femaleOnly": false },
+    {
+      "memory": "0x51D2A0",
+      "displayName": "Mythril Sword",
+      "femaleOnly": false
+    },
+    {
+      "memory": "0x51D2C0",
+      "displayName": "Victor Sword",
+      "femaleOnly": false
+    },
+    { "memory": "0x51D2E0", "displayName": "Onion Sword", "femaleOnly": false },
+    {
+      "memory": "0x51D300",
+      "displayName": "Chirijiraden",
+      "femaleOnly": false
+    },
+    {
+      "memory": "0x51D320",
+      "displayName": "Laglace Sword",
+      "femaleOnly": false
+    },
+    { "memory": "0x51D340", "displayName": "Sweep Blade", "femaleOnly": false },
+    {
+      "memory": "0x51D360",
+      "displayName": "Shadow Blade",
+      "femaleOnly": false
+    },
+    { "memory": "0x51D380", "displayName": "Sun Blade", "femaleOnly": false },
+    { "memory": "0x51D3A0", "displayName": "Atmos Blade", "femaleOnly": false },
+    { "memory": "0x51D3C0", "displayName": "Flametongue", "femaleOnly": false },
+    { "memory": "0x51D3E0", "displayName": "Air Blade", "femaleOnly": false },
+    { "memory": "0x51D400", "displayName": "Icebrand", "femaleOnly": false },
+    { "memory": "0x51D420", "displayName": "Kwigon Blad", "femaleOnly": false },
+    { "memory": "0x51D440", "displayName": "Ogun Blade", "femaleOnly": false },
+    { "memory": "0x51D460", "displayName": "Pearl Blad", "femaleOnly": false },
+    {
+      "memory": "0x51D480",
+      "displayName": "Paraiba Blade",
+      "femaleOnly": false
+    },
+    { "memory": "0x51D4A0", "displayName": "Venus Blade", "femaleOnly": false },
+    {
+      "memory": "0x51D4C0",
+      "displayName": "Materia Blade",
+      "femaleOnly": false
+    },
+    {
+      "memory": "0x51D4E0",
+      "displayName": "Mythril Blade",
+      "femaleOnly": false
+    },
+    { "memory": "0x51D500", "displayName": "Ebon Blade", "femaleOnly": false },
+    {
+      "memory": "0x51D520",
+      "displayName": "Adaman Blade",
+      "femaleOnly": false
+    },
+    { "memory": "0x51D540", "displayName": "Ayvuir Red", "femaleOnly": false },
+    { "memory": "0x51D560", "displayName": "Ayvuir Blue", "femaleOnly": false }
+  ]
+}

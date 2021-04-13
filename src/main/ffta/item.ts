@@ -1,158 +1,206 @@
 import { FFTAData, FFTAObject } from "./data";
 
 // === Static Constants ====
-// Each is a short
-const offsetITEMBUY = 0x04;
-const offsetITEMSELL = 0x06;
-// See Item enum for order, Sword = 1
-const offsetITEMTYPE = 0x08;
-const offsetITELEMENT = 0x09;
-const offsetITEMRANGE = 0x0a;
-// One Hand or Two Hands
-const offsetITEMWORN = 0x0b;
-//For flags it's one bit for each
-// (Doublesword, Doublehand, Monkey Grip, Discount, Tier 1, tier 2, tier 3, Mythril/Consumable item (not sure what this specifically is)
-const offsetITEMFLAGS = 0x0c;
-// Type of item that this appears under in Nono's Link Shop
-const offsetNONOSHOP = 0x0e;
-const offsetITEMATTACK = 0x10;
-const offsetITEMDEFENSE = 0x11;
-const offsetITEMPOWER = 0x12;
-const offsetITEMRESISTANCE = 0x13;
-const offsetITEMSPEED = 0x14;
-const offsetITEMEVADE = 0x15;
-const offsetITEMMOVE = 0x16;
-const offsetITEMJUMP = 0x17;
-// ID of the effect
-const offsetITEMEFFECT1 = 0x1a;
-const offsetITEMEFFECT2 = 0x1b;
-const offsetITEMEFFECT3 = 0x1c;
-// ID of the ability set
-const offsetITEMABILITYSET = 0x1d;
+const SIZE_ITEM = 0x20;
+
+enum ITEMOFFSET {
+  BUY = 0x04,
+  SELL = 0x06,
+  // See Item enum for order, Sword = 1
+  TYPE = 0x08,
+  ELEMENT = 0x09,
+  RANGE = 0x0a,
+  // One Hand or Two Hands
+  WORN = 0x0b,
+  // See ITEMFLAG Enum
+  FLAGS = 0x0c,
+  // Type of item that this appears under in Nono's Link Shop
+  NONO = 0x0e,
+  ATTACK = 0x10,
+  DEFENSE = 0x11,
+  POWER = 0x12,
+  RESISTANCE = 0x13,
+  SPEED = 0x14,
+  EVADE = 0x15,
+  MOVE = 0x16,
+  JUMP = 0x17,
+  // ID of the effect
+  EFFECT1 = 0x1a,
+  EFFECT2 = 0x1b,
+  EFFECT3 = 0x1c,
+  // ID of the ability set
+  ABILITYSET = 0x1d,
+}
+
+enum ITEMFLAG {
+  DOUBLESWORD = 0x0,
+  DOUBLEHAND = 0x1,
+  MONKEYGRIP = 0x2,
+  DISCOUNT = 0x3,
+  TIER1 = 0x4,
+  TIER2 = 0x5,
+  TIER3 = 0x6,
+  MYTHRILORCONSUMABLE = 0x7,
+}
 
 // ==== Class ====
 export class FFTAItem implements FFTAObject {
   itemID = -1;
-  buyPrice = -1;
-  sellPrice = -1;
-  itemType = -1;
-  range = -1;
-  worn = -1;
-  doubleSword = -1;
-  doubleHand = -1;
-  monkeyGrip = -1;
-  discount = -1;
-  tier1 = -1;
-  tier2 = -1;
-  tier3 = -1;
-  mythrilOrConsumable = -1;
-  attack = -1;
-  defense = -1;
-  mpower = -1;
-  resist = -1;
-  spd = -1;
-  evade = -1;
-  jump = -1;
-  move = -1;
-  abilitySetID = -1;
-  effect1 = -1;
-  effect2 = -1;
-  effect3 = -1;
   femaleOnly = false;
+  properties: Uint8Array;
   memory = -1;
   displayName = "";
   allowed = false;
 
   constructor(
     memory: number,
+    id: number,
     itemName: string,
     femaleOnly: boolean,
-    fftaData: FFTAData
+    buffer: Uint8Array
   ) {
     // Save FFTAObject Properties
     this.memory = memory;
+    this.itemID = id;
     this.displayName = itemName;
+    this.femaleOnly = femaleOnly;
+    this.properties = buffer.slice(memory, memory + SIZE_ITEM);
     this.allowed = true;
-
-    // Save FFTAItem Properties
-    this.itemID = fftaData.readByte(memory); // Just a guess for now
-    this.buyPrice = fftaData.readShort(memory + offsetITEMBUY, true);
-    this.sellPrice = fftaData.readShort(memory + offsetITEMSELL, true);
-    this.itemType = fftaData.readByte(memory + offsetITEMTYPE);
-    this.range = fftaData.readByte(memory + offsetITEMRANGE);
-    this.worn = fftaData.readByte(memory + offsetITEMWORN);
-    this.doubleSword = fftaData.readByte(memory + offsetITEMFLAGS) & 0x1;
-    this.doubleHand = (fftaData.readByte(memory + offsetITEMFLAGS) >> 1) & 0x1;
-    this.monkeyGrip = (fftaData.readByte(memory + offsetITEMFLAGS) >> 2) & 0x1;
-    this.discount = (fftaData.readByte(memory + offsetITEMFLAGS) >> 3) & 0x1;
-    this.tier1 = (fftaData.readByte(memory + offsetITEMFLAGS) >> 4) & 0x1;
-    this.tier2 = (fftaData.readByte(memory + offsetITEMFLAGS) >> 5) & 0x1;
-    this.tier3 = (fftaData.readByte(memory + offsetITEMFLAGS) >> 6) & 0x1;
-    this.mythrilOrConsumable =
-      (fftaData.readByte(memory + offsetITEMFLAGS) >> 7) & 0x1;
-    this.attack = fftaData.readByte(memory + offsetITEMATTACK);
-    this.defense = fftaData.readByte(memory + offsetITEMDEFENSE);
-    this.mpower = fftaData.readByte(memory + offsetITEMPOWER);
-    this.resist = fftaData.readByte(memory + offsetITEMRESISTANCE);
-    this.spd = fftaData.readByte(memory + offsetITEMSPEED);
-    this.evade = fftaData.readByte(memory + offsetITEMEVADE);
-    this.jump = fftaData.readByte(memory + offsetITEMJUMP);
-    this.move = fftaData.readByte(memory + offsetITEMMOVE);
-    this.abilitySetID = fftaData.readByte(memory + offsetITEMABILITYSET);
-    this.effect1 = fftaData.readByte(memory + offsetITEMEFFECT1);
-    this.effect2 = fftaData.readByte(memory + offsetITEMEFFECT2);
-    this.effect3 = fftaData.readByte(memory + offsetITEMEFFECT3);
   }
 
-  write(fftaData: FFTAData) {
-    let flags =
-      (this.mythrilOrConsumable << 7) |
-      (0x1 << 6) |
-      (0x1 << 5) |
-      (0x1 << 4) |
-      (this.discount << 3) |
-      (this.monkeyGrip << 2) |
-      (this.doubleHand << 1) |
-      this.doubleSword;
+  setBuyPrice(value: number) {
+    this.setProperty(ITEMOFFSET.BUY, value);
+  }
 
-    fftaData.writeByte(this.memory + offsetITEMFLAGS, flags);
+  setSellPrice(value: number) {
+    this.setProperty(ITEMOFFSET.SELL, value);
+  }
+
+  setType(value: number) {
+    this.setProperty(ITEMOFFSET.TYPE, value);
+  }
+
+  setElement(value: number) {
+    this.setProperty(ITEMOFFSET.ELEMENT, value);
+  }
+
+  setRange(value: number) {
+    this.setProperty(ITEMOFFSET.RANGE, value);
+  }
+
+  setWorn(value: number) {
+    this.setProperty(ITEMOFFSET.WORN, value);
+  }
+
+  setDoubleSword(value: 0 | 1) {
+    this.setFlag(ITEMFLAG.DOUBLESWORD, value);
+  }
+
+  setDoubleHand(value: 0 | 1) {
+    this.setFlag(ITEMFLAG.DOUBLEHAND, value);
+  }
+
+  setMonkeyGrip(value: 0 | 1) {
+    this.setFlag(ITEMFLAG.MONKEYGRIP, value);
+  }
+
+  setDiscount(value: 0 | 1) {
+    this.setFlag(ITEMFLAG.DISCOUNT, value);
+  }
+
+  setTier1(value: 0 | 1) {
+    this.setFlag(ITEMFLAG.TIER1, value);
+  }
+
+  setTier2(value: 0 | 1) {
+    this.setFlag(ITEMFLAG.TIER2, value);
+  }
+
+  setTier3(value: 0 | 1) {
+    this.setFlag(ITEMFLAG.TIER3, value);
+  }
+
+  setMythrilOrConsumable(value: 0 | 1) {
+    this.setFlag(ITEMFLAG.MYTHRILORCONSUMABLE, value);
+  }
+
+  setNono(value: number) {
+    this.setProperty(ITEMOFFSET.NONO, value);
+  }
+
+  setAttack(value: number) {
+    this.setProperty(ITEMOFFSET.ATTACK, value);
+  }
+
+  setDefense(value: number) {
+    this.setProperty(ITEMOFFSET.DEFENSE, value);
+  }
+
+  setPower(value: number) {
+    this.setProperty(ITEMOFFSET.POWER, value);
+  }
+
+  setResistance(value: number) {
+    this.setProperty(ITEMOFFSET.RESISTANCE, value);
+  }
+
+  setSpeed(value: number) {
+    this.setProperty(ITEMOFFSET.SPEED, value);
+  }
+
+  setEvade(value: number) {
+    this.setProperty(ITEMOFFSET.EVADE, value);
+  }
+
+  setMove(value: number) {
+    this.setProperty(ITEMOFFSET.MOVE, value);
+  }
+
+  setJump(value: number) {
+    this.setProperty(ITEMOFFSET.JUMP, value);
+  }
+
+  setEffect1(value: number) {
+    this.setProperty(ITEMOFFSET.EFFECT1, value);
+  }
+
+  setEffect2(value: number) {
+    this.setProperty(ITEMOFFSET.EFFECT2, value);
+  }
+
+  setEffect3(value: number) {
+    this.setProperty(ITEMOFFSET.EFFECT3, value);
+  }
+
+  setAbilitySet(value: number) {
+    this.setProperty(ITEMOFFSET.ABILITYSET, value);
+  }
+
+  private setFlag(flag: ITEMFLAG, value: 0 | 1): void {
+    let mask = 0x1 << flag;
+    let newFlags = new Uint8Array([
+      (this.properties[ITEMOFFSET.FLAGS] & ~mask) | (value << flag),
+    ]);
+    this.properties.set(newFlags, ITEMOFFSET.FLAGS);
+  }
+
+  private setProperty(offset: ITEMOFFSET, value: number): boolean {
+    // Should be using setFlag()
+    if (offset != ITEMOFFSET.FLAGS) {
+      let newValue;
+      // These are Shorts, not Bytes. Need to convert to a Uint16Array, then use Data View to write the correct endiannes
+      if (offset === ITEMOFFSET.BUY || offset === ITEMOFFSET.SELL) {
+        this.properties.set(
+          getShortUint8Array(value, true),
+          offset
+        );
+      } else {
+        this.properties.set(new Uint8Array([value]), offset);
+      }
+      return true;
+    }
+    return false;
   }
 }
-
-// ==== Known Addresses ====
-export const knownItems = [
-  { memory: 0x51d1a0, displayName: "Shortsword", femaleOnly: false },
-  { memory: 0x51d1c0, displayName: "Silver Sword", femaleOnly: false },
-  { memory: 0x51d1e0, displayName: "Buster Sword", femaleOnly: false },
-  { memory: 0x51d200, displayName: "Burglar Sword", femaleOnly: false },
-  { memory: 0x51d220, displayName: "Gale Sword", femaleOnly: false },
-  { memory: 0x51d240, displayName: "Blood Sword", femaleOnly: false },
-  { memory: 0x51d260, displayName: "Restorer", femaleOnly: false },
-  { memory: 0x51d280, displayName: "Vitanova", femaleOnly: false },
-  { memory: 0x51d2a0, displayName: "Mythril Sword", femaleOnly: false },
-  { memory: 0x51d2c0, displayName: "Victor Sword", femaleOnly: false },
-  { memory: 0x51d2e0, displayName: "Onion Sword", femaleOnly: false },
-  { memory: 0x51d300, displayName: "Chirijiraden", femaleOnly: false },
-  { memory: 0x51d320, displayName: "Laglace Sword", femaleOnly: false },
-  { memory: 0x51d340, displayName: "Sweep Blade", femaleOnly: false },
-  { memory: 0x51d360, displayName: "Shadow Blade", femaleOnly: false },
-  { memory: 0x51d380, displayName: "Sun Blade", femaleOnly: false },
-  { memory: 0x51d3a0, displayName: "Atmos Blade", femaleOnly: false },
-  { memory: 0x51d3c0, displayName: "Flametongue", femaleOnly: false },
-  { memory: 0x51d3e0, displayName: "Air Blade", femaleOnly: false },
-  { memory: 0x51d400, displayName: "Icebrand", femaleOnly: false },
-  { memory: 0x51d420, displayName: "Kwigon Blad", femaleOnly: false },
-  { memory: 0x51d440, displayName: "Ogun Blade", femaleOnly: false },
-  { memory: 0x51d460, displayName: "Pearl Blad", femaleOnly: false },
-  { memory: 0x51d480, displayName: "Paraiba Blade", femaleOnly: false },
-  { memory: 0x51d4a0, displayName: "Venus Blade", femaleOnly: false },
-  { memory: 0x51d4c0, displayName: "Materia Blade", femaleOnly: false },
-  { memory: 0x51d4e0, displayName: "Mythril Blade", femaleOnly: false },
-  { memory: 0x51d500, displayName: "Ebon Blade", femaleOnly: false },
-  { memory: 0x51d520, displayName: "Adaman Blade", femaleOnly: false },
-  { memory: 0x51d540, displayName: "Ayvuir Red", femaleOnly: false },
-  { memory: 0x51d560, displayName: "Ayvuir Blue", femaleOnly: false },
-];
-// { memory: 0x, displayName: "", femaleOnly: false },
 
 export default FFTAItem;
