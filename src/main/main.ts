@@ -21,7 +21,7 @@ function createWindow(): void {
     minHeight: 400,
     minWidth: 400,
     backgroundColor: "#FFFFFF",
-    resizable: false,
+    //resizable: false,
     webPreferences: {
       nodeIntegration: false,
       enableRemoteModule: false,
@@ -30,7 +30,7 @@ function createWindow(): void {
     },
   });
 
-  mainWindow.removeMenu();
+  //mainWindow.removeMenu();
   // and load the index.html of the app.
   mainWindow
     .loadURL(

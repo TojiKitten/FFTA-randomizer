@@ -14,7 +14,7 @@ body {
   border: none;
   transition: all 0.4s ease 0s;
   border: 1px solid gray;
-  margin: 1px
+  margin: 1px;
 }
 
 .file-button:hover {
@@ -34,7 +34,7 @@ body {
   flex-wrap: nowrap;
 }
 
-.centering-wrapper{
+.centering-wrapper {
   text-align: center;
   margin: auto;
 }
@@ -52,4 +52,12 @@ body {
   clear: left;
   margin-top: 5px;
   border: 2px solid gray;
+}
+
+.navBar {
+}
+.navBar-button {
+}
+.navBar-button-active {
+  color: red;
 }
