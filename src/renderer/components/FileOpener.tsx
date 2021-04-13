@@ -1,19 +1,18 @@
 import * as React from "react";
 //window.api gets available at runtime so we can ignore that error
 // @ts-ignore
-const {api} = window;
+const { api } = window;
 
-let id: any
-export const FileOpener = (props: any) => {
-  id = props.id;
+export const FileOpener = () => {
   return (
-      <button
-        onClick={() => {
-          api.send("open-file-dialog", "null");
-        }}
-      >
-        Open Rom
-      </button>
+    <button
+      className="file-button"
+      onClick={() => {
+        api.send("open-file-dialog", "null");
+      }}
+    >
+      Open Rom
+    </button>
   );
 };
 
