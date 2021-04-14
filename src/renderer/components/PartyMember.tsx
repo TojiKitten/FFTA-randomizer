@@ -2,12 +2,31 @@ import * as React from "react";
 
 type props = {
   name: string;
+  changableRace: boolean;
 };
-export const PartyMember = ({ name }: props) => {
+
+export const PartyMember = ({ name, changableRace }: props) => {
+  let raceChanger = <br />;
+  if (changableRace) {
+    raceChanger = (
+      <>
+        Race:
+        <select id="race">
+          <option value="Human">Human</option>
+          <option value="Moogle">Moogle</option>
+          <option value="Viera">Viera</option>
+          <option value="Bangaa">Bangaa</option>
+          <option value="Nu Mou">Nu Mou</option>
+        </select>
+        <br />
+      </>
+    );
+  }
   return (
     <div className="partyMember">
       {name}
       <br />
+      {raceChanger}
       Job:
       <select id="job">
         <option value="Random">Random</option>

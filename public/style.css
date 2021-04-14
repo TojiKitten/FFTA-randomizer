@@ -67,4 +67,13 @@ body {
   width: 30%;
   float: left;
   margin: 1%;
+  padding: 2px;
+}
+
+.jobList{
+  border: 1px solid gray;
+  width: 15.5%;
+  float: left;
+  margin: 1px;
+  padding: 2px;
 }

@@ -9,91 +9,53 @@ type prop = {
 //TODO: REFACTOR!!!!!
 //
 export const NavBar = ({ state, callback }: prop) => {
-  if (state === "General") {
-    return (
-      <div className="navBar">
-        <button
-          className="navBar-button-active"
-          onClick={() => callback("General")}
-        >
-          General
-        </button>
-        <button className="navBar-button" onClick={() => callback("Party")}>
-          Party
-        </button>
-        <button className="navBar-button" onClick={() => callback("Jobs")}>
-          Jobs
-        </button>
-        <button className="navBar-button" onClick={() => callback("Items")}>
-          Items
-        </button>
-      </div>
-    );
+  let btnGeneral = (
+    <button className="navBar-button" onClick={() => callback("General")}>
+      General
+    </button>
+  );
+  let btnParty = (
+    <button className="navBar-button" onClick={() => callback("Party")}>
+      Party
+    </button>
+  );
+  let btnJobs = (
+    <button className="navBar-button" onClick={() => callback("Jobs")}>
+      Jobs
+    </button>
+  );
+  let btnItems = (
+    <button className="navBar-button" onClick={() => callback("Items")}>
+      Items
+    </button>
+  );
+  switch (state) {
+    case "General": {
+      btnGeneral = <button className="navBar-button-active">General</button>;
+      break;
+    }
+    case "Party": {
+      btnParty = <button className="navBar-button-active">Party</button>;
+      break;
+    }
+    case "Jobs": {
+      btnJobs = <button className="navBar-button-active">Jobs</button>;
+      break;
+    }
+    case "Items": {
+      btnItems = <button className="navBar-button-active">Items</button>;
+      break;
+    }
   }
-  if (state === "Party") {
-    return (
-      <div className="navBar">
-        <button className="navBar-button" onClick={() => callback("General")}>
-          General
-        </button>
-        <button
-          className="navBar-button-active"
-          onClick={() => callback("Party")}
-        >
-          Party
-        </button>
-        <button className="navBar-button" onClick={() => callback("Jobs")}>
-          Jobs
-        </button>
-        <button className="navBar-button" onClick={() => callback("Items")}>
-          Items
-        </button>
-      </div>
-    );
-  }
-  if (state === "Jobs") {
-    return (
-      <div className="navBar">
-        <button className="navBar-button" onClick={() => callback("General")}>
-          General
-        </button>
-        <button className="navBar-button" onClick={() => callback("Party")}>
-          Party
-        </button>
-        <button
-          className="navBar-button-active"
-          onClick={() => callback("Jobs")}
-        >
-          Jobs
-        </button>
-        <button className="navBar-button" onClick={() => callback("Items")}>
-          Items
-        </button>
-      </div>
-    );
-  }
-  if (state === "Items") {
-    return (
-      <div className="navBar">
-        <button className="navBar-button" onClick={() => callback("General")}>
-          General
-        </button>
-        <button className="navBar-button" onClick={() => callback("Party")}>
-          Party
-        </button>
-        <button className="navBar-button" onClick={() => callback("Jobs")}>
-          Jobs
-        </button>
-        <button
-          className="navBar-button-active"
-          onClick={() => callback("Items")}
-        >
-          Items
-        </button>
-      </div>
-    );
-  }
-  return <div className="navBar">ERROR</div>;
+
+  return (
+    <div className="navBar">
+      {btnGeneral}
+      {btnParty}
+      {btnJobs}
+      {btnItems}
+    </div>
+  );
 };
 
 export default NavBar;

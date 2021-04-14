@@ -5,6 +5,7 @@ import * as path from "path";
 import * as url from "url";
 import { BrowserWindow, app, dialog } from "electron";
 import * as fs from "fs";
+import "../../public/favicon-96x96.png";
 
 const ipc = require("electron").ipcMain;
 
@@ -14,6 +15,7 @@ function createWindow(): void {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     title: "FFTA Randomizer",
+    icon: path.join(__dirname,"public", "favicon-96x96.png"),
     width: 900,
     height: 680,
     maxHeight: 1080,
@@ -21,7 +23,7 @@ function createWindow(): void {
     minHeight: 400,
     minWidth: 400,
     backgroundColor: "#FFFFFF",
-    //resizable: false,
+    resizable: false,
     webPreferences: {
       nodeIntegration: false,
       enableRemoteModule: false,
@@ -30,7 +32,7 @@ function createWindow(): void {
     },
   });
 
-  //mainWindow.removeMenu();
+  mainWindow.removeMenu();
   // and load the index.html of the app.
   mainWindow
     .loadURL(
@@ -103,7 +105,7 @@ function openfile(files: any) {
     let filepath = files[0];
     filecontent = fs.readFileSync(filepath);
     filepathTmp = filepath;
-    mainWindow!.webContents.send("FileName-Change", {'filepath': filepathTmp});
+    mainWindow!.webContents.send("FileName-Change", { filepath: filepathTmp });
     //console.log(filecontent);
   }
 }

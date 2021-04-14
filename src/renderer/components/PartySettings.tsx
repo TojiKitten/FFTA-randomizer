@@ -4,11 +4,12 @@ import PartyMember from "./PartyMember";
 export const PartySettings = () => {
   return (
     <div>
-      <PartyMember name="March" />
-      <PartyMember name="Montblanc" />
-      <PartyMember name="Unit 1" />
-      <PartyMember name="Unit 2" />
-      <PartyMember name="Unit 3" />
+      <PartyMember name="March" changableRace={false} />
+      <PartyMember name="Montblanc" changableRace={false}/>
+      <PartyMember name="Unit 1" changableRace={true}/>
+      <PartyMember name="Unit 2" changableRace={true}/>
+      <PartyMember name="Unit 3" changableRace={true}/>
+      <PartyMember name="Unit 4" changableRace={true}/>
     </div>
   );
 };
