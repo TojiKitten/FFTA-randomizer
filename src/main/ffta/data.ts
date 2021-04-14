@@ -5,14 +5,16 @@ import * as FFTAUtils from "./FFTAUtils";
 // References
 const enum BYTELENGTH {
   ITEM = 0x20,
+  ITEMNAMES = 0x1C1D
 }
 
 const enum KNOWNOFFSET {
   ITEM = 0x51d1a0,
+  ITEMNAMES = 0x52396a
 }
 
 const enum QUANTITY {
-  ITEM = 375,
+  ITEM = 375
 }
 
 // Common Properties
@@ -32,8 +34,7 @@ export class FFTAData {
     this.rom = buffer;
         
     // Read in Item Names
-    let itemNamesBuffer = buffer.slice(0x52396a, 0x525587);
-    this.itemNames = FFTAUtils.decodeFFTAText(itemNamesBuffer);
+    this.itemNames = FFTAUtils.decodeFFTAText(buffer.slice(KNOWNOFFSET.ITEMNAMES, KNOWNOFFSET.ITEMNAMES + BYTELENGTH.ITEMNAMES));
 
     // Initialize Items
     this.items = new Array<FFTAItem>();

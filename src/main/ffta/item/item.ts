@@ -179,19 +179,17 @@ export class FFTAItem implements FFTAObject {
     this.properties.set(newFlags, ITEMOFFSET.FLAGS);
   }
 
-  private setProperty(offset: ITEMOFFSET, value: number): boolean {
+  private setProperty(offset: ITEMOFFSET, value: number): void {
     // Should be using setFlag()
     if (offset != ITEMOFFSET.FLAGS) {
       let newValue;
-      // These are Shorts, not Bytes. Need to convert to a Uint16Array, then use Data View to write the correct endiannes
+      // These are Shorts, need to conver the number to a Uint8Array with correct endianness
       if (offset === ITEMOFFSET.BUY || offset === ITEMOFFSET.SELL) {
         this.properties.set(FFTAUtils.getShortUint8Array(value, true), offset);
       } else {
         this.properties.set(new Uint8Array([value]), offset);
       }
-      return true;
     }
-    return false;
   }
 }
 
