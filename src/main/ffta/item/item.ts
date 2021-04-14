@@ -1,9 +1,9 @@
-import { FFTAData, FFTAObject } from "./data";
+import { FFTAData, FFTAObject } from "../data";
 
 // === Static Constants ====
 const SIZE_ITEM = 0x20;
 
-enum ITEMOFFSET {
+const enum ITEMOFFSET {
   BUY = 0x04,
   SELL = 0x06,
   // See Item enum for order, Sword = 1
@@ -32,7 +32,7 @@ enum ITEMOFFSET {
   ABILITYSET = 0x1d,
 }
 
-enum ITEMFLAG {
+const enum ITEMFLAG {
   DOUBLESWORD = 0x0,
   DOUBLEHAND = 0x1,
   MONKEYGRIP = 0x2,
@@ -46,7 +46,6 @@ enum ITEMFLAG {
 // ==== Class ====
 export class FFTAItem implements FFTAObject {
   itemID = -1;
-  femaleOnly = false;
   properties: Uint8Array;
   memory = -1;
   displayName = "";
@@ -56,14 +55,12 @@ export class FFTAItem implements FFTAObject {
     memory: number,
     id: number,
     itemName: string,
-    femaleOnly: boolean,
     buffer: Uint8Array
   ) {
     // Save FFTAObject Properties
     this.memory = memory;
     this.itemID = id;
     this.displayName = itemName;
-    this.femaleOnly = femaleOnly;
     this.properties = buffer.slice(memory, memory + SIZE_ITEM);
     this.allowed = true;
   }
@@ -190,10 +187,7 @@ export class FFTAItem implements FFTAObject {
       let newValue;
       // These are Shorts, not Bytes. Need to convert to a Uint16Array, then use Data View to write the correct endiannes
       if (offset === ITEMOFFSET.BUY || offset === ITEMOFFSET.SELL) {
-        this.properties.set(
-          getShortUint8Array(value, true),
-          offset
-        );
+        this.properties.set(getShortUint8Array(value, true), offset);
       } else {
         this.properties.set(new Uint8Array([value]), offset);
       }

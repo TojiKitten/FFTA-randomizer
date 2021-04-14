@@ -1,7 +1,8 @@
 import { initial } from "lodash";
-import { FFTAItem } from "./item";
+import { FFTAItem } from "./item/item";
 
 const knownAddresses = require("./knownAddresses.json");
+
 // Common Properties
 export interface FFTAObject {
   memory: number;
@@ -17,12 +18,14 @@ export class FFTAData {
   constructor(buffer: Uint8Array) {
     this.rom = buffer;
     this.items = knownAddresses.knownItems.map(
-      (item: { memory: string; displayName: string; femaleOnly: boolean }) =>
+      (
+        item: { memory: string; displayName: string; femaleOnly: boolean },
+        index: number
+      ) =>
         new FFTAItem(
           parseInt(item.memory, 16),
-          parseInt(item.displayName, 16),
+          index + 1,
           item.displayName,
-          item.femaleOnly,
           buffer
         )
     );
@@ -32,17 +35,6 @@ export class FFTAData {
     this.items.forEach((item) => {
       this.rom.set(item.properties, item.memory);
     });
-  }
-
-  readShort(offset: number, littleEndian: boolean): number {
-    var firstByte = this.rom[offset];
-    var secondByte = this.rom[offset + 1];
-
-    if (littleEndian) {
-      return (secondByte << 0x8) | firstByte;
-    } else {
-      return (firstByte << 0x8) | secondByte;
-    }
   }
 }
 
