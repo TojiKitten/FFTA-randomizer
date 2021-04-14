@@ -360,6 +360,20 @@
     { "memory": "0x51FE40", "displayName": "Scarab" },
     { "memory": "0x51FE60", "displayName": "Ruby Earring" },
     { "memory": "0x51FE80", "displayName": "Star Armlet" },
-    { "memory": "0x51FEA0", "displayName": "Mindu Gem" }
+    { "memory": "0x51FEA0", "displayName": "Mindu Gem" },
+    {"displayName": "Potion"},
+    {"displayName": "Hi-Potion"},
+    {"displayName": "X-Potion"},
+    {"displayName": "Ether"},
+    {"displayName": "Elixir"},
+    {"displayName": "Antidote"},
+    {"displayName": "Eyedrops"},
+    {"displayName": "Echo Screen"},
+    {"displayName": "Maiden's Kiss"},
+    {"displayName": "Soft"},
+    {"displayName": "Holy Water"},
+    {"displayName": "Bandage"},
+    {"displayName": "Cureall"},
+    {"displayName": "Phoenix Down"}
   ]
 }

@@ -1,4 +1,5 @@
 import { FFTAData, FFTAObject } from "../data";
+import * as FFTAUtils from "../FFTAUtils";
 
 const enum ITEMOFFSET {
   BUY = 0x04,
@@ -184,7 +185,7 @@ export class FFTAItem implements FFTAObject {
       let newValue;
       // These are Shorts, not Bytes. Need to convert to a Uint16Array, then use Data View to write the correct endiannes
       if (offset === ITEMOFFSET.BUY || offset === ITEMOFFSET.SELL) {
-        this.properties.set(getShortUint8Array(value, true), offset);
+        this.properties.set(FFTAUtils.getShortUint8Array(value, true), offset);
       } else {
         this.properties.set(new Uint8Array([value]), offset);
       }

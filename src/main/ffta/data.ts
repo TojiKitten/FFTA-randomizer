@@ -1,9 +1,8 @@
 import { initial } from "lodash";
 import { FFTAItem } from "./item/item";
+import * as FFTAUtils from "./FFTAUtils";
 
 const knownAddresses = require("./knownAddresses.json");
-// NOTES
-// Item Names 52396A (shortsword) 523587 (phoenix Down)
 
 // References
 const enum BYTELENGTH {
@@ -28,18 +27,24 @@ export interface FFTAObject {
 // Only one of these should exist
 export class FFTAData {
   rom: Uint8Array;
-  items: FFTAItem[];
+  items: Array<FFTAItem>;
+  itemNames: Array<string>;
 
   constructor(buffer: Uint8Array) {
     this.rom = buffer;
+        
+    // Read in Item Names
+    let itemNamesBuffer = buffer.slice(0x52396a, 0x525587);
+    this.itemNames = FFTAUtils.decodeFFTAText(itemNamesBuffer);
 
     // Initialize Items
-    for (var i = 0; i < QUANTITY.ITEM; i++) {
+    this.items = new Array<FFTAItem>();
+    for(var i = 0; i < QUANTITY.ITEM; i++) {
       let memory = KNOWNOFFSET.ITEM + BYTELENGTH.ITEM * i;
       let newItem = new FFTAItem(
         memory,
         i + 1,
-        knownAddresses[i],
+        knownAddresses.knownItems[i].displayName,
         buffer.slice(memory, memory + BYTELENGTH.ITEM)
       );
       this.items.push(newItem);
