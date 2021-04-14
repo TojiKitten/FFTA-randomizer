@@ -7,7 +7,7 @@ import { BrowserWindow, app, dialog } from "electron";
 import * as fs from "fs";
 
 import "../../public/favicon-96x96.png";
-import { FFTAData } from "./ffta/data";
+import { FFTAData } from "./ffta/FFTAData";
 
 const ipc = require("electron").ipcMain;
 
@@ -107,6 +107,7 @@ function openfile(files: any) {
     let filepath = files[0];
     let filecontent = fs.readFileSync(filepath);
     fftaData = new FFTAData(filecontent);
+    mainWindow!.webContents.send("FileName-Change", { filepath: filepath});
     //console.log(filecontent);
   }
 }
