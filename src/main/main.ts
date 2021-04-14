@@ -5,7 +5,9 @@ import * as path from "path";
 import * as url from "url";
 import { BrowserWindow, app, dialog } from "electron";
 import * as fs from "fs";
+
 import "../../public/favicon-96x96.png";
+import { FFTAData } from "./ffta/data";
 
 const ipc = require("electron").ipcMain;
 
@@ -81,8 +83,8 @@ app.on("activate", () => {
 // code. You can also put them in separate files and require them here.
 
 //TODO filecontent placeholder
-let filecontent: Uint8Array;
-let filepathTmp: string;
+let fftaData: FFTAData;
+
 //
 //Open File Handling
 //
@@ -103,9 +105,8 @@ function openfile(files: any) {
   //look if actually selected a file
   if (files) {
     let filepath = files[0];
-    filecontent = fs.readFileSync(filepath);
-    filepathTmp = filepath;
-    mainWindow!.webContents.send("FileName-Change", { filepath: filepathTmp });
+    let filecontent = fs.readFileSync(filepath);
+    fftaData = new FFTAData(filecontent);
     //console.log(filecontent);
   }
 }
@@ -128,7 +129,8 @@ ipc.on("save-file-dialog", function (event, options: any) {
 function savefile(filepath: any) {
   //check if dialog got cancelled
   if (filepath) {
-    fs.writeFileSync(filepath, filecontent, null);
+    fftaData.writeData();
+    fs.writeFileSync(filepath, fftaData.rom, null);
     //console.log("file: " + filepath + " written");
   }
 }
