@@ -1,4 +1,4 @@
-import { FFTAData, FFTAObject } from "../data";
+import { FFTAObject } from "../FFTAData";
 import * as FFTAUtils from "../FFTAUtils";
 
 const enum ITEMOFFSET {
