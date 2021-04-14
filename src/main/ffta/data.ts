@@ -2,8 +2,6 @@ import { initial } from "lodash";
 import { FFTAItem } from "./item/item";
 import * as FFTAUtils from "./FFTAUtils";
 
-const knownAddresses = require("./knownAddresses.json");
-
 // References
 const enum BYTELENGTH {
   ITEM = 0x20,
