@@ -40,6 +40,9 @@ export const GeneralSettings = () => {
       <br />
       <input type="checkbox" id="frostyBoost" />
       <label htmlFor="frostyBoost">Frosty Mage Boost</label>
+      <br />
+      <input type="checkbox" id="noJudgeTurn" />
+      <label htmlFor="noJudgeTurn">no Judge Turn</label>
     </div>
   );
 };
