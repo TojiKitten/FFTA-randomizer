@@ -19,6 +19,7 @@
     },
     "win": {
       "target": "portable",
+      "icon": "./public/Logo512x512.png",
       "asar": true
     },
     "buildVersion": "1"

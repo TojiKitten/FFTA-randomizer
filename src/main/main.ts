@@ -5,6 +5,8 @@ import * as path from "path";
 import * as url from "url";
 import { BrowserWindow, app, dialog } from "electron";
 import * as fs from "fs";
+
+import "../../public/favicon-96x96.png";
 import { FFTAData } from "./ffta/data";
 
 const ipc = require("electron").ipcMain;
@@ -15,6 +17,7 @@ function createWindow(): void {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     title: "FFTA Randomizer",
+    icon: path.join(__dirname,"public", "favicon-96x96.png"),
     width: 900,
     height: 680,
     maxHeight: 1080,
@@ -22,6 +25,7 @@ function createWindow(): void {
     minHeight: 400,
     minWidth: 400,
     backgroundColor: "#FFFFFF",
+    resizable: false,
     webPreferences: {
       nodeIntegration: false,
       enableRemoteModule: false,
@@ -30,6 +34,7 @@ function createWindow(): void {
     },
   });
 
+  mainWindow.removeMenu();
   // and load the index.html of the app.
   mainWindow
     .loadURL(
@@ -79,6 +84,7 @@ app.on("activate", () => {
 
 //TODO filecontent placeholder
 let fftaData: FFTAData;
+
 //
 //Open File Handling
 //

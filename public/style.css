@@ -1,3 +1,79 @@
-.app {
-  color: grey;
+body {
+  background: #151515;
+  color: #b4a5a5;
+}
+
+.file-button {
+  background: #3c415f;
+  color: #b4a5a5;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 10px;
+  border-radius: 20px;
+  display: inline-block;
+  border: none;
+  transition: all 0.4s ease 0s;
+  border: 1px solid gray;
+  margin: 1px;
+}
+
+.file-button:hover {
+  text-shadow: 0px 0px 6px rgba(255, 255, 255, 1);
+  transition: all 0.4s ease 0s;
+}
+/*4thcolot: #301b3f*/
+
+.div-fileButtons {
+  width: 100px;
+  height: 100px;
+  float: left;
+
+  border: 2px solid gray;
+
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.centering-wrapper {
+  text-align: center;
+  margin: auto;
+}
+
+.div-RandoSettings {
+  width: 763px;
+  height: 100px;
+  margin-left: 115px;
+  border: 2px solid gray;
+}
+
+.div-RomSettings {
+  width: 100%;
+  height: 400px;
+  clear: left;
+  margin-top: 5px;
+  border: 2px solid gray;
+}
+
+.navBar {
+}
+.navBar-button {
+}
+.navBar-button-active {
+  color: red;
+}
+
+.partyMember{
+  border: 1px solid gray;
+  width: 30%;
+  float: left;
+  margin: 1%;
+  padding: 2px;
+}
+
+.jobList{
+  border: 1px solid gray;
+  width: 15.5%;
+  float: left;
+  margin: 1px;
+  padding: 2px;
 }
