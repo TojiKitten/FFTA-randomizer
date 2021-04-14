@@ -44,7 +44,7 @@ export class FFTAData {
       let newItem = new FFTAItem(
         memory,
         i + 1,
-        knownAddresses.knownItems[i].displayName,
+        this.itemNames[i],
         buffer.slice(memory, memory + BYTELENGTH.ITEM)
       );
       this.items.push(newItem);
