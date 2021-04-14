@@ -20,7 +20,7 @@ export function decodeFFTAText(buffer: Uint8Array):Array<string>
     }
   }
 
-  // Decode each entry into a string NOT IMPLEMENTED
+  // Decode each entry into a string by using the lookup table
   let names = new Array<string>();
   for(var i = 0; i < encodedStrings.length; i++)
   {
@@ -28,22 +28,30 @@ export function decodeFFTAText(buffer: Uint8Array):Array<string>
     var firstByte;
     var secondByte;
     let encodedName:Uint8Array = encodedStrings[i];
+    
+    // Decode each letter and add to the nme
     for(var j = 0; j < encodedName.byteLength; j++)
     {
+      // Read number as hex and to uppercase, to match table
       firstByte = encodedName[j].toString(16).toUpperCase();
+      
+      // Handle boundry
       if(encodedName[j+1])
       {
         secondByte = encodedName[j+1].toString(16).toUpperCase();
       }
       else{
+        // Set to undefined to match case when there's a miss on the table
         secondByte = undefined;
       }
       
+      // Check if the matches a short long key
       if(secondByte && charTable[firstByte + secondByte])
       {
         name += charTable[firstByte + secondByte];
         j++;
       }
+      // Check if table matches a byte long key
       else if(charTable[firstByte]){
         name += charTable[firstByte];
       }
