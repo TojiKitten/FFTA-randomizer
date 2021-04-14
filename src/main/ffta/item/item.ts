@@ -1,8 +1,5 @@
 import { FFTAData, FFTAObject } from "../data";
 
-// === Static Constants ====
-const SIZE_ITEM = 0x20;
-
 const enum ITEMOFFSET {
   BUY = 0x04,
   SELL = 0x06,
@@ -55,13 +52,13 @@ export class FFTAItem implements FFTAObject {
     memory: number,
     id: number,
     itemName: string,
-    buffer: Uint8Array
+    properties: Uint8Array
   ) {
     // Save FFTAObject Properties
     this.memory = memory;
     this.itemID = id;
     this.displayName = itemName;
-    this.properties = buffer.slice(memory, memory + SIZE_ITEM);
+    this.properties = properties;
     this.allowed = true;
   }
 
