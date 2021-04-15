@@ -32,9 +32,9 @@ export interface FFTAObject {
 // Only one of these should exist
 export class FFTAData {
   rom: Uint8Array;
-  items: Array<FFTAItem> = [];
-  stringNames: Array<string> = [];
-  formations: Array<FFTAFormation> = [];
+  items: Array<FFTAItem>;
+  stringNames: Array<string>;
+  formations: Array<FFTAFormation>;
 
   constructor(buffer: Uint8Array) {
     this.rom = buffer;
