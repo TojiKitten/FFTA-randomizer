@@ -21,25 +21,6 @@ const DataTypes = {
   },
 };
 
-// References
-const enum BYTELENGTH {
-  ITEM = 0x20,
-  STRINGTABLE = 0x4,
-  FORMATION = 0x28,
-}
-
-const enum KNOWNOFFSET {
-  ITEM = 0x51d1a0,
-  STRINGTABLE = 0x526680,
-  FORMATION = 0x54d1a0, //Starts at 0x54CD90, but this is starting party address
-}
-
-const enum QUANTITY {
-  ITEM = 375,
-  STRINGTABLE = 753,
-  FORMATION = 414, // Accounts for starting at Starting Party
-}
-
 // Common Properties
 export interface FFTAObject {
   memory: number;
