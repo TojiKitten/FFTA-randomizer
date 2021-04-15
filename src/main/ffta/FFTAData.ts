@@ -30,7 +30,6 @@ export class FFTAData {
   rom: Uint8Array;
   items: Array<FFTAItem>;
   stringNames: Array<string>;
-  stringTable: Uint32Array;
 
   constructor(buffer: Uint8Array) {
     this.rom = buffer;
