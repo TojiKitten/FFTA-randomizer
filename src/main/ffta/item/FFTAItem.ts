@@ -1,7 +1,7 @@
 import { FFTAObject } from "../FFTAData";
 import * as FFTAUtils from "../FFTAUtils";
 
-const enum ITEMOFFSET {
+const enum OFFSET {
   BUY = 0x04,
   SELL = 0x06,
   // See Item enum for order, Sword = 1
@@ -64,27 +64,27 @@ export class FFTAItem implements FFTAObject {
   }
 
   setBuyPrice(value: number) {
-    this.setProperty(ITEMOFFSET.BUY, value);
+    this.setProperty(OFFSET.BUY, value);
   }
 
   setSellPrice(value: number) {
-    this.setProperty(ITEMOFFSET.SELL, value);
+    this.setProperty(OFFSET.SELL, value);
   }
 
   setType(value: number) {
-    this.setProperty(ITEMOFFSET.TYPE, value);
+    this.setProperty(OFFSET.TYPE, value);
   }
 
   setElement(value: number) {
-    this.setProperty(ITEMOFFSET.ELEMENT, value);
+    this.setProperty(OFFSET.ELEMENT, value);
   }
 
   setRange(value: number) {
-    this.setProperty(ITEMOFFSET.RANGE, value);
+    this.setProperty(OFFSET.RANGE, value);
   }
 
   setWorn(value: number) {
-    this.setProperty(ITEMOFFSET.WORN, value);
+    this.setProperty(OFFSET.WORN, value);
   }
 
   setDoubleSword(value: 0 | 1) {
@@ -120,71 +120,71 @@ export class FFTAItem implements FFTAObject {
   }
 
   setNono(value: number) {
-    this.setProperty(ITEMOFFSET.NONO, value);
+    this.setProperty(OFFSET.NONO, value);
   }
 
   setAttack(value: number) {
-    this.setProperty(ITEMOFFSET.ATTACK, value);
+    this.setProperty(OFFSET.ATTACK, value);
   }
 
   setDefense(value: number) {
-    this.setProperty(ITEMOFFSET.DEFENSE, value);
+    this.setProperty(OFFSET.DEFENSE, value);
   }
 
   setPower(value: number) {
-    this.setProperty(ITEMOFFSET.POWER, value);
+    this.setProperty(OFFSET.POWER, value);
   }
 
   setResistance(value: number) {
-    this.setProperty(ITEMOFFSET.RESISTANCE, value);
+    this.setProperty(OFFSET.RESISTANCE, value);
   }
 
   setSpeed(value: number) {
-    this.setProperty(ITEMOFFSET.SPEED, value);
+    this.setProperty(OFFSET.SPEED, value);
   }
 
   setEvade(value: number) {
-    this.setProperty(ITEMOFFSET.EVADE, value);
+    this.setProperty(OFFSET.EVADE, value);
   }
 
   setMove(value: number) {
-    this.setProperty(ITEMOFFSET.MOVE, value);
+    this.setProperty(OFFSET.MOVE, value);
   }
 
   setJump(value: number) {
-    this.setProperty(ITEMOFFSET.JUMP, value);
+    this.setProperty(OFFSET.JUMP, value);
   }
 
   setEffect1(value: number) {
-    this.setProperty(ITEMOFFSET.EFFECT1, value);
+    this.setProperty(OFFSET.EFFECT1, value);
   }
 
   setEffect2(value: number) {
-    this.setProperty(ITEMOFFSET.EFFECT2, value);
+    this.setProperty(OFFSET.EFFECT2, value);
   }
 
   setEffect3(value: number) {
-    this.setProperty(ITEMOFFSET.EFFECT3, value);
+    this.setProperty(OFFSET.EFFECT3, value);
   }
 
   setAbilitySet(value: number) {
-    this.setProperty(ITEMOFFSET.ABILITYSET, value);
+    this.setProperty(OFFSET.ABILITYSET, value);
   }
 
   private setFlag(flag: ITEMFLAG, value: 0 | 1): void {
     let mask = 0x1 << flag;
     let newFlags = new Uint8Array([
-      (this.properties[ITEMOFFSET.FLAGS] & ~mask) | (value << flag),
+      (this.properties[OFFSET.FLAGS] & ~mask) | (value << flag),
     ]);
-    this.properties.set(newFlags, ITEMOFFSET.FLAGS);
+    this.properties.set(newFlags, OFFSET.FLAGS);
   }
 
-  private setProperty(offset: ITEMOFFSET, value: number): void {
+  private setProperty(offset: OFFSET, value: number): void {
     // Should be using setFlag()
-    if (offset != ITEMOFFSET.FLAGS) {
+    if (offset != OFFSET.FLAGS) {
       let newValue;
       // These are Shorts, need to conver the number to a Uint8Array with correct endianness
-      if (offset === ITEMOFFSET.BUY || offset === ITEMOFFSET.SELL) {
+      if (offset === OFFSET.BUY || offset === OFFSET.SELL) {
         this.properties.set(FFTAUtils.getShortUint8Array(value, true), offset);
       } else {
         this.properties.set(new Uint8Array([value]), offset);

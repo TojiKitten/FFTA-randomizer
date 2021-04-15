@@ -1,26 +1,30 @@
 import { initial } from "lodash";
 import { FFTAItem } from "./item/FFTAItem";
 import * as FFTAUtils from "./FFTAUtils";
+import { FFTAFormation } from "./formation/FFTAFormation";
 
-// References
-const enum BYTELENGTH {
-  ITEM = 0x20,
-  STRINGTABLE = 0x4,
-}
-
-const enum KNOWNOFFSET {
-  ITEM = 0x51d1a0,
-  STRINGTABLE = 0x526680,
-}
-
-const enum QUANTITY {
-  ITEM = 375,
-  STRINGTABLE = 753,
-}
+const DataTypes = {
+  Item: {
+    offset: 0x51d1a0,
+    byteSize: 0x20,
+    length: 375,
+  },
+  StringTable: {
+    offset: 0x526680,
+    byteSize: 0x4,
+    length: 753,
+  },
+  Formation: {
+    offset: 0x54d1a0, //Starts at 0x54CD90, but this is Starting Party address
+    byteSize: 0x28,
+    length: 414, // Accounts for starting at Starting Party address
+  },
+};
 
 // Common Properties
 export interface FFTAObject {
   memory: number;
+  properties: Uint8Array;
   displayName?: string;
   allowed?: boolean;
 }
@@ -30,48 +34,73 @@ export class FFTAData {
   rom: Uint8Array;
   items: Array<FFTAItem>;
   stringNames: Array<string>;
+  formations: Array<FFTAFormation>;
 
   constructor(buffer: Uint8Array) {
     this.rom = buffer;
+    this.stringNames = this.initializeStringNames();
+    this.items = this.initializeItems();
+    this.formations = this.initializeFormations();
+  }
 
-    // Initialize known string names
-    this.stringNames = [];
-    for (var i = 0; i < QUANTITY.STRINGTABLE; i++) {
-      let memory = KNOWNOFFSET.STRINGTABLE + BYTELENGTH.STRINGTABLE * i;
-      let stringLookupTable: Uint8Array = buffer.slice(
+  initializeStringNames(): Array<string> {
+    let names: Array<string> = [];
+    let dataType = DataTypes.StringTable;
+
+    for (var i = 0; i < dataType.length; i++) {
+      let memory = dataType.offset + dataType.byteSize * i;
+      let stringLookupTable: Uint8Array = this.rom.slice(
         memory,
-        memory + BYTELENGTH.STRINGTABLE
+        memory + dataType.byteSize
       );
-      let address = new Uint32Array([
-        (stringLookupTable[3] << 24) |
-          (stringLookupTable[2] << 16) |
-          (stringLookupTable[1] << 8) |
-          stringLookupTable[0],
-      ]);
+      let address = FFTAUtils.getLittleEndianAddress(stringLookupTable);
 
-      let startingByte = address[0] - 0x08000000;
+      let startingByte = address;
       let endingByte = startingByte;
       do {
         endingByte += 0x01;
-      } while (buffer[endingByte] !== 0);
+      } while (this.rom[endingByte] !== 0);
 
-      this.stringNames.push(
-        FFTAUtils.decodeFFTAText(buffer.slice(startingByte, endingByte))
+      names.push(
+        FFTAUtils.decodeFFTAText(this.rom.slice(startingByte, endingByte))
       );
     }
+    return names;
+  }
 
-    // Initialize Items
-    this.items = new Array<FFTAItem>();
-    for (var i = 0; i < QUANTITY.ITEM; i++) {
-      let memory = KNOWNOFFSET.ITEM + BYTELENGTH.ITEM * i;
+  initializeItems(): Array<FFTAItem> {
+    let items: Array<FFTAItem> = [];
+    let dataType = DataTypes.Item;
+
+    for (var i = 0; i < dataType.length; i++) {
+      let memory = dataType.offset + dataType.byteSize * i;
       let newItem = new FFTAItem(
         memory,
         i + 1,
-        this.stringNames[(buffer[memory + 1] << 8) | buffer[memory]],
-        buffer.slice(memory, memory + BYTELENGTH.ITEM)
+        this.stringNames[(this.rom[memory + 1] << 8) | this.rom[memory]],
+        this.rom.slice(memory, memory + dataType.byteSize)
       );
-      this.items.push(newItem);
+      items.push(newItem);
     }
+    return items;
+  }
+
+  initializeFormations(): Array<FFTAFormation> {
+    let formations: Array<FFTAFormation> = [];
+    let dataType = DataTypes.Formation;
+
+    for (var i = 0; i < dataType.length; i++) {
+      let memory = dataType.offset + dataType.byteSize * i;
+      let newFormation = new FFTAFormation(
+        memory,
+        this.rom.slice(memory, memory + dataType.byteSize)
+      );
+      newFormation.loadUnits(
+        this.rom.slice(newFormation.unitStart, newFormation.unitEnd)
+      );
+      formations.push(newFormation);
+    }
+    return formations;
   }
 
   writeData(): void {
