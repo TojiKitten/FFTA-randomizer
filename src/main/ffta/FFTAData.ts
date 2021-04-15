@@ -5,16 +5,17 @@ import * as FFTAUtils from "./FFTAUtils";
 // References
 const enum BYTELENGTH {
   ITEM = 0x20,
-  ITEMNAMES = 0x1c1d,
+  STRINGTABLE = 0x4,
 }
 
 const enum KNOWNOFFSET {
   ITEM = 0x51d1a0,
-  ITEMNAMES = 0x52396a,
+  STRINGTABLE = 0x526680,
 }
 
 const enum QUANTITY {
   ITEM = 375,
+  STRINGTABLE = 753,
 }
 
 // Common Properties
@@ -28,18 +29,36 @@ export interface FFTAObject {
 export class FFTAData {
   rom: Uint8Array;
   items: Array<FFTAItem>;
-  itemNames: Array<string>;
+  stringNames: Array<string>;
 
   constructor(buffer: Uint8Array) {
     this.rom = buffer;
 
-    // Read in Item Names
-    this.itemNames = FFTAUtils.decodeFFTAText(
-      buffer.slice(
-        KNOWNOFFSET.ITEMNAMES,
-        KNOWNOFFSET.ITEMNAMES + BYTELENGTH.ITEMNAMES
-      )
-    );
+    // Initialize known string names
+    this.stringNames = [];
+    for (var i = 0; i < QUANTITY.STRINGTABLE; i++) {
+      let memory = KNOWNOFFSET.STRINGTABLE + BYTELENGTH.STRINGTABLE * i;
+      let stringLookupTable: Uint8Array = buffer.slice(
+        memory,
+        memory + BYTELENGTH.STRINGTABLE
+      );
+      let address = new Uint32Array([
+        (stringLookupTable[3] << 24) |
+          (stringLookupTable[2] << 16) |
+          (stringLookupTable[1] << 8) |
+          stringLookupTable[0],
+      ]);
+
+      let startingByte = address[0] - 0x08000000;
+      let endingByte = startingByte;
+      do {
+        endingByte += 0x01;
+      } while (buffer[endingByte] !== 0);
+
+      this.stringNames.push(
+        FFTAUtils.decodeFFTAText(buffer.slice(startingByte, endingByte))
+      );
+    }
 
     // Initialize Items
     this.items = new Array<FFTAItem>();
@@ -48,7 +67,7 @@ export class FFTAData {
       let newItem = new FFTAItem(
         memory,
         i + 1,
-        this.itemNames[i],
+        this.stringNames[(buffer[memory + 1] << 8) | buffer[memory]],
         buffer.slice(memory, memory + BYTELENGTH.ITEM)
       );
       this.items.push(newItem);
