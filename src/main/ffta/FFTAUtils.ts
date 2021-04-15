@@ -39,7 +39,9 @@ export function decodeFFTAText(encodedName: Uint8Array): string {
 }
 
 export function getLittleEndianAddress(address: Uint8Array): number {
-  // We drop the "first" byte, since it is irrelevant for ROM Manipulation
-  // Addresses in the ROM point to the 0x08000000 range, since that's where it will end up when the game runs
+  /* An example of how a memory address would appear in the rom would be: A0 D1 54 08 (formation offeset)
+We need to convert that to -> 0x0854D1A0 for little endian.
+In addition, 0x0854D1A0 is the full address in reference to GBA architecture. 
+We have to drop the "08", which is why it gets left off in this method.*/
   return (address[2] << 16) | (address[1] << 8) | address[0];
 }
