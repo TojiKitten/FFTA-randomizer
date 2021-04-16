@@ -193,4 +193,17 @@ export class FFTAItem implements FFTAObject {
   }
 }
 
+export class FFTARewardItemSet implements FFTAObject {
+  properties: Uint8Array;
+  memory = -1;
+  displayName = "";
+  allowed = true;
+
+  constructor(memory: number, properties: Uint8Array) {
+    // Save FFTAObject Properties
+    this.memory = memory;
+    this.properties = properties;
+  }
+}
+
 export default FFTAItem;
