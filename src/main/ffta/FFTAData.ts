@@ -1,9 +1,12 @@
 import { initial } from "lodash";
-import { FFTAItem } from "./item/FFTAItem";
+import { FFTAItem, FFTARewardItemSet } from "./item/FFTAItem";
 import * as FFTAUtils from "./FFTAUtils";
 import { FFTAFormation } from "./formation/FFTAFormation";
 import { FFTARaceAbility } from "./ability/FFTARaceAbility";
 import { FFTAAbility } from "./ability/FFTAAbility";
+import { FFTAJob } from "./job/FFTAJob";
+import { FFTALaw, FFTALawSet } from "./item/FFTALaw";
+import { FFTAMission } from "./mission/FFTAMission";
 
 type MemorySpace = {
   readonly offset: number;
@@ -19,16 +22,38 @@ type RaceAbilitySpaces = {
   readonly Moogle: MemorySpace;
 };
 
+type RaceJobSpaces = {
+  readonly Human: MemorySpace;
+  readonly Bangaa: MemorySpace;
+  readonly NuMou: MemorySpace;
+  readonly Viera: MemorySpace;
+  readonly Moogle: MemorySpace;
+};
+
 type StringTableSpaces = {
   readonly Items: MemorySpace;
   readonly Abilities: MemorySpace;
+  readonly Missions: MemorySpace;
+};
+
+type RaceMap<Type> = {
+  Human: Array<FFTAAbility>;
+  Bangaa: Array<FFTAAbility>;
+  NuMou: Array<FFTAAbility>;
+  Viera: Array<FFTAAbility>;
+  Moogle: Array<FFTAAbility>;
 };
 
 type FFTAMemoryMap = {
   readonly StringTables: StringTableSpaces;
   readonly RaceAbilities: RaceAbilitySpaces;
+  readonly RaceJobs: RaceJobSpaces;
   readonly Items: MemorySpace;
   readonly Formations: MemorySpace;
+  readonly Abilities: MemorySpace;
+  readonly LawSets: MemorySpace;
+  readonly RewardSets: MemorySpace;
+  readonly Missions: MemorySpace;
 };
 
 const FFTAMap: FFTAMemoryMap = {
@@ -58,6 +83,32 @@ const FFTAMap: FFTAMemoryMap = {
       byteSize: 0x8,
       length: 0x57,
     },
+  },RaceJobs: {
+    Human: {
+      offset: 0x521A7C, // Human
+      byteSize: 0x34,
+      length: 11, // There's more than this, but some of those are judge abilities
+    },
+    Bangaa: {
+      offset: 0x521CB8, // Bangaa
+      byteSize: 0x34,
+      length: 7,
+    },
+    NuMou: {
+      offset: 0x521E24, // Nu Mou
+      byteSize: 0x34,
+      length: 8,
+    },
+    Viera: {
+      offset: 0x521FC4, // Viera
+      byteSize: 0x34,
+      length: 8,
+    },
+    Moogle: {
+      offset: 0x522164, // Moogle
+      byteSize: 0x34,
+      length: 8,
+    },
   },
   StringTables: {
     Items: {
@@ -70,6 +121,11 @@ const FFTAMap: FFTAMemoryMap = {
       byteSize: 0x4,
       length: 767,
     },
+    Missions: {
+      offset: 0x55A650,
+      byteSize: 0x4,
+      length: 396
+    }
   },
   Items: {
     offset: 0x51d1a0,
@@ -81,14 +137,26 @@ const FFTAMap: FFTAMemoryMap = {
     byteSize: 0x28,
     length: 414, // Accounts for starting at Starting Party address
   },
-};
-
-type RaceAbilities = {
-  Human: Array<FFTAAbility>;
-  Bangaa: Array<FFTAAbility>;
-  NuMou: Array<FFTAAbility>;
-  Viera: Array<FFTAAbility>;
-  Moogle: Array<FFTAAbility>;
+  Abilities: {
+    offset: 0x55187C,
+    byteSize: 0x1C,
+    length: 0x15A
+  },
+  LawSets: {
+    offset: 0x528E1C,
+    byteSize: 0x28,
+    length: 7
+  },
+  RewardSets: {
+    offset: 0x529494,
+    byteSize: 0x28,
+    length: 8
+  },
+  Missions: {
+    offset: 0x55AE4C,
+    byteSize: 0x46,
+    length: 396
+  }
 };
 
 // Common Properties
@@ -103,18 +171,30 @@ export interface FFTAObject {
 export class FFTAData {
   rom: Uint8Array;
   items: Array<FFTAItem>;
-  stringNames: Array<string>;
+  itemJobNames: Array<string>;
   abilityNames: Array<string>;
+  missionNames: Array<string>;
   formations: Array<FFTAFormation>;
-  raceAbilities: RaceAbilities;
+  missions: Array<FFTAMission>;
+  raceAbilities: RaceMap<FFTAAbility>;
+  abilities: Array<FFTAAbility>;
+  jobs: RaceMap<FFTAJob>;
+  lawSets: Array<FFTALawSet>;
+  rewardItemSets: Array<FFTARewardItemSet>;
 
   constructor(buffer: Uint8Array) {
     this.rom = buffer;
-    this.stringNames = this.initializeItemNames();
+    this.itemJobNames = this.initializeItemNames();
     this.abilityNames = this.initializeAbilityNames();
+    this.missionNames = this.initializeMissionNames();
     this.items = this.initializeItems();
     this.formations = this.initializeFormations();
+    this.missions = this.initializeMissions();
     this.raceAbilities = this.initializeRaceAbilities();
+    this.abilities = this.initializeAbilities();
+    this.jobs = this.initializeJobs();
+    this.lawSets = this.initializeLawSets();
+    this.rewardItemSets = this.initializeRewardItemSets();
   }
 
   initializeItemNames(): Array<string> {
@@ -154,7 +234,6 @@ export class FFTAData {
         memory + dataType.byteSize
       );
       let address = FFTAUtils.getLittleEndianAddress(stringLookupTable);
-
       let startingByte = address;
       let endingByte = startingByte;
       do {
@@ -168,6 +247,31 @@ export class FFTAData {
     return names;
   }
 
+  initializeMissionNames(): Array<string> {
+    let names: Array<string> = [];
+    let dataType = FFTAMap.StringTables.Missions;
+
+    for (var i = 0; i < dataType.length; i++) {
+      let memory = dataType.offset + dataType.byteSize * i;
+      let stringLookupTable: Uint8Array = this.rom.slice(
+        memory,
+        memory + dataType.byteSize
+      );
+      let address = FFTAUtils.getLittleEndianAddress(stringLookupTable);
+      let startingByte = address;
+      let endingByte = startingByte;
+      do {
+        endingByte += 0x01;
+      } while (this.rom[endingByte] !== 0);
+
+      names.push(
+        FFTAUtils.decodeFFTAText(this.rom.slice(startingByte, endingByte))
+      );
+    }
+    return names;
+  }
+
+
   initializeItems(): Array<FFTAItem> {
     let items: Array<FFTAItem> = [];
     let dataType = FFTAMap.Items;
@@ -177,7 +281,7 @@ export class FFTAData {
       let newItem = new FFTAItem(
         memory,
         i + 1,
-        this.stringNames[(this.rom[memory + 1] << 8) | this.rom[memory]],
+        this.itemJobNames[(this.rom[memory + 1] << 8) | this.rom[memory]],
         this.rom.slice(memory, memory + dataType.byteSize)
       );
       items.push(newItem);
@@ -203,7 +307,23 @@ export class FFTAData {
     return formations;
   }
 
-  initializeRaceAbilities(): RaceAbilities {
+  initializeMissions(): Array<FFTAMission> {
+    let items: Array<FFTAMission> = [];
+    let dataType = FFTAMap.Missions;
+
+    for (var i = 0; i < dataType.length; i++) {
+      let memory = dataType.offset + dataType.byteSize * i;
+      let newItem = new FFTAMission(
+        memory,
+        this.missionNames[(this.rom[memory + 1] << 8) | this.rom[memory]],
+        this.rom.slice(memory, memory + dataType.byteSize)
+      );
+      items.push(newItem);
+    }
+    return items;
+  }
+
+  initializeRaceAbilities(): RaceMap<FFTAAbility>{
     let dataType = FFTAMap.RaceAbilities;
     let races: Array<MemorySpace> = [
       dataType.Human,
@@ -228,7 +348,7 @@ export class FFTAData {
       allAbilities.push(raceAbilities);
     });
 
-    let abilities: RaceAbilities = {
+    let abilities: RaceMap<FFTAAbility> = {
       Human: allAbilities[0],
       Bangaa: allAbilities[1],
       NuMou: allAbilities[2],
@@ -237,6 +357,88 @@ export class FFTAData {
     };
 
     return abilities;
+  }
+
+  initializeAbilities()
+  {
+    let abilities: Array<FFTAAbility> = [];
+    let dataType = FFTAMap.Abilities;
+
+    for (var i = 0; i < dataType.length; i++) {
+      let memory = dataType.offset + dataType.byteSize * i;
+      let newAbility = new FFTAAbility(
+        memory,
+        this.abilityNames[(this.rom[memory + 1] << 8) | this.rom[memory]],
+        this.rom.slice(memory, memory + dataType.byteSize)
+      );
+      abilities.push(newAbility);
+    }
+    return abilities;
+  }
+
+  initializeJobs(): RaceMap<FFTAJob>{
+    let dataType = FFTAMap.RaceJobs;
+    let races: Array<MemorySpace> = [
+      dataType.Human,
+      dataType.Bangaa,
+      dataType.NuMou,
+      dataType.Viera,
+      dataType.Moogle,
+    ];
+    let allJobs: Array<Array<FFTAJob>> = [];
+    races.forEach((race, i) => {
+      let raceJobs: Array<FFTAJob> = [];
+      for (var i = 0; i < race.length; i++) {
+        let memory = race.offset + race.byteSize * i;
+
+        let newJob = new FFTAJob(
+          memory,
+          this.itemJobNames[(this.rom[memory + 1] << 8) | this.rom[memory]],
+          this.rom.slice(memory, memory + race.byteSize)
+        );
+        raceJobs.push(newJob);
+      }
+      allJobs.push(raceJobs);
+    });
+
+    let jobs: RaceMap<FFTAJob> = {
+      Human: allJobs[0],
+      Bangaa: allJobs[1],
+      NuMou: allJobs[2],
+      Viera: allJobs[3],
+      Moogle: allJobs[4],
+    };
+    return jobs;
+  }
+
+  initializeLawSets(): Array<FFTALawSet> {
+    let lawSets: Array<FFTALawSet> = [];
+    let dataType = FFTAMap.LawSets;
+
+    for (var i = 0; i < dataType.length; i++) {
+      let memory = dataType.offset + dataType.byteSize * i;
+      let newLawSet = new FFTALawSet(
+        memory,
+        this.rom.slice(memory, memory + dataType.byteSize)
+      );
+      lawSets.push(newLawSet);
+    }
+    return lawSets;
+  }
+
+  initializeRewardItemSets(): Array<FFTARewardItemSet> {
+    let rewardItemSets: Array<FFTARewardItemSet> = [];
+    let dataType = FFTAMap.RewardSets;
+
+    for (var i = 0; i < dataType.length; i++) {
+      let memory = dataType.offset + dataType.byteSize * i;
+      let newItemSet = new FFTARewardItemSet(
+        memory,
+        this.rom.slice(memory, memory + dataType.byteSize)
+      );
+      rewardItemSets.push(newItemSet);
+    }
+    return rewardItemSets;
   }
 
   writeData(): void {
