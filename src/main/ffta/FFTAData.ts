@@ -83,24 +83,25 @@ const FFTAMap: FFTAMemoryMap = {
       byteSize: 0x8,
       length: 0x57,
     },
-  },RaceJobs: {
+  },
+  RaceJobs: {
     Human: {
-      offset: 0x521A7C, // Human
+      offset: 0x521a7c, // Human
       byteSize: 0x34,
       length: 11, // There's more than this, but some of those are judge abilities
     },
     Bangaa: {
-      offset: 0x521CB8, // Bangaa
+      offset: 0x521cb8, // Bangaa
       byteSize: 0x34,
       length: 7,
     },
     NuMou: {
-      offset: 0x521E24, // Nu Mou
+      offset: 0x521e24, // Nu Mou
       byteSize: 0x34,
       length: 8,
     },
     Viera: {
-      offset: 0x521FC4, // Viera
+      offset: 0x521fc4, // Viera
       byteSize: 0x34,
       length: 8,
     },
@@ -122,10 +123,10 @@ const FFTAMap: FFTAMemoryMap = {
       length: 767,
     },
     Missions: {
-      offset: 0x55A650,
+      offset: 0x55a650,
       byteSize: 0x4,
-      length: 396
-    }
+      length: 396,
+    },
   },
   Items: {
     offset: 0x51d1a0,
@@ -138,25 +139,25 @@ const FFTAMap: FFTAMemoryMap = {
     length: 414, // Accounts for starting at Starting Party address
   },
   Abilities: {
-    offset: 0x55187C,
-    byteSize: 0x1C,
-    length: 0x15A
+    offset: 0x55187c,
+    byteSize: 0x1c,
+    length: 0x15a,
   },
   LawSets: {
-    offset: 0x528E1C,
+    offset: 0x528e1c,
     byteSize: 0x28,
-    length: 7
+    length: 7,
   },
   RewardSets: {
     offset: 0x529494,
     byteSize: 0x28,
-    length: 8
+    length: 8,
   },
   Missions: {
-    offset: 0x55AE4C,
+    offset: 0x55ae4c,
     byteSize: 0x46,
-    length: 396
-  }
+    length: 396,
+  },
 };
 
 // Common Properties
@@ -271,7 +272,6 @@ export class FFTAData {
     return names;
   }
 
-
   initializeItems(): Array<FFTAItem> {
     let items: Array<FFTAItem> = [];
     let dataType = FFTAMap.Items;
@@ -323,7 +323,7 @@ export class FFTAData {
     return items;
   }
 
-  initializeRaceAbilities(): RaceMap<FFTAAbility>{
+  initializeRaceAbilities(): RaceMap<FFTAAbility> {
     let dataType = FFTAMap.RaceAbilities;
     let races: Array<MemorySpace> = [
       dataType.Human,
@@ -359,8 +359,7 @@ export class FFTAData {
     return abilities;
   }
 
-  initializeAbilities()
-  {
+  initializeAbilities() {
     let abilities: Array<FFTAAbility> = [];
     let dataType = FFTAMap.Abilities;
 
@@ -376,7 +375,7 @@ export class FFTAData {
     return abilities;
   }
 
-  initializeJobs(): RaceMap<FFTAJob>{
+  initializeJobs(): RaceMap<FFTAJob> {
     let dataType = FFTAMap.RaceJobs;
     let races: Array<MemorySpace> = [
       dataType.Human,
