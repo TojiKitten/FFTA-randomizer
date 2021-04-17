@@ -9,8 +9,8 @@ interface props {
 }
 
 export const GeneralSettings = ({ globalState, callback }: props) => {
-  let enemyLevel = globalState.find((element) => element.setting === "storyEnemyLevels")!;
-  let enemyLevelRange = globalState.find((element) => element.setting === "storyEnemyLevelsScale")!;
+  let enemyLevel = globalState.find((element) => element.setting === "missionScaling")!;
+  let enemyLevelRange = globalState.find((element) => element.setting === "missionScalingValue")!;
   let cutscenes = globalState.find((element) => element.setting === "cutscenes")!;
   let missionRewards = globalState.find((element) => element.setting === "missionRewards")!;
   let apBoost = globalState.find((element) => element.setting === "apBoost")!;
@@ -24,7 +24,7 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
       <select
         value={enemyLevel.value}
         onChange={(event) => {
-          callback("storyEnemyLevels", event.target.value);
+          callback("missionScaling", event.target.value);
         }}
       >
         <option value="normal">Normal</option>
@@ -38,7 +38,7 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
         max="50"
         value={enemyLevelRange.value}
         onChange={(event) => {
-          callback("storyEnemyLevelsScale", event.target.value);
+          callback("missionScalingValue", event.target.value);
         }}
       />
       {enemyLevelRange.value}
@@ -72,6 +72,7 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
         type="Range"
         min="0"
         max="500"
+        step="10"
         value={apBoost.value}
         onChange={(event) => {
           callback("apBoost", event.target.value);

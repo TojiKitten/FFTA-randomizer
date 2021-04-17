@@ -85,7 +85,8 @@ app.on("activate", () => {
 
 //TODO filecontent placeholder
 let fftaData: FFTAData;
-let randomizerOptions: RandomizerOptions.iRandomizerOptions = RandomizerOptions.defaultRandomizer();
+let randomizerOptions: RandomizerOptions.iRandomizerOptions = {};
+
 //
 //Open File Handling
 //

@@ -1,168 +1,166 @@
 import * as React from "react";
 
-
 interface props {
   globalState: Array<{ setting: string; value: any }>;
   callback: Function;
 }
 
-export const JobSettings = ({globalState, callback}:props) => {
+export const JobSettings = ({ globalState, callback }: props) => {
+  let jobRequirements = globalState.find((element) => element.setting === "jobRequirements")!;
+  let abilities = globalState.find((element) => element.setting === "abilities")!;
+  let mpRegen = globalState.find((element) => element.setting === "mpRegen")!;
+
+  let humanJobs = globalState.find((element) => element.setting === "humanJobs")!;
+  let bangaaJobs = globalState.find((element) => element.setting === "bangaaJobs")!;
+  let nuMouJobs = globalState.find((element) => element.setting === "nuMouJobs")!;
+  let vieraJobs = globalState.find((element) => element.setting === "vieraJobs")!;
+  let moogleJobs = globalState.find((element) => element.setting === "moogleJobs")!;
+
+  let humanJobList = Array<JSX.Element>();
+  let bangaaJobList = Array<JSX.Element>();
+  let nuMouJobList = Array<JSX.Element>();
+  let vieraJobList = Array<JSX.Element>();
+  let moogleJobList = Array<JSX.Element>();
+
+  const humanJobChange = (event: any) => {
+    console.log(event.target.id);
+    humanJobs.value.find((element: any) => element.name == event.target.id).enabled = !humanJobs.value.find((element: any) => element.name == event.target.id).enabled
+    callback(humanJobs.setting, humanJobs.value)
+  }
+  const bangaaJobChange = (event: any) => {
+    console.log(event.target.id);
+    bangaaJobs.value.find((element: any) => element.name == event.target.id).enabled = !bangaaJobs.value.find((element: any) => element.name == event.target.id).enabled
+    callback(bangaaJobs.setting, bangaaJobs.value)
+  }
+  const nuMouJobChange = (event: any) => {
+    console.log(event.target.id);
+    nuMouJobs.value.find((element: any) => element.name == event.target.id).enabled = !nuMouJobs.value.find((element: any) => element.name == event.target.id).enabled
+    callback(nuMouJobs.setting, nuMouJobs.value)
+  }
+  const vieraJobChange = (event: any) => {
+    console.log(event.target.id);
+    vieraJobs.value.find((element: any) => element.name == event.target.id).enabled = !vieraJobs.value.find((element: any) => element.name == event.target.id).enabled
+    callback(vieraJobs.setting, vieraJobs.value)
+  }
+  const moogleJobChange = (event: any) => {
+    console.log(event.target.id);
+    moogleJobs.value.find((element: any) => element.name == event.target.id).enabled = !moogleJobs.value.find((element: any) => element.name == event.target.id).enabled
+    callback(moogleJobs.setting, moogleJobs.value)
+  }
+
+  humanJobs.value.forEach((element: any) => {
+    humanJobList.push(
+      <>
+        <input type="checkbox" id={element.name} checked={element.enabled} onChange={humanJobChange}/>
+        <label>{element.name}</label>
+        <br />
+      </>
+    );
+  });
+
+  bangaaJobs.value.forEach((element: any) => {
+    bangaaJobList.push(
+      <>
+        <input type="checkbox" id={element.name} checked={element.enabled} onChange={bangaaJobChange}/>
+        <label>{element.name}</label>
+        <br />
+      </>
+    );
+  });
+
+  nuMouJobs.value.forEach((element: any) => {
+    nuMouJobList.push(
+      <>
+        <input type="checkbox" id={element.name} checked={element.enabled} onChange={nuMouJobChange}/>
+        <label>{element.name}</label>
+        <br />
+      </>
+    );
+  });
+
+  vieraJobs.value.forEach((element: any) => {
+    vieraJobList.push(
+      <>
+        <input type="checkbox" id={element.name} checked={element.enabled} onChange={vieraJobChange}/>
+        <label>{element.name}</label>
+        <br />
+      </>
+    );
+  });
+
+  moogleJobs.value.forEach((element: any) => {
+    moogleJobList.push(
+      <>
+        <input type="checkbox" id={element.name} checked={element.enabled} onChange={moogleJobChange}/>
+        <label>{element.name}</label>
+        <br />
+      </>
+    );
+  });
+
   return (
     <div>
       <div className="jobList">
-        Options <br/>
+        Options <br />
         job Requirements:
-        <select name="requirements" id="requirements" >
+        <select
+          value={jobRequirements.value}
+          onChange={(element) => {
+            callback(jobRequirements.setting, element.target.value);
+          }}
+        >
           <option value="normal">Normal</option>
           <option value="unlocked">All Unlocked</option>
           <option value="locked">All Locked</option>
         </select>
-        <br/>
+        <br />
         abilities:
-        <select name="abilities" id="abilities">
+        <select
+          value={abilities.value}
+          onChange={(element) => {
+            callback(abilities.setting, element.target.value);
+          }}
+        >
           <option value="normal">Normal</option>
           <option value="random">Random</option>
           <option value="shuffled">Shuffled</option>
         </select>
-        <br/>
+        <br />
         MP Regen:
-        <select name="regen" id="regen">
+        <select
+          value={mpRegen.value}
+          onChange={(element) => {
+            callback(mpRegen.setting, element.target.value);
+          }}
+        >
           <option value="normal">Normal</option>
           <option value="precentage">Percentage</option>
         </select>
       </div>
       <div className="jobList">
         Human
-        <br/>
-        <input type="checkbox" id="humanSoldier" defaultChecked={true}/>
-        <label htmlFor="humanSoldier">Soldier</label>
-        <br/>
-        <input type="checkbox" id="humanPaladin" defaultChecked={true}/>
-        <label htmlFor="humanPaladin">Paladin</label>
-        <br/>
-        <input type="checkbox" id="humanFighter" defaultChecked={true}/>
-        <label htmlFor="humanFighter">Fighter</label>
-        <br/>
-        <input type="checkbox" id="humanThief" defaultChecked={true}/>
-        <label htmlFor="humanThief">Thief</label>
-        <br/>
-        <input type="checkbox" id="humanNinja" defaultChecked={true}/>
-        <label htmlFor="humanNinja">Ninja</label>
-        <br/>
-        <input type="checkbox" id="humanWhiteMage" defaultChecked={true}/>
-        <label htmlFor="humanWhiteMage">WhiteMage</label>
-        <br/>
-        <input type="checkbox" id="humanBlackMage" defaultChecked={true}/>
-        <label htmlFor="humanBlackMage">BlackMage</label>
-        <br/>
-        <input type="checkbox" id="humanIllusionist" defaultChecked={true}/>
-        <label htmlFor="humanIllusionist">Illusionist</label>
-        <br/>
-        <input type="checkbox" id="humanBlueMage" defaultChecked={true}/>
-        <label htmlFor="humanBlueMage">BlueMage</label>
-        <br/>
-        <input type="checkbox" id="humanArcher" defaultChecked={true}/>
-        <label htmlFor="humanArcher">Archer</label>
-        <br/>
-        <input type="checkbox" id="humanHunter" defaultChecked={true}/>
-        <label htmlFor="humanHunter">Hunter</label>
-
+        <br />
+        {humanJobList}
       </div>
       <div className="jobList">
         Bangaa
-        <br/>
-        <input type="checkbox" id="bangaaWarrior" defaultChecked={true}/>
-        <label htmlFor="bangaaWarrior">Warrior</label>
-        <br/>
-        <input type="checkbox" id="bangaaDragoon" defaultChecked={true}/>
-        <label htmlFor="bangaaDragoon">Dragoon</label>
-        <br/>
-        <input type="checkbox" id="bangaaDefender" defaultChecked={true}/>
-        <label htmlFor="bangaaDefender">Defender</label>
-        <br/>
-        <input type="checkbox" id="bangaaGladiator" defaultChecked={true}/>
-        <label htmlFor="bangaaGladiator">Gladiator</label>
-        <br/>
-        <input type="checkbox" id="bangaaWhiteMonk" defaultChecked={true}/>
-        <label htmlFor="bangaaWhiteMonk">WhiteMonk</label>
-        <br/>
-        <input type="checkbox" id="bangaaBishop" defaultChecked={true}/>
-        <label htmlFor="bangaaBishop">Bishop</label>
-        <br/>
-        <input type="checkbox" id="bangaaTemplar" defaultChecked={true}/>
-        <label htmlFor="bangaaTemplar">Templar</label>
+        <br />
+        {bangaaJobList}
       </div>
       <div className="jobList">
         Nu Mou
-        <br/>
-        <input type="checkbox" id="numouWhiteMage" defaultChecked={true}/>
-        <label htmlFor="numouWhiteMage">WhiteMage</label>
-        <br/>
-        <input type="checkbox" id="numouBlackMage" defaultChecked={true}/>
-        <label htmlFor="numouBlackMage">BlackMage</label>
-        <br/>
-        <input type="checkbox" id="numouTimeMage" defaultChecked={true}/>
-        <label htmlFor="numouTimeMage">TimeMage</label>
-        <br/>
-        <input type="checkbox" id="numouIllusionist" defaultChecked={true}/>
-        <label htmlFor="numouIllusionist">Illusionist</label>
-        <br/>
-        <input type="checkbox" id="numouAlchemist" defaultChecked={true}/>
-        <label htmlFor="numouAlchemist">Alchemist</label>
-        <br/>
-        <input type="checkbox" id="numouBestmaster" defaultChecked={true}/>
-        <label htmlFor="numouBestmaster">Beastmaster</label>
-        <br/>
-        <input type="checkbox" id="numouMorpher" defaultChecked={true}/>
-        <label htmlFor="numouMorpher">Morpher</label>
+        <br />
+        {nuMouJobList}
       </div>
       <div className="jobList">
         Viera
-        <br/>
-        <input type="checkbox" id="vieraFencer" defaultChecked={true}/>
-        <label htmlFor="vieraFencer">Fencer</label>
-        <br/>
-        <input type="checkbox" id="vieraElementalist" defaultChecked={true}/>
-        <label htmlFor="vieraElementalist">Elementalist</label>
-        <br/>
-        <input type="checkbox" id="vieraRegMage" defaultChecked={true}/>
-        <label htmlFor="vieraRegMage">RegMage</label>
-        <br/>
-        <input type="checkbox" id="vieraWhiteMage" defaultChecked={true}/>
-        <label htmlFor="vieraWhiteMage">WhiteMage</label>
-        <br/>
-        <input type="checkbox" id="vieraSummoner" defaultChecked={true}/>
-        <label htmlFor="vieraSummoner">Summoner</label>
-        <br/>
-        <input type="checkbox" id="vieraArcher" defaultChecked={true}/>
-        <label htmlFor="vieraArcher">Archer</label>
-        <br/>
-        <input type="checkbox" id="vieraAssassin" defaultChecked={true}/>
-        <label htmlFor="vieraAssassin">Assassin</label>
-        <br/>
-        <input type="checkbox" id="vieraSniper" defaultChecked={true}/>
-        <label htmlFor="vieraSniper">Sniper</label>
+        <br />
+        {vieraJobList}
       </div>
       <div className="jobList">
         Moogle
-        <br/>
-        <input type="checkbox" id="moogleAnimist" defaultChecked={true}/>
-        <label htmlFor="moogleAnimist">Animist</label>
-        <br/>
-        <input type="checkbox" id="moogleMogKnight" defaultChecked={true}/>
-        <label htmlFor="moogleMogKnight">MogKnight</label>
-        <br/>
-        <input type="checkbox" id="moogleGunner" defaultChecked={true}/>
-        <label htmlFor="moogleGunner">Gunner</label>
-        <br/>
-        <input type="checkbox" id="moogleThief" defaultChecked={true}/>
-        <label htmlFor="moogleThief">Thief</label>
-        <br/>
-        <input type="checkbox" id="moogleJuggler" defaultChecked={true}/>
-        <label htmlFor="moogleJuggler">Juggler</label>
-        <br/>
-        <input type="checkbox" id="moogleGadgeteer" defaultChecked={true}/>
-        <label htmlFor="moogleGadgeteer">Gadgeteer</label>
+        <br />
+        {moogleJobList}
       </div>
     </div>
   );

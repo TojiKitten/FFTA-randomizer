@@ -6,15 +6,19 @@ interface props {
 }
 
 export const ItemSettings = ({globalState, callback}:props) => {
+  let shopItems = globalState.find(element => element.setting==="shopitems")!;
   return (
     <div>
       shop Items:
-      <select name="shopitems" id="shopitems">
-        <option value="Default">Default</option>
-        <option value="Limited">Limited</option>
-        <option value="Random">Random</option>
-        <option value="All">All</option>
-        <option value="None">None</option>
+      <select value={shopItems.value} onChange={(event) => {
+        callback(shopItems.setting, event.target.value);
+      }
+      }>
+        <option value="default">Default</option>
+        <option value="limited">Limited</option>
+        <option value="random">Random</option>
+        <option value="all">All</option>
+        <option value="none">None</option>
       </select>
     </div>
   );
