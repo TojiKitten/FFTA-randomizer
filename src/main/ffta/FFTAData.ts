@@ -206,6 +206,7 @@ export class FFTAData {
     this.rewardItemSets = this.initializeRewardItemSets();
   }
 
+  // Verify nothing breaks by Open and Save in Randomizer, then data compare in hex editor to find 0 changes
   writeData(): void {
     this.items.forEach((item) => {
       this.rom.set(item.properties, item.memory);
@@ -267,6 +268,7 @@ export class FFTAData {
     });
   }
 
+  // Initializers
   initializeItemNames(): Array<string> {
     let names: Array<string> = [];
     let dataType = FFTAMap.PointerTables.ItemNames;
@@ -550,6 +552,24 @@ export class FFTAData {
       rewardItemSets.push(newItemSet);
     }
     return rewardItemSets;
+  }
+
+  // Hacks
+  scaleMissionsHighest()
+  {
+    this.formations.forEach((formation, i) => {
+      // Don't apply this to starting party
+      if(i !== 0){
+        formation.units.forEach(unit =>{
+          unit.setLevel(0);
+        })
+      } 
+    })
+
+    // Change ASM to use highest member level
+    this.rom.set([0x50, 0x79, 0xA0, 0x42], 0xCA088);
+    this.rom.set([0xDD, 0x04, 0x1C, 0x00, 0x00, 0x00,0x00], 0xCA08D);
+    this.rom.set([0x20, 0x1C], 0xCA0AA);
   }
 }
 

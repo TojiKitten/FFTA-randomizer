@@ -8,6 +8,7 @@ import * as fs from "fs";
 
 import "../../public/favicon-96x96.png";
 import { FFTAData } from "./ffta/FFTAData";
+import * as RandomizerOptions from "./ffta/RandomizerOptions";
 
 const ipc = require("electron").ipcMain;
 
@@ -84,7 +85,7 @@ app.on("activate", () => {
 
 //TODO filecontent placeholder
 let fftaData: FFTAData;
-
+let randomizerOptions: RandomizerOptions.iRandomizerOptions = RandomizerOptions.defaultRandomizer();
 //
 //Open File Handling
 //
@@ -130,8 +131,21 @@ ipc.on("save-file-dialog", function (event, options: any) {
 function savefile(filepath: any) {
   //check if dialog got cancelled
   if (filepath) {
+    
+    RandomizerOptions.randomizeFFTA(fftaData, randomizerOptions);
     fftaData.writeData();
     fs.writeFileSync(filepath, fftaData.rom, null);
     //console.log("file: " + filepath + " written");
   }
 }
+
+//
+// Level Scaling
+//
+ipc.on("level-scale-change", function(event, options:any) {
+  // Unskip this to force "Highest" option to be saved. Proof of concept
+  //Object.defineProperty(randomizerOptions, "missionScaling", "Highest");
+})
+
+
+

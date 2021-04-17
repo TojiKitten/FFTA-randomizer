@@ -27,4 +27,9 @@ export class FFTAUnit implements FFTAObject {
     this.memory = memory;
     this.properties = properties;
   }
+
+  setLevel(level:number)
+  {
+    this.properties.set([level], OFFSET.UNITLEVEL);
+  }
 }
