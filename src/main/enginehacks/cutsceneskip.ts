@@ -4,8 +4,8 @@ type Codeinject = {
 };
 
 const skipTutorial: Codeinject[] = [
-  { offset: 0xa19975, data: [0x04] }, //random byte write?
-  { offset: 0x9a7430, data: [0x1d, 0x02, 0x0d, 0x1c, 0x09, 0x00, 0x17, 0x02] }, //skip snowball
+  { offset: 0xa19975, data: [0x04] }, //Change the game start to a different event (Ivalice Transformation)
+  { offset: 0x9a7430, data: [0x1d, 0x02, 0x0d, 0x1c, 0x09, 0x00, 0x17, 0x02] }, // Exit Ivalice Transformation
   {
     offset: 0x9a797c,
     data: [
@@ -34,7 +34,7 @@ const skipTutorial: Codeinject[] = [
 ];
 
 const NoSkipTutorial: Codeinject[] = [
-  { offset: 0x9a63a2, data: [0x1d, 0x02, 0x0d, 0x1c, 0x09, 0x00, 0x17, 0x02] },
+  { offset: 0x9a63a2, data: [0x1d, 0x02, 0x0d, 0x1c, 0x09, 0x00, 0x17, 0x02] }, // Exit Ivalice Transformation after Snowball
   {
     offset: 0x9a7fbe,
     data: [
@@ -59,7 +59,7 @@ const NoSkipTutorial: Codeinject[] = [
       0x17,
       0x05,
     ],
-  },
+  }, // Skip End of Lizard Men
 ];
 
 const skipEverythingElse: Codeinject[] = [
@@ -153,8 +153,10 @@ const skipEverythingElse: Codeinject[] = [
   // Over the Hill Skip
   { offset: 0x9b5eef, data: [0x1a, 0x1b, 0x02, 0x01, 0x1d, 0x1e, 0x17, 0x05] },
 ];
+
 export function skipCutscenes(romData: Uint8Array, skipCutscene: boolean): Uint8Array {
   let newRomData = romData;
+  // Depending on if we skip the tutorial or not, set place to warp
   if (skipCutscene) {
     skipTutorial.forEach((element) => {
       newRomData.set(element.data, element.offset);
@@ -164,6 +166,7 @@ export function skipCutscenes(romData: Uint8Array, skipCutscene: boolean): Uint8
       newRomData.set(element.data, element.offset);
     });
   }
+  // After tutorial, everything is the same
   skipEverythingElse.forEach(element => {
     newRomData.set(element.data, element.offset);
   })

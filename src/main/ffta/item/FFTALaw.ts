@@ -1,33 +1,16 @@
-import { FFTAObject } from "../FFTAData";
+import { FFTAObject } from "../FFTAObject";
 
 const enum OFFSET {
-  NAME = 0x00,
-  REQUIREMENTS = 0x30,
 }
 
-export class FFTALaw implements FFTAObject {
-  properties: Uint8Array;
-  memory = -1;
-  displayName = "";
-  allowed = true;
-
+export class FFTALaw extends FFTAObject {
   constructor(memory: number, name: string, properties: Uint8Array) {
-    // Save FFTAObject Properties
-    this.memory = memory;
-    this.properties = properties;
-    this.displayName = name;
+    super(memory, properties, name);
   }
 }
 
-export class FFTALawSet implements FFTAObject {
-  properties: Uint8Array;
-  memory = -1;
-  displayName = "";
-  allowed = true;
-
+export class FFTALawSet extends FFTAObject {
   constructor(memory: number, properties: Uint8Array) {
-    // Save FFTAObject Properties
-    this.memory = memory;
-    this.properties = properties;
+    super(memory, properties, undefined);
   }
 }

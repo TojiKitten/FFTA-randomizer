@@ -6,6 +6,13 @@ export type iRandomizerOptions = Record<string, any>;
 export function randomizeFFTA(fftaData: FFTAData, options: iRandomizerOptions) {
   fftaData.handleMissionScaling(options["missionScaling"], options["missionScalingValue"]);
   fftaData.handleCutScene(options["cutscenes"]);
+  fftaData.handleAPBoost(options["apBoost"]);
+  fftaData.handleStartingGold(options["startingGold"]);
+  fftaData.handleFrostyBoost(options["frostyMageBoost"]);
+  fftaData.handleNoJudgeTurn(options["noJudgeTurn"]);
+  fftaData.handlePercentageMP(options["mpRegen"]);
+  fftaData.handleJobRequirements(options["jobRequirements"]);
+  fftaData.handleLawOptions(options["laws"]);
 }
 
 export default iRandomizerOptions;

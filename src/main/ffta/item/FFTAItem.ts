@@ -1,4 +1,4 @@
-import { FFTAObject } from "../FFTAData";
+import { FFTAObject } from "../FFTAObject";
 import * as FFTAUtils from "../FFTAUtils";
 
 const enum OFFSET {
@@ -42,12 +42,8 @@ const enum ITEMFLAG {
 }
 
 // ==== Class ====
-export class FFTAItem implements FFTAObject {
+export class FFTAItem extends FFTAObject {
   itemID = -1;
-  properties: Uint8Array;
-  memory = -1;
-  displayName = "";
-  allowed = false;
 
   constructor(
     memory: number,
@@ -55,36 +51,33 @@ export class FFTAItem implements FFTAObject {
     itemName: string,
     properties: Uint8Array
   ) {
-    // Save FFTAObject Properties
-    this.memory = memory;
+    super(memory, properties, itemName);
+    // Save Item Specific Properties
     this.itemID = id;
-    this.displayName = itemName;
-    this.properties = properties;
-    this.allowed = true;
   }
 
   setBuyPrice(value: number) {
-    this.setProperty(OFFSET.BUY, value);
+    this.setProperty(OFFSET.BUY, 2, value);
   }
 
   setSellPrice(value: number) {
-    this.setProperty(OFFSET.SELL, value);
+    this.setProperty(OFFSET.SELL, 2, value);
   }
 
   setType(value: number) {
-    this.setProperty(OFFSET.TYPE, value);
+    this.setProperty(OFFSET.TYPE, 1, value);
   }
 
   setElement(value: number) {
-    this.setProperty(OFFSET.ELEMENT, value);
+    this.setProperty(OFFSET.ELEMENT, 1, value);
   }
 
   setRange(value: number) {
-    this.setProperty(OFFSET.RANGE, value);
+    this.setProperty(OFFSET.RANGE, 1, value);
   }
 
   setWorn(value: number) {
-    this.setProperty(OFFSET.WORN, value);
+    this.setProperty(OFFSET.WORN, 1, value);
   }
 
   setDoubleSword(value: 0 | 1) {
@@ -120,55 +113,55 @@ export class FFTAItem implements FFTAObject {
   }
 
   setNono(value: number) {
-    this.setProperty(OFFSET.NONO, value);
+    this.setProperty(OFFSET.NONO, 1, value);
   }
 
   setAttack(value: number) {
-    this.setProperty(OFFSET.ATTACK, value);
+    this.setProperty(OFFSET.ATTACK, 1, value);
   }
 
   setDefense(value: number) {
-    this.setProperty(OFFSET.DEFENSE, value);
+    this.setProperty(OFFSET.DEFENSE, 1, value);
   }
 
   setPower(value: number) {
-    this.setProperty(OFFSET.POWER, value);
+    this.setProperty(OFFSET.POWER, 1, value);
   }
 
   setResistance(value: number) {
-    this.setProperty(OFFSET.RESISTANCE, value);
+    this.setProperty(OFFSET.RESISTANCE, 1, value);
   }
 
   setSpeed(value: number) {
-    this.setProperty(OFFSET.SPEED, value);
+    this.setProperty(OFFSET.SPEED, 1, value);
   }
 
   setEvade(value: number) {
-    this.setProperty(OFFSET.EVADE, value);
+    this.setProperty(OFFSET.EVADE, 1, value);
   }
 
   setMove(value: number) {
-    this.setProperty(OFFSET.MOVE, value);
+    this.setProperty(OFFSET.MOVE, 1, value);
   }
 
   setJump(value: number) {
-    this.setProperty(OFFSET.JUMP, value);
+    this.setProperty(OFFSET.JUMP, 1, value);
   }
 
   setEffect1(value: number) {
-    this.setProperty(OFFSET.EFFECT1, value);
+    this.setProperty(OFFSET.EFFECT1, 1, value);
   }
 
   setEffect2(value: number) {
-    this.setProperty(OFFSET.EFFECT2, value);
+    this.setProperty(OFFSET.EFFECT2, 1, value);
   }
 
   setEffect3(value: number) {
-    this.setProperty(OFFSET.EFFECT3, value);
+    this.setProperty(OFFSET.EFFECT3, 1, value);
   }
 
   setAbilitySet(value: number) {
-    this.setProperty(OFFSET.ABILITYSET, value);
+    this.setProperty(OFFSET.ABILITYSET, 1, value);
   }
 
   private setFlag(flag: ITEMFLAG, value: 0 | 1): void {
@@ -178,31 +171,11 @@ export class FFTAItem implements FFTAObject {
     ]);
     this.properties.set(newFlags, OFFSET.FLAGS);
   }
-
-  private setProperty(offset: OFFSET, value: number): void {
-    // Should be using setFlag()
-    if (offset != OFFSET.FLAGS) {
-      let newValue;
-      // These are Shorts, need to conver the number to a Uint8Array with correct endianness
-      if (offset === OFFSET.BUY || offset === OFFSET.SELL) {
-        this.properties.set(FFTAUtils.getShortUint8Array(value, true), offset);
-      } else {
-        this.properties.set(new Uint8Array([value]), offset);
-      }
-    }
-  }
 }
 
-export class FFTARewardItemSet implements FFTAObject {
-  properties: Uint8Array;
-  memory = -1;
-  displayName = "";
-  allowed = true;
-
+export class FFTARewardItemSet extends FFTAObject {
   constructor(memory: number, properties: Uint8Array) {
-    // Save FFTAObject Properties
-    this.memory = memory;
-    this.properties = properties;
+    super(memory, properties, undefined);
   }
 }
 

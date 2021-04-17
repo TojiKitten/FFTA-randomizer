@@ -1,4 +1,4 @@
-import { FFTAObject } from "../FFTAData";
+import { FFTAObject } from "../FFTAObject";
 
 const enum OFFSET {
   TYPE = 0x00,
@@ -16,16 +16,9 @@ const enum OFFSET {
   UNITSUPPORT = 0x29,
 }
 
-export class FFTAUnit implements FFTAObject {
-  properties: Uint8Array;
-  memory = -1;
-  displayName = "";
-  allowed = true;
-
+export class FFTAUnit extends FFTAObject {
   constructor(memory: number, properties: Uint8Array) {
-    // Save FFTAObject Properties
-    this.memory = memory;
-    this.properties = properties;
+   super(memory, properties, undefined);
   }
 
   setLevel(level:number)

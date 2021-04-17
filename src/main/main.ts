@@ -142,7 +142,7 @@ function savefile(filepath: any) {
 //
 
 ipc.on("set-settings", function (event, options: Array<{ setting: string; value: any }>) {
-  console.log(options);
+  //console.log(options);
   options.forEach((element) => {
     randomizerOptions[element.setting] = element.value;
   });

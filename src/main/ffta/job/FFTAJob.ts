@@ -1,4 +1,4 @@
-import { FFTAObject } from "../FFTAData";
+import { FFTAObject } from "../FFTAObject";
 
 const enum OFFSET {
   NAME = 0x00,
@@ -7,16 +7,13 @@ const enum OFFSET {
   REQUIREMENTS = 0x30,
 }
 
-export class FFTAJob implements FFTAObject {
-  properties: Uint8Array;
-  memory = -1;
-  displayName = "";
-  allowed = true;
-
+export class FFTAJob extends FFTAObject {
   constructor(memory: number, name: string, properties: Uint8Array) {
-    // Save FFTAObject Properties
-    this.memory = memory;
-    this.properties = properties;
-    this.displayName = name;
+    super(memory, properties, name);
+  }
+
+  setRequirements(requirementsID:number)
+  {
+    this.setProperty(OFFSET.REQUIREMENTS, 1, requirementsID);
   }
 }
