@@ -72,6 +72,7 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
         type="Range"
         min="0"
         max="500"
+        step="10"
         value={apBoost.value}
         onChange={(event) => {
           callback("apBoost", event.target.value);
