@@ -1,35 +1,35 @@
 import * as React from "react";
 
 type prop = {
-  state: string;
+  active: string;
   callback: Function;
 };
 
 //
 //TODO: REFACTOR!!!!!
 //
-export const NavBar = ({ state, callback }: prop) => {
+export const NavBar = ({ active, callback }: prop) => {
   let btnGeneral = (
-    <button className="navBar-button" onClick={() => callback("General")}>
+    <button className="navBar-button" onClick={() => callback("currentPage", "General")}>
       General
     </button>
   );
   let btnParty = (
-    <button className="navBar-button" onClick={() => callback("Party")}>
+    <button className="navBar-button" onClick={() => callback("currentPage", "Party")}>
       Party
     </button>
   );
   let btnJobs = (
-    <button className="navBar-button" onClick={() => callback("Jobs")}>
+    <button className="navBar-button" onClick={() => callback("currentPage", "Jobs")}>
       Jobs
     </button>
   );
   let btnItems = (
-    <button className="navBar-button" onClick={() => callback("Items")}>
+    <button className="navBar-button" onClick={() => callback("currentPage", "Items")}>
       Items
     </button>
   );
-  switch (state) {
+  switch (active) {
     case "General": {
       btnGeneral = <button className="navBar-button-active">General</button>;
       break;

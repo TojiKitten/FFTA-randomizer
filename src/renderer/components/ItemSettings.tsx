@@ -1,6 +1,11 @@
 import * as React from "react";
 
-export const ItemSettings = () => {
+interface props {
+  globalState: Array<{ setting: string; value: any }>;
+  callback: Function;
+}
+
+export const ItemSettings = ({globalState, callback}:props) => {
   return (
     <div>
       shop Items:

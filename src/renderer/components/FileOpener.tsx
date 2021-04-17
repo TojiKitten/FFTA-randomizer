@@ -3,6 +3,10 @@ import * as React from "react";
 // @ts-ignore
 const { api } = window;
 
+interface props{
+  globalState: Array<{setting :string,value :string }>;
+}
+
 export const FileOpener = () => {
   return (
     <button
