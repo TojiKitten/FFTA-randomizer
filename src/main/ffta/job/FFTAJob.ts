@@ -2,6 +2,8 @@ import { FFTAObject } from "../FFTAData";
 
 const enum OFFSET {
   NAME = 0x00,
+  ANIMATIONTYPE = 0x06, // ?? Might have to do with offsets available
+  ANIMATIONS = 0x07,
   REQUIREMENTS = 0x30,
 }
 

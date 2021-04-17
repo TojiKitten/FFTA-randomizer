@@ -31,9 +31,10 @@ type RaceJobSpaces = {
 };
 
 type StringTableSpaces = {
-  readonly Items: MemorySpace;
-  readonly Abilities: MemorySpace;
-  readonly Missions: MemorySpace;
+  readonly ItemNames: MemorySpace;
+  readonly AbilitityNames: MemorySpace;
+  readonly MissionNames: MemorySpace;
+  readonly Animations: MemorySpace;
 };
 
 type RaceMap<Type> = {
@@ -45,7 +46,7 @@ type RaceMap<Type> = {
 };
 
 type FFTAMemoryMap = {
-  readonly StringTables: StringTableSpaces;
+  readonly PointerTables: StringTableSpaces;
   readonly RaceAbilities: RaceAbilitySpaces;
   readonly RaceJobs: RaceJobSpaces;
   readonly Items: MemorySpace;
@@ -111,21 +112,26 @@ const FFTAMap: FFTAMemoryMap = {
       length: 8,
     },
   },
-  StringTables: {
-    Items: {
+  PointerTables: {
+    ItemNames: {
       offset: 0x526680,
       byteSize: 0x4,
       length: 753,
     },
-    Abilities: {
+    AbilitityNames: {
       offset: 0x5567f0,
       byteSize: 0x4,
       length: 767,
     },
-    Missions: {
+    MissionNames: {
       offset: 0x55a650,
       byteSize: 0x4,
       length: 396,
+    },
+    Animations: {
+      offset: 0x390e44,
+      byteSize: 0x4,
+      length: 248,
     },
   },
   Items: {
@@ -175,6 +181,7 @@ export class FFTAData {
   itemJobNames: Array<string>;
   abilityNames: Array<string>;
   missionNames: Array<string>;
+  animations: Array<Array<number>>;
   formations: Array<FFTAFormation>;
   missions: Array<FFTAMission>;
   raceAbilities: RaceMap<FFTAAbility>;
@@ -188,6 +195,7 @@ export class FFTAData {
     this.itemJobNames = this.initializeItemNames();
     this.abilityNames = this.initializeAbilityNames();
     this.missionNames = this.initializeMissionNames();
+    this.animations = this.initializeAnimations();
     this.items = this.initializeItems();
     this.formations = this.initializeFormations();
     this.missions = this.initializeMissions();
@@ -198,9 +206,70 @@ export class FFTAData {
     this.rewardItemSets = this.initializeRewardItemSets();
   }
 
+  writeData(): void {
+    this.items.forEach((item) => {
+      this.rom.set(item.properties, item.memory);
+    });
+
+    this.formations.forEach((formation) => {
+      this.rom.set(formation.properties, formation.memory);
+      formation.units.forEach((unit) => {
+        this.rom.set(unit.properties, unit.memory);
+      });
+    });
+
+    this.missions.forEach((mission) => {
+      this.rom.set(mission.properties, mission.memory);
+    });
+
+    this.raceAbilities.Human.forEach((raceAbility) => {
+      this.rom.set(raceAbility.properties, raceAbility.memory);
+    });
+    this.raceAbilities.Bangaa.forEach((raceAbility) => {
+      this.rom.set(raceAbility.properties, raceAbility.memory);
+    });
+    this.raceAbilities.NuMou.forEach((raceAbility) => {
+      this.rom.set(raceAbility.properties, raceAbility.memory);
+    });
+    this.raceAbilities.Viera.forEach((raceAbility) => {
+      this.rom.set(raceAbility.properties, raceAbility.memory);
+    });
+    this.raceAbilities.Moogle.forEach((raceAbility) => {
+      this.rom.set(raceAbility.properties, raceAbility.memory);
+    });
+
+    this.abilities.forEach((ability) => {
+      this.rom.set(ability.properties, ability.memory);
+    });
+
+    this.jobs.Human.forEach((job) => {
+      this.rom.set(job.properties, job.memory);
+    });
+    this.jobs.Bangaa.forEach((job) => {
+      this.rom.set(job.properties, job.memory);
+    });
+    this.jobs.NuMou.forEach((job) => {
+      this.rom.set(job.properties, job.memory);
+    });
+    this.jobs.Viera.forEach((job) => {
+      this.rom.set(job.properties, job.memory);
+    });
+    this.jobs.Moogle.forEach((job) => {
+      this.rom.set(job.properties, job.memory);
+    });
+
+    this.lawSets.forEach((lawSet) => {
+      this.rom.set(lawSet.properties, lawSet.memory);
+    });
+
+    this.rewardItemSets.forEach((rewardSet) => {
+      this.rom.set(rewardSet.properties, rewardSet.memory);
+    });
+  }
+
   initializeItemNames(): Array<string> {
     let names: Array<string> = [];
-    let dataType = FFTAMap.StringTables.Items;
+    let dataType = FFTAMap.PointerTables.ItemNames;
 
     for (var i = 0; i < dataType.length; i++) {
       let memory = dataType.offset + dataType.byteSize * i;
@@ -226,7 +295,7 @@ export class FFTAData {
 
   initializeAbilityNames(): Array<string> {
     let names: Array<string> = [];
-    let dataType = FFTAMap.StringTables.Abilities;
+    let dataType = FFTAMap.PointerTables.AbilitityNames;
 
     for (var i = 0; i < dataType.length; i++) {
       let memory = dataType.offset + dataType.byteSize * i;
@@ -250,7 +319,7 @@ export class FFTAData {
 
   initializeMissionNames(): Array<string> {
     let names: Array<string> = [];
-    let dataType = FFTAMap.StringTables.Missions;
+    let dataType = FFTAMap.PointerTables.MissionNames;
 
     for (var i = 0; i < dataType.length; i++) {
       let memory = dataType.offset + dataType.byteSize * i;
@@ -270,6 +339,49 @@ export class FFTAData {
       );
     }
     return names;
+  }
+
+  initializeAnimations(): Array<Array<number>> {
+    let animations: Array<Array<number>> = [];
+    let dataType = FFTAMap.PointerTables.Animations;
+    let animationLookup: Array<number> = [];
+
+    // Get an array of all of the pointers to the array of animation pointers for a given unit/job
+    for (var i = 0; i < dataType.length; i++) {
+      let memory = dataType.offset + dataType.byteSize * i;
+      let encodedPointer: Uint8Array = this.rom.slice(
+        memory,
+        memory + dataType.byteSize
+      );
+      animationLookup.push(FFTAUtils.getLittleEndianAddress(encodedPointer));
+    }
+
+    // For each pointer, add the array of animation pointers to the overall list
+    animationLookup.forEach((pointer, i) => {
+      let unitAnimations: Array<number> = [];
+      let animationCount: number;
+
+      // Doing this, since the last pointer has no offset to reference. Manually verified where it ends
+      if (i + 1 > animationLookup.length - 1) {
+        animationCount = (0x390e44 - pointer) / dataType.byteSize;
+      } else if (pointer == animationLookup[i + 1]) {
+        animationCount = 0x1;
+      } else {
+        animationCount = (animationLookup[i + 1] - pointer) / dataType.byteSize;
+      }
+
+      // For each address in this range, save it to an array
+      for (var i = 0; i < animationCount; i++) {
+        let currentAddress = pointer + dataType.byteSize * i;
+        let encodedPointer: Uint8Array = this.rom.slice(
+          currentAddress,
+          currentAddress + dataType.byteSize
+        );
+        unitAnimations.push(FFTAUtils.getLittleEndianAddress(encodedPointer));
+      }
+      animations.push(unitAnimations);
+    });
+    return animations;
   }
 
   initializeItems(): Array<FFTAItem> {
@@ -438,12 +550,6 @@ export class FFTAData {
       rewardItemSets.push(newItemSet);
     }
     return rewardItemSets;
-  }
-
-  writeData(): void {
-    this.items.forEach((item) => {
-      this.rom.set(item.properties, item.memory);
-    });
   }
 }
 
