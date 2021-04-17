@@ -1,12 +1,20 @@
 import * as React from "react";
+//window.api gets available at runtime so we can ignore that error
+// @ts-ignore
+const { api } = window;
 
 export const GeneralSettings = () => {
   return (
     <div>
       Story Enemy Levels:
-      <select id="enemyLevel">
+      <select
+        onChange={() => {
+          api.send("level-scale-change", "null");
+        }}
+        id="enemyLevel"
+      >
         <option value="Normal">Normal</option>
-        <option value="Modified">Modified</option>
+        <option value="Lerp">Modified</option>
         <option value="Average">Scaled - Average</option>
         <option value="Highest">Scaled - Highest</option>
       </select>

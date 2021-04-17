@@ -2,10 +2,7 @@ import { FFTAObject } from "../FFTAData";
 
 const enum OFFSET {
   NAME = 0x00,
-  DESCRIPTION = 0x02,
-  ID = 0x04,
-  TYPE = 0x06,
-  COST = 0x07,
+  DESCRIPTION = 0x02
 }
 
 export class FFTAAbility implements FFTAObject {

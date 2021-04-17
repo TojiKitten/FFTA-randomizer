@@ -28,19 +28,24 @@ export class FFTAFormation implements FFTAObject {
     // Save FFTAObject Properties
     this.memory = memory;
     this.properties = properties;
+    
     this.unitStart = FFTAUtils.getLittleEndianAddress(
-      properties.slice(OFFSET.MEMBERSADDRESS, OFFSET.MEMBERSADDRESS + 3)
+      properties.slice(OFFSET.MEMBERSADDRESS, OFFSET.MEMBERSADDRESS + 4)
     );
-    this.unitEnd = this.unitStart + UNITSIZE * properties[OFFSET.MEMBERSSIZE];
+    this.unitEnd = this.unitStart + UNITSIZE * properties[OFFSET.MEMBERSSIZE];    
   }
 
   loadUnits(unitBuffer: Uint8Array) {
-    for (var i = 0; i < OFFSET.MEMBERSSIZE; i++) {
+  
+    let unitAddress = FFTAUtils.getLittleEndianAddress(
+      this.properties.slice(OFFSET.MEMBERSADDRESS, OFFSET.MEMBERSADDRESS + 3)
+    );
+     
+    for (var i = 0; i < this.properties[OFFSET.MEMBERSSIZE]; i++) {
       let newUnit = new FFTAUnit(
-        this.properties[OFFSET.MEMBERSADDRESS + UNITSIZE * i],
+        unitAddress + (UNITSIZE * i),
         unitBuffer.slice(UNITSIZE * i, UNITSIZE * (i + 1))
       );
-
       this.units.push(newUnit);
     }
   }
