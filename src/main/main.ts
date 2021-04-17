@@ -18,7 +18,7 @@ function createWindow(): void {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     title: "FFTA Randomizer",
-    icon: path.join(__dirname,"public", "favicon-96x96.png"),
+    icon: path.join(__dirname, "public", "favicon-96x96.png"),
     width: 900,
     height: 680,
     maxHeight: 1080,
@@ -26,7 +26,7 @@ function createWindow(): void {
     minHeight: 400,
     minWidth: 400,
     backgroundColor: "#FFFFFF",
-    resizable: false,
+    //resizable: false,
     webPreferences: {
       nodeIntegration: false,
       enableRemoteModule: false,
@@ -35,7 +35,7 @@ function createWindow(): void {
     },
   });
 
-  mainWindow.removeMenu();
+  //mainWindow.removeMenu();
   // and load the index.html of the app.
   mainWindow
     .loadURL(
@@ -108,8 +108,7 @@ function openfile(files: any) {
     let filepath = files[0];
     let filecontent = fs.readFileSync(filepath);
     fftaData = new FFTAData(filecontent);
-    mainWindow!.webContents.send("FileName-Change", { filepath: filepath});
-    //console.log(filecontent);
+    mainWindow!.webContents.send("FileName-Change", { filepath: filepath });
   }
 }
 
@@ -131,21 +130,19 @@ ipc.on("save-file-dialog", function (event, options: any) {
 function savefile(filepath: any) {
   //check if dialog got cancelled
   if (filepath) {
-    
     RandomizerOptions.randomizeFFTA(fftaData, randomizerOptions);
     fftaData.writeData();
     fs.writeFileSync(filepath, fftaData.rom, null);
-    //console.log("file: " + filepath + " written");
   }
 }
 
 //
-// Level Scaling
+// get and set settings from frontend
 //
-ipc.on("level-scale-change", function(event, options:any) {
-  // Unskip this to force "Highest" option to be saved. Proof of concept
-  //Object.defineProperty(randomizerOptions, "missionScaling", "Highest");
-})
 
-
-
+ipc.on("set-settings", function (event, options: Array<{ setting: string; value: any }>) {
+  console.log(options);
+  options.forEach((element) => {
+    randomizerOptions[element.setting] = element.value;
+  });
+});

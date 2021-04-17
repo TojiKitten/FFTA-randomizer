@@ -3,11 +3,17 @@ import * as React from "react";
 // @ts-ignore
 const { api } = window;
 
-export const FileSaver = () => {
+
+interface props{
+  globalState: Array<{setting :string,value :any }>;
+}
+
+export const FileSaver = ({globalState}:props) => {
   return (
     <button
       className="file-button"
       onClick={() => {
+        api.send("set-settings", globalState);
         api.send("save-file-dialog", "null");
       }}
     >

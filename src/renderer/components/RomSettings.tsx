@@ -4,62 +4,63 @@ import { GeneralSettings } from "./GeneralSettings";
 import { PartySettings } from "./PartySettings";
 import { JobSettings } from "./JobSettings";
 import { ItemSettings } from "./ItemSettings";
-//window.api gets available at runtime so we can ignore that error
-// @ts-ignore
-const { api } = window;
 
-export const RomSettings = () => {
-  const [state, setState] = React.useState("noRom");
 
-  api.receive("FileName-Change", function (msg: any) {
-    console.log("rom loaded");
-    setState("General");
-  });
 
-  switch (state) {
-    case "noRom": {
-      return (
-        <div className="div-RomSettings">
-          <h1>no Rom loaded</h1>
-        </div>
-      );
-    }
+interface props {
+  globalState: Array<{ setting: string; value: any }>;
+  callback: Function;
+}
+
+export const RomSettings = ({globalState, callback}: props) => {
+  let isRom = JSON.parse(globalState.find(element => element.setting === "romLoaded")!.value);
+  let state = globalState.find(element => element.setting === "currentPage")
+
+  if (!isRom){
+    return (
+      <div className="div-RomSettings">
+        No Rom Loaded!
+      </div>
+    );
+  }
+  
+  switch (state!.value) {
     case "General": {
       return (
         <div className="div-RomSettings">
-          <NavBar state={state} callback={setState} />
-          <GeneralSettings />
+          <NavBar active="General" callback={callback} />
+          <GeneralSettings globalState={globalState} callback={callback}/>
         </div>
       );
     }
     case "Party": {
       return (
         <div className="div-RomSettings">
-          <NavBar state={state} callback={setState} />
-          <PartySettings />
+          <NavBar active="Party" callback={callback} />
+          <PartySettings globalState={globalState} callback={callback}/>
         </div>
       );
     }
     case "Jobs": {
       return (
         <div className="div-RomSettings">
-          <NavBar state={state} callback={setState} />
-          <JobSettings />
+          <NavBar active="Jobs" callback={callback} />
+          <JobSettings globalState={globalState} callback={callback}/>
         </div>
       );
     }
     case "Items": {
       return (
         <div className="div-RomSettings">
-          <NavBar state={state} callback={setState} />
-          <ItemSettings />
+          <NavBar active="Items" callback={callback} />
+          <ItemSettings globalState={globalState} callback={callback}/>
         </div>
       );
     }
     default: {
       return (
         <div className="div-RomSettings">
-          <NavBar state={state} callback={setState} />
+          <NavBar active="" callback={callback} />
           ERROR!
         </div>
       );

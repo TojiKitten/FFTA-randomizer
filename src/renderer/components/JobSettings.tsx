@@ -1,6 +1,12 @@
 import * as React from "react";
 
-export const JobSettings = () => {
+
+interface props {
+  globalState: Array<{ setting: string; value: any }>;
+  callback: Function;
+}
+
+export const JobSettings = ({globalState, callback}:props) => {
   return (
     <div>
       <div className="jobList">

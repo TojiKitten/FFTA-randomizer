@@ -1,31 +1,22 @@
 import FFTAData from "./FFTAData";
 
 enum MISSIONSCALING {
-    NORMAL = "Normal",
-    SCALEDAVERAGE = "Average",
-    SCALEDHIGHEST = "Highest",
-    LERP = "Lerp"
+  NORMAL = "Normal",
+  SCALEDAVERAGE = "Average",
+  SCALEDHIGHEST = "Highest",
+  LERP = "Lerp",
 }
 
-export interface iRandomizerOptions {
-    missionScaling: string
+export type iRandomizerOptions = Record<string, any>;
 
-
+export function defaultRandomizer(): iRandomizerOptions {
+  return { missionScaling: "Normal", missionScalingValue: 25, cutscenes: "all" };
 }
 
-export function defaultRandomizer(): iRandomizerOptions
-{
-    return {missionScaling: "Normal"}
-}
-
-export function randomizeFFTA(fftaData:FFTAData, options: iRandomizerOptions)
-{
-    switch(options.missionScaling)
-    {
-        case "Normal":
-            fftaData.scaleMissionsHighest();
-        break;
-    }
+//probably getting really long when everything is implemented? best solution i can think off rn though
+export function randomizeFFTA(fftaData: FFTAData, options: iRandomizerOptions) {
+  fftaData.handleMissionScaling(options["storyEnemyLevels"], options["storyEnemyLevelsScale"]);
+  fftaData.handleCutScene(options["cutscenes"]);
 }
 
 export default iRandomizerOptions;
