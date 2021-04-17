@@ -15,6 +15,7 @@ export function defaultRandomizer(): iRandomizerOptions {
 
 //probably getting really long when everything is implemented? best solution i can think off rn though
 export function randomizeFFTA(fftaData: FFTAData, options: iRandomizerOptions) {
+  fftaData.handleMissionScaling(options["storyEnemyLevels"], options["storyEnemyLevelsScale"]);
   fftaData.handleCutScene(options["cutscenes"]);
 }
 

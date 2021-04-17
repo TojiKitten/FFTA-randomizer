@@ -29,7 +29,7 @@ export const PartyMember = ({ name, changableRace }: props) => {
       {raceChanger}
       Job:
       <select id="job">
-        <option value="Random">Random</option>
+        <option value="random">Random</option>
         <option value="Fighter">Fighter</option>
         <option value="Soldier">Soldier</option>
         <option value="Paladin">Paladin</option>

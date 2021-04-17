@@ -527,9 +527,29 @@ export class FFTAData {
     this.rom.set([0x20, 0x1c], 0xca0aa);
   }
 
+  handleMissionScaling(option: any, level: any) {
+    if (level.isNan()) {
+      throw new Error("level is not a number value!");
+    }
+
+    switch (option) {
+      case "normal":
+        break;
+      case "lerp":
+        break;
+      case "average":
+        break;
+      case "highest":
+      default:
+        throw new Error("case: " + option + " unhandled!");
+    }
+  }
+
   handleCutScene(option: any) {
     console.log(option);
     switch (option) {
+      case "all":
+        break;
       case "none":
         this.rom = CutsceneHacks.skipCutscenes(this.rom, false);
         break;
@@ -537,6 +557,8 @@ export class FFTAData {
         console.log("branch noTutorial");
         this.rom = CutsceneHacks.skipCutscenes(this.rom, true);
         break;
+      default:
+        throw new Error("case: " + option + " unhandled!");
     }
   }
 }
