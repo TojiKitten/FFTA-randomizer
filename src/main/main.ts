@@ -18,7 +18,7 @@ function createWindow(): void {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     title: "FFTA Randomizer",
-    icon: path.join(__dirname,"public", "favicon-96x96.png"),
+    icon: path.join(__dirname, "public", "favicon-96x96.png"),
     width: 900,
     height: 680,
     maxHeight: 1080,
@@ -108,7 +108,7 @@ function openfile(files: any) {
     let filepath = files[0];
     let filecontent = fs.readFileSync(filepath);
     fftaData = new FFTAData(filecontent);
-    mainWindow!.webContents.send("FileName-Change", { filepath: filepath});
+    mainWindow!.webContents.send("FileName-Change", { filepath: filepath });
   }
 }
 
@@ -140,8 +140,39 @@ function savefile(filepath: any) {
 // get and set settings from frontend
 //
 
-ipc.on("set-settings", function(event, options: any){
+ipc.on("set-settings", function (event, options: Array<{ setting: string; value: any }>) {
   console.log(options);
+  options.forEach((element) => {
+    switch (element.setting) {
+      case "romLoaded":
+      case "currentPage":
+      case "isRandomized":
+      case "randomizerSeed":
+        //just here to not trigger default. frontend settings
+        break;
+      case "storyEnemyLevels":
+        break;
+      case "storyEnemyLevelsScale":
+        break;
+      case "cutscenes":
+        randomizerOptions.cutscenes = element.value;
+        break;
+      case "missionRewards":
+        break;
+      case "apBoost":
+        break;
+      case "laws":
+        break;
+      case "startingGold":
+        break;
+      case "frostyMageBoost":
+        break;
+      case "missionRewards":
+        break;
+      case "noJudgeTurn":
+        break;
+      default:
+        throw new Error("unknown randomizer setting: " + element.setting);
+    }
+  });
 });
-
-

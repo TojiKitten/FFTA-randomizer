@@ -52,7 +52,7 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
       >
         <option value="all">All</option>
         <option value="none">None</option>
-        <option value="No Tutorial">None + No Tutorial</option>
+        <option value="noTutorial">None + No Tutorial</option>
       </select>
       <br />
       Mission Rewards:
@@ -91,18 +91,32 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
       </select>
       <br />
       Starting Gold:
-      <input type="number" value={parseInt(startingGold.value)} onChange= {(event) =>{
-        callback("startingGold",event.target.value);
-      }} />
+      <input
+        type="number"
+        value={parseInt(startingGold.value)}
+        onChange={(event) => {
+          callback("startingGold", event.target.value);
+        }}
+      />
       <br />
-      <input type="checkbox" id="frostyBoost" checked={frostyMageBoost.value} onChange={(event) => {
-        callback("frostyMageBoost", !frostyMageBoost.value);
-      }} />
+      <input
+        type="checkbox"
+        id="frostyBoost"
+        checked={frostyMageBoost.value}
+        onChange={(event) => {
+          callback("frostyMageBoost", !frostyMageBoost.value);
+        }}
+      />
       <label htmlFor="frostyBoost">Frosty Mage Boost</label>
       <br />
-      <input type="checkbox" id="noJudgeTurn" checked={noJudgeTurn.value} onChange={(event) => {
-        callback("noJudgeTurn", !noJudgeTurn.value);
-      }} />
+      <input
+        type="checkbox"
+        id="noJudgeTurn"
+        checked={noJudgeTurn.value}
+        onChange={(event) => {
+          callback("noJudgeTurn", !noJudgeTurn.value);
+        }}
+      />
       <label htmlFor="noJudgeTurn">no Judge Turn</label>
     </div>
   );

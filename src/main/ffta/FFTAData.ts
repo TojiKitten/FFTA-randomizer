@@ -7,7 +7,7 @@ import { FFTAAbility } from "./ability/FFTAAbility";
 import { FFTAJob } from "./job/FFTAJob";
 import { FFTALaw, FFTALawSet } from "./item/FFTALaw";
 import { FFTAMission } from "./mission/FFTAMission";
-
+import * as CutsceneHacks from "../enginehacks/cutsceneskip"
 type MemorySpace = {
   readonly offset: number;
   readonly byteSize: number;
@@ -570,6 +570,13 @@ export class FFTAData {
     this.rom.set([0x50, 0x79, 0xA0, 0x42], 0xCA088);
     this.rom.set([0xDD, 0x04, 0x1C, 0x00, 0x00, 0x00,0x00], 0xCA08D);
     this.rom.set([0x20, 0x1C], 0xCA0AA);
+  }
+
+  cutsceneNone(){
+    this.rom = CutsceneHacks.skipCutscenes(this.rom, false);
+  }
+  cutsceneNoTutorial(){
+    this. rom = CutsceneHacks.skipCutscenes(this.rom, true);
   }
 }
 
