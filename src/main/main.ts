@@ -143,36 +143,6 @@ function savefile(filepath: any) {
 ipc.on("set-settings", function (event, options: Array<{ setting: string; value: any }>) {
   console.log(options);
   options.forEach((element) => {
-    switch (element.setting) {
-      case "romLoaded":
-      case "currentPage":
-      case "isRandomized":
-      case "randomizerSeed":
-        //just here to not trigger default. frontend settings
-        break;
-      case "storyEnemyLevels":
-        break;
-      case "storyEnemyLevelsScale":
-        break;
-      case "cutscenes":
-        randomizerOptions.cutscenes = element.value;
-        break;
-      case "missionRewards":
-        break;
-      case "apBoost":
-        break;
-      case "laws":
-        break;
-      case "startingGold":
-        break;
-      case "frostyMageBoost":
-        break;
-      case "missionRewards":
-        break;
-      case "noJudgeTurn":
-        break;
-      default:
-        throw new Error("unknown randomizer setting: " + element.setting);
-    }
+    randomizerOptions[element.setting] = element.value;
   });
 });
