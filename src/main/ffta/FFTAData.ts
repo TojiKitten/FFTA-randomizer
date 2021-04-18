@@ -645,7 +645,6 @@ export class FFTAData {
         this.rom = CutsceneHacks.skipCutscenes(this.rom, false);
         break;
       case "noTutorial":
-        console.log("branch noTutorial");
         this.rom = CutsceneHacks.skipCutscenes(this.rom, true);
         break;
       default:

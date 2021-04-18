@@ -41,6 +41,7 @@ export class NoiseGenerator {
     return this.next() & 1;
   }
 
+  // Untested
   randomByte() {
     var _byte = 0;
 
@@ -51,11 +52,12 @@ export class NoiseGenerator {
     return _byte;
   }
 
-  // Not sure if this works for TS, just ported form GMS2
+  // Don't use this directly, see shuffledLaws
   randomSort<Type>(element1: Type, element2: Type) {
     return this.randomBit() == 1 ? 1 : -1;
   }
 
+  // Untested
   randomUint32(): number {
     var range = 0xffffffff;
     var min = 0;
@@ -94,6 +96,7 @@ export class NoiseGenerator {
     return number;
   }
 
+  // Untested
   randomIntRange(min: number, max: number): number {
     var range = max - min;
     var min = min;

@@ -145,8 +145,6 @@ export function shuffleRewards(
       (i * rewardSize) % (numberRewards * rewardSize)
     );
   });
-
-  rewardSets.forEach((set) => console.log(set.properties));
 }
 
 export function randomRewards(
@@ -160,9 +158,7 @@ export function randomRewards(
   rewardSets.forEach((set) => {
     for (var i = 0; i < numberRewards; i++) {
       let offset = rewardSize * i;
-      let randomRoll = items[rng.randomIntMax(items.length-1)];
-      console.log(randomRoll);
-      let randomItem = randomRoll.itemID;
+      let randomItem = items[rng.randomIntMax(items.length - 1)].itemID;
       let randomItemUint8Array = FFTAUtils.getShortUint8Array(randomItem, true);
       set.properties.set(randomItemUint8Array, offset);
     }
