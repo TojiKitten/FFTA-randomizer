@@ -5,9 +5,6 @@ type prop = {
   callback: Function;
 };
 
-//
-//TODO: REFACTOR!!!!!
-//
 export const NavBar = ({ active, callback }: prop) => {
   let btnGeneral = (
     <button className="navBar-button" onClick={() => callback("currentPage", "General")}>

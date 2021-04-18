@@ -25,8 +25,8 @@ export function randomizeFFTA(fftaData: FFTAData, options: iRandomizerOptions) {
     options["vieraJobs"],
     options["moogleJobs"],
   ]);
-  //fftaData.handlePartyMembers(options["partyMember"]);
-  //fftaData.handleShopItems(options["shopitems"]);
+  fftaData.handlePartyMembers(options["partyMember"]);
+  fftaData.handleShopItems(options["shopitems"]);
   
 }
 

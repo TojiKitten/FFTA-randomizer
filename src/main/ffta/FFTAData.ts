@@ -273,10 +273,7 @@ export class FFTAData {
 
     for (var i = 0; i < dataType.length; i++) {
       let memory = dataType.offset + dataType.byteSize * i;
-      let stringLookupTable: Uint8Array = this.rom.slice(
-        memory,
-        memory + dataType.byteSize
-      );
+      let stringLookupTable: Uint8Array = this.rom.slice(memory, memory + dataType.byteSize);
       let address = FFTAUtils.getLittleEndianAddress(stringLookupTable);
 
       let startingByte = address;
@@ -285,9 +282,7 @@ export class FFTAData {
         endingByte += 0x01;
       } while (this.rom[endingByte] !== 0);
 
-      names.push(
-        FFTAUtils.decodeFFTAText(this.rom.slice(startingByte, endingByte))
-      );
+      names.push(FFTAUtils.decodeFFTAText(this.rom.slice(startingByte, endingByte)));
     }
 
     return names;
@@ -299,10 +294,7 @@ export class FFTAData {
 
     for (var i = 0; i < dataType.length; i++) {
       let memory = dataType.offset + dataType.byteSize * i;
-      let stringLookupTable: Uint8Array = this.rom.slice(
-        memory,
-        memory + dataType.byteSize
-      );
+      let stringLookupTable: Uint8Array = this.rom.slice(memory, memory + dataType.byteSize);
       let address = FFTAUtils.getLittleEndianAddress(stringLookupTable);
       let startingByte = address;
       let endingByte = startingByte;
@@ -310,9 +302,7 @@ export class FFTAData {
         endingByte += 0x01;
       } while (this.rom[endingByte] !== 0);
 
-      names.push(
-        FFTAUtils.decodeFFTAText(this.rom.slice(startingByte, endingByte))
-      );
+      names.push(FFTAUtils.decodeFFTAText(this.rom.slice(startingByte, endingByte)));
     }
     return names;
   }
@@ -323,10 +313,7 @@ export class FFTAData {
 
     for (var i = 0; i < dataType.length; i++) {
       let memory = dataType.offset + dataType.byteSize * i;
-      let stringLookupTable: Uint8Array = this.rom.slice(
-        memory,
-        memory + dataType.byteSize
-      );
+      let stringLookupTable: Uint8Array = this.rom.slice(memory, memory + dataType.byteSize);
       let address = FFTAUtils.getLittleEndianAddress(stringLookupTable);
       let startingByte = address;
       let endingByte = startingByte;
@@ -334,9 +321,7 @@ export class FFTAData {
         endingByte += 0x01;
       } while (this.rom[endingByte] !== 0);
 
-      names.push(
-        FFTAUtils.decodeFFTAText(this.rom.slice(startingByte, endingByte))
-      );
+      names.push(FFTAUtils.decodeFFTAText(this.rom.slice(startingByte, endingByte)));
     }
     return names;
   }
@@ -349,10 +334,7 @@ export class FFTAData {
     // Get an array of all of the pointers to the array of animation pointers for a given unit/job
     for (var i = 0; i < dataType.length; i++) {
       let memory = dataType.offset + dataType.byteSize * i;
-      let encodedPointer: Uint8Array = this.rom.slice(
-        memory,
-        memory + dataType.byteSize
-      );
+      let encodedPointer: Uint8Array = this.rom.slice(memory, memory + dataType.byteSize);
       animationLookup.push(FFTAUtils.getLittleEndianAddress(encodedPointer));
     }
 
@@ -373,10 +355,7 @@ export class FFTAData {
       // For each address in this range, save it to an array
       for (var i = 0; i < animationCount; i++) {
         let currentAddress = pointer + dataType.byteSize * i;
-        let encodedPointer: Uint8Array = this.rom.slice(
-          currentAddress,
-          currentAddress + dataType.byteSize
-        );
+        let encodedPointer: Uint8Array = this.rom.slice(currentAddress, currentAddress + dataType.byteSize);
         unitAnimations.push(FFTAUtils.getLittleEndianAddress(encodedPointer));
       }
       animations.push(unitAnimations);
@@ -407,13 +386,8 @@ export class FFTAData {
 
     for (var i = 0; i < dataType.length; i++) {
       let memory = dataType.offset + dataType.byteSize * i;
-      let newFormation = new FFTAFormation(
-        memory,
-        this.rom.slice(memory, memory + dataType.byteSize)
-      );
-      newFormation.loadUnits(
-        this.rom.slice(newFormation.unitStart, newFormation.unitEnd)
-      );
+      let newFormation = new FFTAFormation(memory, this.rom.slice(memory, memory + dataType.byteSize));
+      newFormation.loadUnits(this.rom.slice(newFormation.unitStart, newFormation.unitEnd));
       formations.push(newFormation);
     }
     return formations;
@@ -437,13 +411,7 @@ export class FFTAData {
 
   initializeRaceAbilities(): RaceMap<FFTARaceAbility> {
     let dataType = FFTAMap.RaceAbilities;
-    let races: Array<MemorySpace> = [
-      dataType.Human,
-      dataType.Bangaa,
-      dataType.NuMou,
-      dataType.Viera,
-      dataType.Moogle,
-    ];
+    let races: Array<MemorySpace> = [dataType.Human, dataType.Bangaa, dataType.NuMou, dataType.Viera, dataType.Moogle];
     let allAbilities: Array<Array<FFTARaceAbility>> = [];
     races.forEach((race, i) => {
       let raceAbilities: Array<FFTARaceAbility> = [];
@@ -489,13 +457,7 @@ export class FFTAData {
 
   initializeJobs(): RaceMap<FFTAJob> {
     let dataType = FFTAMap.RaceJobs;
-    let races: Array<MemorySpace> = [
-      dataType.Human,
-      dataType.Bangaa,
-      dataType.NuMou,
-      dataType.Viera,
-      dataType.Moogle,
-    ];
+    let races: Array<MemorySpace> = [dataType.Human, dataType.Bangaa, dataType.NuMou, dataType.Viera, dataType.Moogle];
     let allJobs: Array<Array<FFTAJob>> = [];
     races.forEach((race, i) => {
       let raceJobs: Array<FFTAJob> = [];
@@ -528,10 +490,7 @@ export class FFTAData {
 
     for (var i = 0; i < dataType.length; i++) {
       let memory = dataType.offset + dataType.byteSize * i;
-      let newLawSet = new FFTALawSet(
-        memory,
-        this.rom.slice(memory, memory + dataType.byteSize)
-      );
+      let newLawSet = new FFTALawSet(memory, this.rom.slice(memory, memory + dataType.byteSize));
       lawSets.push(newLawSet);
     }
     return lawSets;
@@ -543,10 +502,7 @@ export class FFTAData {
 
     for (var i = 0; i < dataType.length; i++) {
       let memory = dataType.offset + dataType.byteSize * i;
-      let newItemSet = new FFTARewardItemSet(
-        memory,
-        this.rom.slice(memory, memory + dataType.byteSize)
-      );
+      let newItemSet = new FFTARewardItemSet(memory, this.rom.slice(memory, memory + dataType.byteSize));
       rewardItemSets.push(newItemSet);
     }
     return rewardItemSets;
@@ -653,14 +609,12 @@ export class FFTAData {
   }
 
   handleDisableJobs(options: Array<Array<{ name: string; enable: boolean }>>) {
-    if (this.jobs.Human.length !== options[0].length)
-      throw new Error("Mismatch of human jobs unhandled!");
+    if (this.jobs.Human.length !== options[0].length) throw new Error("Mismatch of human jobs unhandled!");
     options[0].forEach((option, i) => {
       this.jobs.Human[i].setAllowed(option.enable);
     });
 
-    if (this.jobs.Bangaa.length !== options[1].length)
-      throw new Error("Mismatch of bangaa jobs unhandled!");
+    if (this.jobs.Bangaa.length !== options[1].length) throw new Error("Mismatch of bangaa jobs unhandled!");
     options[1].forEach((option, i) => {
       this.jobs.Bangaa[i].setAllowed(option.enable);
     });
@@ -672,14 +626,12 @@ export class FFTAData {
       this.jobs.NuMou[i].setAllowed(option.enable);
     });
 
-    if (this.jobs.Viera.length !== options[3].length)
-      throw new Error("Mismatch of Viera jobs unhandled!");
+    if (this.jobs.Viera.length !== options[3].length) throw new Error("Mismatch of Viera jobs unhandled!");
     options[3].forEach((option, i) => {
       this.jobs.Viera[i].setAllowed(option.enable);
     });
 
-    if (this.jobs.Moogle.length !== options[4].length)
-      throw new Error("Mismatch of Moogle jobs unhandled!");
+    if (this.jobs.Moogle.length !== options[4].length) throw new Error("Mismatch of Moogle jobs unhandled!");
     options[4].forEach((option, i) => {
       this.jobs.Moogle[i].setAllowed(option.enable);
     });
@@ -696,6 +648,39 @@ export class FFTAData {
       case "random":
         JobHacks.randomizeAbilities(this.raceAbilities, this.rng);
         break;
+    }
+  }
+
+  handlePartyMembers(
+    options: Array<{
+      name: string;
+      raceChangable: boolean;
+      race: string;
+      job: string;
+      rngEquip: boolean;
+      level: number;
+      masteredAbilities: number;
+    }>
+  ) {
+    //todo handle this
+
+    return
+  }
+
+  handleShopItems(options: string) {
+    switch (options) {
+      case "default":
+        break;
+      case "limited":
+        break;
+      case "random":
+        break;
+      case "all":
+        break;
+      case "none":
+        break;
+      default:
+        throw new Error("case: " + options + " unhandled!");
     }
   }
 }
