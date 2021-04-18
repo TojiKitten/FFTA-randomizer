@@ -23,6 +23,11 @@ export class FFTAUnit extends FFTAObject {
 
   setLevel(level:number)
   {
-    this.properties.set([level], OFFSET.UNITLEVEL);
+    this.setProperty(OFFSET.UNITLEVEL, 1, level);
+  }
+
+  setJob(jobID:number)
+  {
+    this.setProperty(OFFSET.UNITJOB, 1, jobID);
   }
 }

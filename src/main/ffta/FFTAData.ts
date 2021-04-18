@@ -12,6 +12,7 @@ import * as StartingPartyHacks from "../enginehacks/startingParty";
 import * as JobHacks from "../enginehacks/jobHacks";
 import * as ItemHacks from "../enginehacks/itemHacks";
 import NoiseGenerator from "./NoiseGenerator";
+import { kebabCase } from "lodash";
 
 type MemorySpace = {
   readonly offset: number;
@@ -460,17 +461,20 @@ export class FFTAData {
     let dataType = FFTAMap.RaceJobs;
     let races: Array<MemorySpace> = [dataType.Human, dataType.Bangaa, dataType.NuMou, dataType.Viera, dataType.Moogle];
     let allJobs: Array<Array<FFTAJob>> = [];
-    races.forEach((race, i) => {
+    let jobID = 2; // ID of Soldier
+    races.forEach((race) => {
       let raceJobs: Array<FFTAJob> = [];
       for (var i = 0; i < race.length; i++) {
         let memory = race.offset + race.byteSize * i;
 
         let newJob = new FFTAJob(
           memory,
+          jobID,
           this.itemJobNames[(this.rom[memory + 1] << 8) | this.rom[memory]],
           this.rom.slice(memory, memory + race.byteSize)
         );
         raceJobs.push(newJob);
+        jobID++;
       }
       allJobs.push(raceJobs);
     });
@@ -609,32 +613,32 @@ export class FFTAData {
     }
   }
 
-  handleDisableJobs(options: Array<Array<{ name: string; enable: boolean }>>) {
+  handleDisableJobs(options: Array<Array<{ name: string; enabled: boolean }>>) {  
     if (this.jobs.Human.length !== options[0].length) throw new Error("Mismatch of human jobs unhandled!");
     options[0].forEach((option, i) => {
-      this.jobs.Human[i].setAllowed(option.enable);
+      this.jobs.Human[i].setAllowed(option.enabled);
     });
 
     if (this.jobs.Bangaa.length !== options[1].length) throw new Error("Mismatch of bangaa jobs unhandled!");
     options[1].forEach((option, i) => {
-      this.jobs.Bangaa[i].setAllowed(option.enable);
+      this.jobs.Bangaa[i].setAllowed(option.enabled);
     });
 
     if (this.jobs.NuMou.length !== options[2].length) {
       throw new Error("Mismatch of nu mou jobs unhandled!");
     }
     options[2].forEach((option, i) => {
-      this.jobs.NuMou[i].setAllowed(option.enable);
+      this.jobs.NuMou[i].setAllowed(option.enabled);
     });
 
     if (this.jobs.Viera.length !== options[3].length) throw new Error("Mismatch of Viera jobs unhandled!");
     options[3].forEach((option, i) => {
-      this.jobs.Viera[i].setAllowed(option.enable);
+      this.jobs.Viera[i].setAllowed(option.enabled);
     });
 
     if (this.jobs.Moogle.length !== options[4].length) throw new Error("Mismatch of Moogle jobs unhandled!");
     options[4].forEach((option, i) => {
-      this.jobs.Moogle[i].setAllowed(option.enable);
+      this.jobs.Moogle[i].setAllowed(option.enabled);
     });
   }
 
@@ -663,12 +667,14 @@ export class FFTAData {
       masteredAbilities: number;
     }>
   ) {
-    //todo handle this
-
-    return
+    this.rng.setPosition(2000);
+    options.forEach((unit, i) => {
+      StartingPartyHacks.setUnitData(this.formations[0].units[i], this.jobs, unit, this.rng);
+    })
   }
 
   handleShopItems(options: string) {
+    this.rng.setPosition(1100);
     switch (options) {
       case "default":
         break;

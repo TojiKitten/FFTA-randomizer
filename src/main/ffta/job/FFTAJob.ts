@@ -8,8 +8,10 @@ const enum OFFSET {
 }
 
 export class FFTAJob extends FFTAObject {
-  constructor(memory: number, name: string, properties: Uint8Array) {
+  jobId:number;
+  constructor(memory: number, id:number, name: string, properties: Uint8Array) {
     super(memory, properties, name);
+    this.jobId = id;
   }
 
   setRequirements(requirementsID:number)
