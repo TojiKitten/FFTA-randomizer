@@ -1,4 +1,5 @@
-import { FFTAObject } from "../FFTAData";
+import { memo } from "react";
+import { FFTAObject } from "../FFTAObject";
 
 const enum OFFSET {
   NAME = 0x00,
@@ -8,15 +9,8 @@ const enum OFFSET {
   APCOST = 0x07, //Multiply by 10
 }
 
-export class FFTARaceAbility implements FFTAObject {
-  properties: Uint8Array;
-  memory = -1;
-  displayName = "";
-  allowed = true;
-
+export class FFTARaceAbility extends FFTAObject {
   constructor(memory: number, name: string, properties: Uint8Array) {
-    this.memory = memory;
-    this.displayName = name;
-    this.properties = properties;
+    super(memory, properties, name);
   }
 }

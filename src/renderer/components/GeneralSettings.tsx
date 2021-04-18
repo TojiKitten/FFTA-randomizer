@@ -71,7 +71,7 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
       <input
         type="Range"
         min="0"
-        max="500"
+        max="1000"
         step="10"
         value={apBoost.value}
         onChange={(event) => {
@@ -87,8 +87,8 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
           callback("laws", event.target.value);
         }}
       >
-        <option value="Normal">Normal</option>
-        <option value="Shuffled">Shuffled</option>
+        <option value="normal">Normal</option>
+        <option value="shuffled">Shuffled</option>
       </select>
       <br />
       Starting Gold:

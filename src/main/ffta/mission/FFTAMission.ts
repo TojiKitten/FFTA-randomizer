@@ -1,20 +1,16 @@
-import { FFTAObject } from "../FFTAData";
+import { FFTAObject } from "../FFTAObject";
 
 const enum OFFSET {
   NAME = 0x00,
   AP = 0x34,
 }
 
-export class FFTAMission implements FFTAObject {
-  properties: Uint8Array;
-  memory = -1;
-  displayName = "";
-  allowed = true;
-
+export class FFTAMission extends FFTAObject {
   constructor(memory: number, name: string, properties: Uint8Array) {
-    // Save FFTAObject Properties
-    this.memory = memory;
-    this.properties = properties;
-    this.displayName = name;
+    super(memory, properties, name);
+  }
+
+  setAPReward(ap: number){
+    this.setProperty(OFFSET.AP, 1, ap/10);
   }
 }

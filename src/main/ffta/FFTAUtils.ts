@@ -5,6 +5,14 @@ export function getShortUint8Array(value: number, littleEndian: boolean) {
   return new Uint8Array([firstByte, secondByte]);
 }
 
+export function convertShortUint8Array(value: Uint8Array, littleEndian: boolean):number
+{
+  var firstByte = littleEndian ? value[1] : value[0];
+  var secondByte = littleEndian ? value[0] : value[1];
+
+  return (firstByte << 0x8) | secondByte;
+}
+
 const charTable = require("./charLookup.json");
 export function decodeFFTAText(encodedName: Uint8Array): string {
   var firstByte;
