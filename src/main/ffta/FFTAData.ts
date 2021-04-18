@@ -11,6 +11,7 @@ import * as MissionHacks from "../enginehacks/missionHacks";
 import * as StartingPartyHacks from "../enginehacks/startingParty";
 import * as JobHacks from "../enginehacks/jobHacks";
 import NoiseGenerator from "./NoiseGenerator";
+import { result } from "lodash";
 
 type MemorySpace = {
   readonly offset: number;
@@ -193,9 +194,12 @@ export class FFTAData {
     this.abilityNames = this.initializeAbilityNames();
     this.missionNames = this.initializeMissionNames();
     this.animations = this.initializeAnimations();
-    this.items = this.initializeItems();
     this.formations = this.initializeFormations();
-    this.missions = this.initializeMissions();
+    //this.missions = this.initializeMissions();
+    //this.items = this.initializeItems();
+    // doesnt work because different constructor this.items = this.initializeGeneric<FFTAItem>(FFTAMap.Items,FFTAItem,this.itemJobNames)
+    this.missions = this.initializeGeneric<FFTAMission>(FFTAMap.Missions,FFTAMission,this.missionNames);
+    console.log(this.missions);
     this.raceAbilities = this.initializeRaceAbilities();
     this.abilities = this.initializeAbilities();
     this.jobs = this.initializeJobs();
@@ -401,6 +405,22 @@ export class FFTAData {
     return items;
   }
 
+  initializeGeneric<Type>(dataType: MemorySpace, newType: {new(memory: number, name: string, properties: Uint8Array): Type}, nameTable: string[]): Array<Type> {
+    let result: Array<Type> = [];
+    
+    for (var i = 0; i < dataType.length; i++) {
+      let memory = dataType.offset + dataType.byteSize * i;
+
+      let newItem = new newType(
+        memory,
+        nameTable[(this.rom[memory + 1] << 8) | this.rom[memory]],
+        this.rom.slice(memory, memory + dataType.byteSize)
+      );
+      result.push(newItem);
+    }
+    return result;
+  }
+
   initializeFormations(): Array<FFTAFormation> {
     let formations: Array<FFTAFormation> = [];
     let dataType = FFTAMap.Formations;
@@ -433,6 +453,22 @@ export class FFTAData {
       items.push(newItem);
     }
     return items;
+  }
+
+  initializeAbilities() {
+    let abilities: Array<FFTAAbility> = [];
+    let dataType = FFTAMap.Abilities;
+
+    for (var i = 0; i < dataType.length; i++) {
+      let memory = dataType.offset + dataType.byteSize * i;
+      let newAbility = new FFTAAbility(
+        memory,
+        this.abilityNames[(this.rom[memory + 1] << 8) | this.rom[memory]],
+        this.rom.slice(memory, memory + dataType.byteSize)
+      );
+      abilities.push(newAbility);
+    }
+    return abilities;
   }
 
   initializeRaceAbilities(): RaceMap<FFTARaceAbility> {
@@ -471,21 +507,7 @@ export class FFTAData {
     return abilities;
   }
 
-  initializeAbilities() {
-    let abilities: Array<FFTAAbility> = [];
-    let dataType = FFTAMap.Abilities;
-
-    for (var i = 0; i < dataType.length; i++) {
-      let memory = dataType.offset + dataType.byteSize * i;
-      let newAbility = new FFTAAbility(
-        memory,
-        this.abilityNames[(this.rom[memory + 1] << 8) | this.rom[memory]],
-        this.rom.slice(memory, memory + dataType.byteSize)
-      );
-      abilities.push(newAbility);
-    }
-    return abilities;
-  }
+  
 
   initializeJobs(): RaceMap<FFTAJob> {
     let dataType = FFTAMap.RaceJobs;
