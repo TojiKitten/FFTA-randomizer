@@ -57,62 +57,47 @@ export class NoiseGenerator {
     return this.randomBit() == 1 ? 1 : -1;
   }
 
-  // Untested
   randomUint32(): number {
     var range = 0xffffffff;
-    var min = 0;
-
     var bits = Math.floor(Math.log2(range)) + 1;
     var number = 0;
-
     do {
       number = 0;
       for (var i = 0; i < bits; i++) {
-        //var _bit = randomBit();
         number = number | (this.randomBit() << i);
       }
-    } while (number <= range);
+    } while (number > range);
 
     return number;
   }
 
   randomIntMax(range: number): number {
     var range = range;
-    var min = 0;
-
     var bits = Math.floor(Math.log2(range)) + 1;
     var number = 0;
-
     do {
       number = 0;
       for (var i = 0; i < bits; i++) {
-        //var _bit = randomBit();
         number = number | (this.randomBit() << i);
       }
-    } while (number <= range);
-  
-    if(number > range) {number = number >> 1};
+    } while (number > range);
 
     return number;
   }
 
-  // Untested
   randomIntRange(min: number, max: number): number {
     var range = max - min;
     var min = min;
-
     var bits = Math.floor(Math.log2(range)) + 1;
     var number = 0;
-
     do {
       number = 0;
       for (var i = 0; i < bits; i++) {
-        //var _bit = randomBit();
         number = number | (this.randomBit() << i);
       }
-    } while (number <= range);
+    } while (number > range);
 
-    return number;
+    return min + number;
   }
 }
 

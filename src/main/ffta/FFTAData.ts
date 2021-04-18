@@ -180,7 +180,7 @@ export class FFTAData {
   animations: Array<Array<number>>;
   formations: Array<FFTAFormation>;
   missions: Array<FFTAMission>;
-  raceAbilities: RaceMap<FFTAAbility>;
+  raceAbilities: RaceMap<FFTARaceAbility>;
   abilities: Array<FFTAAbility>;
   jobs: RaceMap<FFTAJob>;
   lawSets: Array<FFTALawSet>;
@@ -435,7 +435,7 @@ export class FFTAData {
     return items;
   }
 
-  initializeRaceAbilities(): RaceMap<FFTAAbility> {
+  initializeRaceAbilities(): RaceMap<FFTARaceAbility> {
     let dataType = FFTAMap.RaceAbilities;
     let races: Array<MemorySpace> = [
       dataType.Human,
@@ -460,7 +460,7 @@ export class FFTAData {
       allAbilities.push(raceAbilities);
     });
 
-    let abilities: RaceMap<FFTAAbility> = {
+    let abilities: RaceMap<FFTARaceAbility> = {
       Human: allAbilities[0],
       Bangaa: allAbilities[1],
       NuMou: allAbilities[2],
@@ -553,7 +553,7 @@ export class FFTAData {
   }
 
   // Handlers
-  handleMissionScaling(option: any, level: number) {
+  handleMissionScaling(option: string, level: number) {
     switch (option) {
       case "normal":
         break;
@@ -571,25 +571,25 @@ export class FFTAData {
     }
   }
 
-  handleAPBoost(option: any) {
+  handleAPBoost(option: number) {
     if (option > 0) {
       MissionHacks.apBoost(this.missions, option);
     }
   }
 
-  handleStartingGold(option: any) {
+  handleStartingGold(option: number) {
     StartingPartyHacks.setStartingGold(this.rom, option);
   }
 
-  handleFrostyBoost(option: any) {
+  handleFrostyBoost(option: boolean) {
     if (option) MissionHacks.frostyMageBoost(this.rom);
   }
 
-  handleNoJudgeTurn(option: any) {
+  handleNoJudgeTurn(option: boolean) {
     if (option) MissionHacks.noJudgeTurn(this.rom);
   }
 
-  handleJobRequirements(option: any) {
+  handleJobRequirements(option: string) {
     switch (option) {
       case "normal":
         break;
@@ -604,7 +604,7 @@ export class FFTAData {
     }
   }
 
-  handleLawOptions(option: any) {
+  handleLawOptions(option: string) {
     this.rng.setPosition(1000);
     switch (option) {
       case "normal":
@@ -617,7 +617,7 @@ export class FFTAData {
     }
   }
 
-  handleRewardOptions(option: any) {
+  handleRewardOptions(option: string) {
     this.rng.setPosition(1200);
     switch (option) {
       case "normal":
@@ -633,11 +633,11 @@ export class FFTAData {
     }
   }
 
-  handlePercentageMP(option: any) {
+  handlePercentageMP(option: boolean) {
     if (option) JobHacks.percentageMPRegen(this.rom);
   }
 
-  handleCutScene(option: any) {
+  handleCutScene(option: string) {
     switch (option) {
       case "all":
         break;
@@ -649,6 +649,53 @@ export class FFTAData {
         break;
       default:
         throw new Error("case: " + option + " unhandled!");
+    }
+  }
+
+  handleDisableJobs(options: Array<Array<{ name: string; enable: boolean }>>) {
+    if (this.jobs.Human.length !== options[0].length)
+      throw new Error("Mismatch of human jobs unhandled!");
+    options[0].forEach((option, i) => {
+      this.jobs.Human[i].setAllowed(option.enable);
+    });
+
+    if (this.jobs.Bangaa.length !== options[1].length)
+      throw new Error("Mismatch of bangaa jobs unhandled!");
+    options[1].forEach((option, i) => {
+      this.jobs.Bangaa[i].setAllowed(option.enable);
+    });
+
+    if (this.jobs.NuMou.length !== options[2].length) {
+      throw new Error("Mismatch of nu mou jobs unhandled!");
+    }
+    options[2].forEach((option, i) => {
+      this.jobs.NuMou[i].setAllowed(option.enable);
+    });
+
+    if (this.jobs.Viera.length !== options[3].length)
+      throw new Error("Mismatch of Viera jobs unhandled!");
+    options[3].forEach((option, i) => {
+      this.jobs.Viera[i].setAllowed(option.enable);
+    });
+
+    if (this.jobs.Moogle.length !== options[4].length)
+      throw new Error("Mismatch of Moogle jobs unhandled!");
+    options[4].forEach((option, i) => {
+      this.jobs.Moogle[i].setAllowed(option.enable);
+    });
+  }
+
+  handleUnitAbilities(options: string) {
+    this.rng.setPosition(1300);
+    switch (options) {
+      case "normal":
+        break;
+      case "shuffled":
+        JobHacks.shuffleAbilities(this.raceAbilities, this.rng);
+        break;
+      case "random":
+        JobHacks.randomizeAbilities(this.raceAbilities, this.rng);
+        break;
     }
   }
 }

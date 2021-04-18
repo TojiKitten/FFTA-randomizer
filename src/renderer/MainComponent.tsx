@@ -126,6 +126,7 @@ export function MainComponent() {
         { name: "alchemist", enabled: true },
         { name: "beastmaster", enabled: true },
         { name: "morpher", enabled: true },
+        { name: "sage", enabled: true},
       ],
     },
     {
@@ -150,6 +151,8 @@ export function MainComponent() {
         { name: "thief", enabled: true },
         { name: "juggler", enabled: true },
         { name: "gadgeteer", enabled: true },
+        { name: "blackMage", enabled: true },
+        { name: "timeMage", enabled: true },
       ],
     },
     {setting: "shopitems", value: "default"}

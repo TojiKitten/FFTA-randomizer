@@ -1,5 +1,7 @@
+import { FFTARaceAbility } from "../ffta/ability/FFTARaceAbility";
 import { RaceMap } from "../ffta/FFTAData";
 import { FFTAJob } from "../ffta/job/FFTAJob";
+import NoiseGenerator from "../ffta/NoiseGenerator";
 
 export function percentageMPRegen(rom: Uint8Array) {
   const codeInject = [
@@ -49,24 +51,145 @@ export function percentageMPRegen(rom: Uint8Array) {
   rom.set(codeInject, 0x93092);
 }
 
-export function unlockAllJobs(jobs: RaceMap<FFTAJob>)
-{
-    let allJobs = [jobs.Human, jobs.Bangaa, jobs.NuMou, jobs.Viera,jobs.Moogle];
-    
-    allJobs.forEach((race) => {
-        race.forEach((job) =>{
-            job.setRequirements(0x0);
-        });
+export function unlockAllJobs(jobs: RaceMap<FFTAJob>) {
+  let allJobs = [jobs.Human, jobs.Bangaa, jobs.NuMou, jobs.Viera, jobs.Moogle];
+
+  allJobs.forEach((race) => {
+    race.forEach((job) => {
+      job.setRequirements(0x0);
     });
+  });
 }
 
-export function lockAllJobs(jobs: RaceMap<FFTAJob>)
-{
-    let allJobs = [jobs.Human, jobs.Bangaa, jobs.NuMou, jobs.Viera,jobs.Moogle];
-    
-    allJobs.forEach((race) => {
-        race.forEach((job) =>{
-            job.setRequirements(0x20);
-        });
+export function lockAllJobs(jobs: RaceMap<FFTAJob>) {
+  let allJobs = [jobs.Human, jobs.Bangaa, jobs.NuMou, jobs.Viera, jobs.Moogle];
+
+  allJobs.forEach((race) => {
+    race.forEach((job) => {
+      job.setRequirements(0x20);
     });
+  });
+}
+
+export function randomizeAbilities(
+  raceAbilities: RaceMap<FFTARaceAbility>,
+  rng: NoiseGenerator
+) {
+  let abilityRecord: Array<Array<FFTARaceAbility>> = [[], [], [], [], [], []];
+
+  // Map all abilities according to their type
+  raceAbilities.Human.forEach((ability) => {
+    abilityRecord[ability.getAbilityType()].push(ability);
+  });
+  raceAbilities.Bangaa.forEach((ability) => {
+    abilityRecord[ability.getAbilityType()].push(ability);
+  });
+  raceAbilities.NuMou.forEach((ability) => {
+    abilityRecord[ability.getAbilityType()].push(ability);
+  });
+  raceAbilities.Viera.forEach((ability) => {
+    abilityRecord[ability.getAbilityType()].push(ability);
+  });
+  raceAbilities.Moogle.forEach((ability) => {
+    abilityRecord[ability.getAbilityType()].push(ability);
+  });
+
+  // For each race's abilities, change the ID, name, and cost to a matching ability type
+  raceAbilities.Human.forEach((ability) => {
+    let type = abilityRecord[ability.getAbilityType()];
+    ability.properties = type[rng.randomIntMax(type.length - 1)].properties;
+  });
+  raceAbilities.Bangaa.forEach((ability) => {
+    let type = abilityRecord[ability.getAbilityType()];
+    ability.properties = type[rng.randomIntMax(type.length - 1)].properties;
+  });
+  raceAbilities.NuMou.forEach((ability) => {
+    let type = abilityRecord[ability.getAbilityType()];
+    ability.properties = type[rng.randomIntMax(type.length - 1)].properties;
+  });
+  raceAbilities.Viera.forEach((ability) => {
+    let type = abilityRecord[ability.getAbilityType()];
+    ability.properties = type[rng.randomIntMax(type.length - 1)].properties;
+  });
+  raceAbilities.Moogle.forEach((ability) => {
+    let type = abilityRecord[ability.getAbilityType()];
+    ability.properties = type[rng.randomIntMax(type.length - 1)].properties;
+  });
+}
+
+export function shuffleAbilities(
+  raceAbilities: RaceMap<FFTARaceAbility>,
+  rng: NoiseGenerator
+) {
+  let abilityRecord: Array<Array<FFTARaceAbility>> = [[], [], [], [], [], []];
+
+  // Map all abilities according to their type
+  raceAbilities.Human.forEach((ability) => {
+    abilityRecord[ability.getAbilityType()].push(ability);
+  });
+  raceAbilities.Bangaa.forEach((ability) => {
+    abilityRecord[ability.getAbilityType()].push(ability);
+  });
+  raceAbilities.NuMou.forEach((ability) => {
+    abilityRecord[ability.getAbilityType()].push(ability);
+  });
+  raceAbilities.Viera.forEach((ability) => {
+    abilityRecord[ability.getAbilityType()].push(ability);
+  });
+  raceAbilities.Moogle.forEach((ability) => {
+    abilityRecord[ability.getAbilityType()].push(ability);
+  });
+
+  abilityRecord.forEach((array) => {
+    array.sort((a, b) => {
+      return rng.randomBit() === 1 ? 1 : -1;
+    });
+  });
+
+  // For each race's abilities, change the ID, name, and cost to a matching ability type
+  raceAbilities.Human.forEach((ability) => {
+    let type = abilityRecord[ability.getAbilityType()];
+    let newAbility = type.pop();
+    if (newAbility) {
+      ability.properties = newAbility.properties;
+    } else {
+      throw new Error("Ran out of abilities");
+    }
+  });
+  raceAbilities.Bangaa.forEach((ability) => {
+    let type = abilityRecord[ability.getAbilityType()];
+    let newAbility = type.pop();
+    if (newAbility) {
+      ability.properties = newAbility.properties;
+    } else {
+      throw new Error("Ran out of abilities");
+    }
+  });
+  raceAbilities.NuMou.forEach((ability) => {
+    let type = abilityRecord[ability.getAbilityType()];
+    let newAbility = type.pop();
+    if (newAbility) {
+      ability.properties = newAbility.properties;
+    } else {
+      throw new Error("Ran out of abilities");
+    }
+  });
+  raceAbilities.Viera.forEach((ability) => {
+    let type = abilityRecord[ability.getAbilityType()];
+    let newAbility = type.pop();
+    if (newAbility) {
+      ability.properties = newAbility.properties;
+    } else {
+      throw new Error("Ran out of abilities");
+    }
+  });
+  raceAbilities.Moogle.forEach((ability) => {
+    let type = abilityRecord[ability.getAbilityType()];
+    let newAbility = type.pop();
+    if (newAbility) {
+      ability.properties = newAbility.properties;
+    } else {
+      throw new Error("Ran out of abilities");
+    }
+  });
 }
