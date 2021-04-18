@@ -88,6 +88,8 @@ export class NoiseGenerator {
         number = number | (this.randomBit() << i);
       }
     } while (number <= range);
+  
+    if(number > range) {number = number >> 1};
 
     return number;
   }

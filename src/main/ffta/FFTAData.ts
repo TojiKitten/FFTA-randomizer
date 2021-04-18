@@ -605,6 +605,7 @@ export class FFTAData {
   }
 
   handleLawOptions(option: any) {
+    this.rng.setPosition(1000);
     switch (option) {
       case "normal":
         break;
@@ -617,10 +618,12 @@ export class FFTAData {
   }
 
   handleRewardOptions(option: any) {
+    this.rng.setPosition(1200);
     switch (option) {
       case "normal":
         break;
       case "random":
+        MissionHacks.randomRewards(this.rewardItemSets, this.items, this.rng);
         break;
       case "shuffled":
         MissionHacks.shuffleRewards(this.rewardItemSets, this.rng);

@@ -4,7 +4,7 @@ import FFTAData from "../ffta/FFTAData";
 import { FFTAFormation } from "../ffta/formation/FFTAFormation";
 import { FFTALawSet } from "../ffta/item/FFTALaw";
 import NoiseGenerator from "../ffta/NoiseGenerator";
-import { FFTARewardItemSet } from "../ffta/item/FFTAItem";
+import FFTAItem, { FFTARewardItemSet } from "../ffta/item/FFTAItem";
 
 export function lerpStoryMissionLevels(
   formations: Array<FFTAFormation>,
@@ -79,8 +79,6 @@ export function shuffleLaws(
   lawSets: Array<FFTALawSet>,
   noiseGenerator: NoiseGenerator
 ) {
-  // Set noise generator position for consistency
-  noiseGenerator.setPosition(1000);
   const numberLaws = 20;
   const lawSize = 2;
   let allLaws: Array<number> = [];
@@ -117,8 +115,6 @@ export function shuffleRewards(
   rewardSets: Array<FFTARewardItemSet>,
   noiseGenerator: NoiseGenerator
 ) {
-  // Set noise generator position for consistency
-  noiseGenerator.setPosition(1200);
   const numberRewards = 20;
   const rewardSize = 2;
   let allRewards: Array<number> = [];
@@ -150,6 +146,25 @@ export function shuffleRewards(
     );
   });
 
-  rewardSets.forEach(set =>
-    console.log(set.properties));
+  rewardSets.forEach((set) => console.log(set.properties));
+}
+
+export function randomRewards(
+  rewardSets: Array<FFTARewardItemSet>,
+  items: Array<FFTAItem>,
+  rng: NoiseGenerator
+) {
+  const numberRewards = 20;
+  const rewardSize = 2;
+  // Get all reward items into one array
+  rewardSets.forEach((set) => {
+    for (var i = 0; i < numberRewards; i++) {
+      let offset = rewardSize * i;
+      let randomRoll = items[rng.randomIntMax(items.length-1)];
+      console.log(randomRoll);
+      let randomItem = randomRoll.itemID;
+      let randomItemUint8Array = FFTAUtils.getShortUint8Array(randomItem, true);
+      set.properties.set(randomItemUint8Array, offset);
+    }
+  });
 }
