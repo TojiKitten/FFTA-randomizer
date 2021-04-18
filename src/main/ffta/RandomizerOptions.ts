@@ -13,6 +13,7 @@ export function randomizeFFTA(fftaData: FFTAData, options: iRandomizerOptions) {
   fftaData.handlePercentageMP(options["mpRegen"]);
   fftaData.handleJobRequirements(options["jobRequirements"]);
   fftaData.handleLawOptions(options["laws"]);
+  fftaData.handleRewardOptions(options["missionRewards"]);
 }
 
 export default iRandomizerOptions;

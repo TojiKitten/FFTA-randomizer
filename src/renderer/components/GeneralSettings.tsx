@@ -87,8 +87,8 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
           callback("laws", event.target.value);
         }}
       >
-        <option value="Normal">Normal</option>
-        <option value="Shuffled">Shuffled</option>
+        <option value="normal">Normal</option>
+        <option value="shuffled">Shuffled</option>
       </select>
       <br />
       Starting Gold:

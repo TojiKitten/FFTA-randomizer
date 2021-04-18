@@ -24,7 +24,6 @@ export function MainComponent() {
     { setting: "laws", value: "normal" },
     { setting: "startingGold", value: 5000 },
     { setting: "frostyMageBoost", value: false },
-    { setting: "missionRewards", value: false },
     { setting: "noJudgeTurn", value: false },
     {
       setting: "partyMember",

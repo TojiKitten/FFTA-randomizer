@@ -606,13 +606,27 @@ export class FFTAData {
 
   handleLawOptions(option: any) {
     switch (option) {
-      case "Normal":
+      case "normal":
         break;
-      case "Shuffled":
+      case "shuffled":
         MissionHacks.shuffleLaws(this.lawSets, this.rng);
         break;
       default:
-        throw new Error("case: " + option + " unhandled!");
+        throw new Error("Law case: " + option + " unhandled!");
+    }
+  }
+
+  handleRewardOptions(option: any) {
+    switch (option) {
+      case "normal":
+        break;
+      case "random":
+        break;
+      case "shuffled":
+        MissionHacks.shuffleRewards(this.rewardItemSets, this.rng);
+        break;
+      default:
+        throw new Error("Reward case: " + option + " unhandled!");
     }
   }
 

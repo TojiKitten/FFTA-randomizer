@@ -1,10 +1,10 @@
 import { FFTAMission } from "../ffta/mission/FFTAMission";
-
+import * as FFTAUtils from "../ffta/FFTAUtils";
 import FFTAData from "../ffta/FFTAData";
 import { FFTAFormation } from "../ffta/formation/FFTAFormation";
 import { FFTALawSet } from "../ffta/item/FFTALaw";
 import NoiseGenerator from "../ffta/NoiseGenerator";
-import { forEach } from "lodash";
+import { FFTARewardItemSet } from "../ffta/item/FFTAItem";
 
 export function lerpStoryMissionLevels(
   formations: Array<FFTAFormation>,
@@ -81,23 +81,75 @@ export function shuffleLaws(
 ) {
   // Set noise generator position for consistency
   noiseGenerator.setPosition(1000);
+  const numberLaws = 20;
+  const lawSize = 2;
+  let allLaws: Array<number> = [];
 
-  let allLaws: Array<Uint8Array> = [];
   // Get all laws into one array
   lawSets.forEach((set) => {
-    for (var i = 0; i < set.properties.length; i += 2) {
-      allLaws.push(set.properties.slice(i, i+2));
+    for (var i = 0; i < numberLaws; i++) {
+      let offset = lawSize * i;
+      allLaws.push(
+        FFTAUtils.convertShortUint8Array(
+          set.properties.slice(offset, offset + 2),
+          true
+        )
+      );
     }
   });
 
+  // Sort the array randomly
   allLaws.sort((a, b) => {
     return noiseGenerator.randomBit() == 1 ? 1 : -1;
   });
 
-  lawSets.forEach((set,j) => {
-    for (var i = 0; i < set.properties.length; i += 2) {
-      set.properties.set(allLaws[(i/2) + (j*(set.properties.length/2))], i);
-    }
-    console.log(set.properties);
+  // For every law, write it back to the correct space
+  allLaws.forEach((law, i) => {
+    let newLaw = FFTAUtils.getShortUint8Array(allLaws[i], true);
+    lawSets[Math.floor(i / numberLaws)].properties.set(
+      newLaw,
+      (i * lawSize) % (numberLaws * lawSize)
+    );
   });
+}
+
+export function shuffleRewards(
+  rewardSets: Array<FFTARewardItemSet>,
+  noiseGenerator: NoiseGenerator
+) {
+  // Set noise generator position for consistency
+  noiseGenerator.setPosition(1200);
+  const numberRewards = 20;
+  const rewardSize = 2;
+  let allRewards: Array<number> = [];
+
+  // Get all reward items into one array
+  rewardSets.forEach((set) => {
+    for (var i = 0; i < numberRewards; i++) {
+      let offset = rewardSize * i;
+      allRewards.push(
+        FFTAUtils.convertShortUint8Array(
+          set.properties.slice(offset, offset + 2),
+          true
+        )
+      );
+    }
+  });
+
+  // Sort the array randomly
+  allRewards.sort((a, b) => {
+    return noiseGenerator.randomBit() == 1 ? 1 : -1;
+  });
+
+  // For every reward item, write it back to the correct space
+  allRewards.forEach((reward, i) => {
+    let newLaw = FFTAUtils.getShortUint8Array(allRewards[i], true);
+    rewardSets[Math.floor(i / numberRewards)].properties.set(
+      newLaw,
+      (i * rewardSize) % (numberRewards * rewardSize)
+    );
+  });
+
+  rewardSets.forEach(set =>
+    console.log(set.properties));
 }
