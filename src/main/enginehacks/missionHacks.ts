@@ -98,7 +98,7 @@ export function shuffleLaws(
 
   // Sort the array randomly
   allLaws.sort((a, b) => {
-    return noiseGenerator.randomBit() == 1 ? 1 : -1;
+    return noiseGenerator.randomBit() === 1 ? 1 : -1;
   });
 
   // For every law, write it back to the correct space

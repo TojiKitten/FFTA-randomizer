@@ -22,6 +22,10 @@ export class FFTAObject {
       this.properties.set(new Uint8Array([value]), offset);
     }
   }
+
+  setAllowed(allowed:boolean){
+    this.allowed = allowed;
+  }
 }
 
 export default FFTAObject;
