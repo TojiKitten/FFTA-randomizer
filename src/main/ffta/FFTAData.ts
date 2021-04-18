@@ -10,6 +10,7 @@ import * as CutsceneHacks from "../enginehacks/cutsceneskip";
 import * as MissionHacks from "../enginehacks/missionHacks";
 import * as StartingPartyHacks from "../enginehacks/startingParty";
 import * as JobHacks from "../enginehacks/jobHacks";
+import * as ItemHacks from "../enginehacks/itemHacks";
 import NoiseGenerator from "./NoiseGenerator";
 
 type MemorySpace = {
@@ -672,12 +673,16 @@ export class FFTAData {
       case "default":
         break;
       case "limited":
+        ItemHacks.toggleLimitedShopItems(this.items, this.rng);
         break;
       case "random":
+        ItemHacks.toggleRandomShopItems(this.items, this.rng);
         break;
       case "all":
+        ItemHacks.toggleAllShopItems(this.items, true);
         break;
       case "none":
+        ItemHacks.toggleAllShopItems(this.items, false);
         break;
       default:
         throw new Error("case: " + options + " unhandled!");
