@@ -1,19 +1,11 @@
 import * as React from "react";
-
-type Unit = {
-  name: string;
-  raceChangable: boolean;
-  race: string;
-  job: string;
-  rngEquip: boolean;
-  level: number;
-  masteredAbilities: number;
-};
+import { Config, Job, Unit } from "../utils/types";
 
 type props = {
   unit: Unit;
-  callback: Function;
-  jobList: Array<{ name: string; enabled: boolean }>;
+  jobList: Array<Job>;
+  callback: (event: any,setting: string, unit: Unit) => void;
+  
 };
 
 export const PartyMember = ({ unit, callback, jobList }: props) => {

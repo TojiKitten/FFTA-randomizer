@@ -4,6 +4,7 @@ import FileOpener from "./components/FileOpener";
 import FileSaver from "./components/FileSaver";
 import RandomizerSettings from "./components/RandomizerSettings";
 import RomSettings from "./components/RomSettings";
+import {Config, Job} from "./utils/types"
 
 //window.api gets available at runtime so we can ignore that error
 // @ts-ignore
@@ -13,7 +14,7 @@ export function MainComponent() {
   const [config, setConfig] = React.useState([
     //first page settings
     { setting: "romLoaded", value: false },
-    { setting: "currentPage", value: "General" },
+    { setting: "currentPage", value: "general" },
     { setting: "isRandomized", value: false },
     { setting: "randomizerSeed", value: 0 },
     { setting: "missionScaling", value: "normal" },
@@ -159,13 +160,12 @@ export function MainComponent() {
   ]);
 
   api.receive("FileName-Change", function (msg: any) {
-    changeSetting("romLoaded", "true");
+    changeSetting({setting: "romLoaded", value: true});
   });
 
-  const changeSetting = (csetting: string, cvalue: any) => {
+  const changeSetting = (nconfig: Config) => {
     let newConfig = Array.from(config);
-    let value = cvalue;
-    newConfig.find((element) => element.setting === csetting)!.value = value;
+    newConfig.find((element) => element.setting === nconfig.setting)!.value = nconfig.value;
     setConfig(newConfig);
   };
 

@@ -1,19 +1,20 @@
 import * as React from "react";
+import { Config } from "../utils/types";
 
 interface props {
-  globalState: Array<{ setting: string; value: any }>;
-  callback: Function;
+  globalState: Array<Config>;
+  callback: (nconf: Config) => void;
 }
 
 export const RandomizerSettings = ({ globalState, callback }: props) => {
-  let seed = globalState.find(
+  let seed = Number(globalState.find(
     (element) => element.setting === "randomizerSeed"
-  )!.value;
+  )!.value);
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
     console.log(event.target.elements.seed.value);
-    callback("randomizerSeed", String(event.target.elements.seed.value));
+    callback({setting: "randomizerSeed", value: String(event.target.elements.seed.value)});
     event.target.reset();
   };
 

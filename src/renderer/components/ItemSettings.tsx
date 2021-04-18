@@ -1,8 +1,9 @@
 import * as React from "react";
+import {Config, Job} from "../utils/types"
 
 interface props {
-  globalState: Array<{ setting: string; value: any }>;
-  callback: Function;
+  globalState: Array<Config>;
+  callback: (nconf: Config) => void;
 }
 
 export const ItemSettings = ({globalState, callback}:props) => {
@@ -10,8 +11,8 @@ export const ItemSettings = ({globalState, callback}:props) => {
   return (
     <div>
       shop Items:
-      <select value={shopItems.value} onChange={(event) => {
-        callback(shopItems.setting, event.target.value);
+      <select value={String(shopItems.value)} onChange={(event) => {
+        callback({setting: shopItems.setting, value: event.target.value});
       }
       }>
         <option value="default">Default</option>

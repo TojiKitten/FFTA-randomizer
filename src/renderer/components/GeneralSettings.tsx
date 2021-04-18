@@ -1,11 +1,12 @@
 import * as React from "react";
+import {Config, Job} from "../utils/types"
 //window.api gets available at runtime so we can ignore that error
 // @ts-ignore
 const { api } = window;
 
 interface props {
-  globalState: Array<{ setting: string; value: any }>;
-  callback: Function;
+  globalState: Array<Config>;
+  callback: (nconf: Config) => void;
 }
 
 export const GeneralSettings = ({ globalState, callback }: props) => {
@@ -22,9 +23,9 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
     <div>
       Story Enemy Levels:
       <select
-        value={enemyLevel.value}
+        value={String(enemyLevel.value)}
         onChange={(event) => {
-          callback("missionScaling", event.target.value);
+          callback({setting: "missionScaling", value: event.target.value});
         }}
       >
         <option value="normal">Normal</option>
@@ -36,18 +37,18 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
         type="Range"
         min="1"
         max="50"
-        value={enemyLevelRange.value}
+        value={Number(enemyLevelRange.value)}
         onChange={(event) => {
-          callback("missionScalingValue", event.target.value);
+          callback({setting: "missionScalingValue", value: event.target.value});
         }}
       />
       {enemyLevelRange.value}
       <br />
       cutscenes:
       <select
-        value={cutscenes.value}
+        value={String(cutscenes.value)}
         onChange={(event) => {
-          callback("cutscenes", event.target.value);
+          callback({setting: "cutscenes", value: event.target.value});
         }}
       >
         <option value="all">All</option>
@@ -57,9 +58,9 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
       <br />
       Mission Rewards:
       <select
-        value={missionRewards.value}
+        value={String(missionRewards.value)}
         onChange={(event) => {
-          callback("missionRewards", event.target.value);
+          callback({setting: "missionRewards", value:event.target.value});
         }}
       >
         <option value="normal">Normal</option>
@@ -73,18 +74,18 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
         min="0"
         max="1000"
         step="10"
-        value={apBoost.value}
+        value={Number(apBoost.value)}
         onChange={(event) => {
-          callback("apBoost", event.target.value);
+          callback({setting:"apBoost", value:event.target.value});
         }}
       />
       {apBoost.value}
       <br />
       Laws:
       <select
-        value={laws.value}
+        value={String(laws.value)}
         onChange={(event) => {
-          callback("laws", event.target.value);
+          callback({setting:"laws", value:event.target.value});
         }}
       >
         <option value="normal">Normal</option>
@@ -94,31 +95,29 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
       Starting Gold:
       <input
         type="number"
-        value={parseInt(startingGold.value)}
+        value={Number(startingGold.value)}
         onChange={(event) => {
-          callback("startingGold", event.target.value);
+          callback({setting: "startingGold", value: event.target.value});
         }}
       />
       <br />
       <input
         type="checkbox"
-        id="frostyBoost"
-        checked={frostyMageBoost.value}
+        checked={Boolean(frostyMageBoost.value)}
         onChange={(event) => {
-          callback("frostyMageBoost", !frostyMageBoost.value);
+          callback({setting:"frostyMageBoost", value: !frostyMageBoost.value});
         }}
       />
-      <label htmlFor="frostyBoost">Frosty Mage Boost</label>
+      <label>Frosty Mage Boost</label>
       <br />
       <input
         type="checkbox"
-        id="noJudgeTurn"
-        checked={noJudgeTurn.value}
+        checked={Boolean(noJudgeTurn.value)}
         onChange={(event) => {
-          callback("noJudgeTurn", !noJudgeTurn.value);
+          callback({setting: "noJudgeTurn", value:!noJudgeTurn.value});
         }}
       />
-      <label htmlFor="noJudgeTurn">no Judge Turn</label>
+      <label>no Judge Turn</label>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-export type configType = {
+export type Config = {
   setting: string;
   value: number | boolean | string | Array<Unit> | Array<Job>;
 };

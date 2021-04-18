@@ -4,16 +4,17 @@ import { GeneralSettings } from "./GeneralSettings";
 import { PartySettings } from "./PartySettings";
 import { JobSettings } from "./JobSettings";
 import { ItemSettings } from "./ItemSettings";
+import { Config } from "../utils/types";
 
 
 
 interface props {
-  globalState: Array<{ setting: string; value: any }>;
-  callback: Function;
+  globalState: Array<Config>;
+  callback: (nconf: Config) => void;
 }
 
 export const RomSettings = ({globalState, callback}: props) => {
-  let isRom = JSON.parse(globalState.find(element => element.setting === "romLoaded")!.value);
+  let isRom = globalState.find(element => element.setting === "romLoaded")!.value;
   let state = globalState.find(element => element.setting === "currentPage")
 
   if (!isRom){
@@ -25,34 +26,34 @@ export const RomSettings = ({globalState, callback}: props) => {
   }
   
   switch (state!.value) {
-    case "General": {
+    case "general": {
       return (
         <div className="div-RomSettings">
-          <NavBar active="General" callback={callback} />
+          <NavBar active="general" callback={callback} />
           <GeneralSettings globalState={globalState} callback={callback}/>
         </div>
       );
     }
-    case "Party": {
+    case "party": {
       return (
         <div className="div-RomSettings">
-          <NavBar active="Party" callback={callback} />
+          <NavBar active="party" callback={callback} />
           <PartySettings globalState={globalState} callback={callback}/>
         </div>
       );
     }
-    case "Jobs": {
+    case "jobs": {
       return (
         <div className="div-RomSettings">
-          <NavBar active="Jobs" callback={callback} />
+          <NavBar active="jobs" callback={callback} />
           <JobSettings globalState={globalState} callback={callback}/>
         </div>
       );
     }
-    case "Items": {
+    case "items": {
       return (
         <div className="div-RomSettings">
-          <NavBar active="Items" callback={callback} />
+          <NavBar active="items" callback={callback} />
           <ItemSettings globalState={globalState} callback={callback}/>
         </div>
       );

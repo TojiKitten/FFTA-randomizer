@@ -26,7 +26,7 @@ function createWindow(): void {
     minHeight: 400,
     minWidth: 400,
     backgroundColor: "#FFFFFF",
-    //resizable: false,
+    resizable: false,
     webPreferences: {
       nodeIntegration: false,
       enableRemoteModule: false,
@@ -35,7 +35,7 @@ function createWindow(): void {
     },
   });
 
-  //mainWindow.removeMenu();
+  mainWindow.removeMenu();
   // and load the index.html of the app.
   mainWindow
     .loadURL(
@@ -142,7 +142,6 @@ function savefile(filepath: any) {
 //
 
 ipc.on("set-settings", function (event, options: Array<{ setting: string; value: any }>) {
-  //console.log(options);
   options.forEach((element) => {
     randomizerOptions[element.setting] = element.value;
   });

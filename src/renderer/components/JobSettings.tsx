@@ -1,8 +1,9 @@
 import * as React from "react";
+import { Config, Job } from "../utils/types";
 
 interface props {
-  globalState: Array<{ setting: string; value: any }>;
-  callback: Function;
+  globalState: Array<Config>;
+  callback: (nconf: Config) => void;
 }
 
 export const JobSettings = ({ globalState, callback }: props) => {
@@ -16,43 +17,25 @@ export const JobSettings = ({ globalState, callback }: props) => {
   let vieraJobs = globalState.find((element) => element.setting === "vieraJobs")!;
   let moogleJobs = globalState.find((element) => element.setting === "moogleJobs")!;
 
-  const jobChange = (event: any, race: string) => {
-    let jobs: { setting: string; value: any } = { setting: "null", value: "null" };
-    switch (race) {
-      case "human":
-        jobs = humanJobs;
-        break;
-      case "bangaa":
-        jobs = bangaaJobs;
-        break;
-      case "nuMou":
-        jobs = nuMouJobs;
-        break;
-      case "viera":
-        jobs = vieraJobs;
-        break;
-      case "moogle":
-        jobs = moogleJobs;
-        break;
-    }
-
-    jobs.value.find((element: any) => element.name == event.target.id).enabled = !jobs.value.find(
+  const jobChange = (event: any, raceJobs: { setting: string; value: Array<Job> }) => {
+    raceJobs.value.find((element: any) => element.name == event.target.id)!.enabled = !raceJobs.value.find(
       (element: any) => element.name == event.target.id
-    ).enabled;
+    )!.enabled;
 
-    callback(jobs.setting, jobs.value);
+    callback(raceJobs);
   };
 
   const setJobList = (data: any, race: string): Array<JSX.Element> => {
     let list = Array<JSX.Element>();
-    data.value.forEach((element: any) => {
+    data.value.forEach((element: Job) => {
       list.push(
         <>
           <input
             type="checkbox"
             id={element.name}
+            key={element.name+race}
             checked={element.enabled}
-            onChange={(event) => jobChange(event, race)}
+            onChange={(event) => jobChange(event, data)}
           />
           <label>{element.name}</label>
           <br />
@@ -73,9 +56,9 @@ export const JobSettings = ({ globalState, callback }: props) => {
         Options <br />
         job Requirements:
         <select
-          value={jobRequirements.value}
+          value={String(jobRequirements.value)}
           onChange={(element) => {
-            callback(jobRequirements.setting, element.target.value);
+            callback({ setting: jobRequirements.setting, value: element.target.value });
           }}
         >
           <option value="normal">Normal</option>
@@ -85,9 +68,9 @@ export const JobSettings = ({ globalState, callback }: props) => {
         <br />
         abilities:
         <select
-          value={abilities.value}
+          value={String(abilities.value)}
           onChange={(element) => {
-            callback(abilities.setting, element.target.value);
+            callback({ setting: abilities.setting, value: element.target.value });
           }}
         >
           <option value="normal">Normal</option>
@@ -97,9 +80,9 @@ export const JobSettings = ({ globalState, callback }: props) => {
         <br />
         MP Regen:
         <select
-          value={mpRegen.value}
+          value={String(mpRegen.value)}
           onChange={(element) => {
-            callback(mpRegen.setting, element.target.value);
+            callback({ setting: mpRegen.setting, value: element.target.value });
           }}
         >
           <option value="normal">Normal</option>
