@@ -16,88 +16,57 @@ export const JobSettings = ({ globalState, callback }: props) => {
   let vieraJobs = globalState.find((element) => element.setting === "vieraJobs")!;
   let moogleJobs = globalState.find((element) => element.setting === "moogleJobs")!;
 
-  let humanJobList = Array<JSX.Element>();
-  let bangaaJobList = Array<JSX.Element>();
-  let nuMouJobList = Array<JSX.Element>();
-  let vieraJobList = Array<JSX.Element>();
-  let moogleJobList = Array<JSX.Element>();
+  const jobChange = (event: any, race: string) => {
+    let jobs: { setting: string; value: any } = { setting: "null", value: "null" };
+    switch (race) {
+      case "human":
+        jobs = humanJobs;
+        break;
+      case "bangaa":
+        jobs = bangaaJobs;
+        break;
+      case "nuMou":
+        jobs = nuMouJobs;
+        break;
+      case "viera":
+        jobs = vieraJobs;
+        break;
+      case "moogle":
+        jobs = moogleJobs;
+        break;
+    }
 
-  const humanJobChange = (event: any) => {
-    console.log(event.target.id);
-    humanJobs.value.find((element: any) => element.name == event.target.id).enabled = !humanJobs.value.find((element: any) => element.name == event.target.id).enabled
-    callback(humanJobs.setting, humanJobs.value)
-  }
-  const bangaaJobChange = (event: any) => {
-    console.log(event.target.id);
-    bangaaJobs.value.find((element: any) => element.name == event.target.id).enabled = !bangaaJobs.value.find((element: any) => element.name == event.target.id).enabled
-    callback(bangaaJobs.setting, bangaaJobs.value)
-  }
-  const nuMouJobChange = (event: any) => {
-    console.log(event.target.id);
-    nuMouJobs.value.find((element: any) => element.name == event.target.id).enabled = !nuMouJobs.value.find((element: any) => element.name == event.target.id).enabled
-    callback(nuMouJobs.setting, nuMouJobs.value)
-  }
-  const vieraJobChange = (event: any) => {
-    console.log(event.target.id);
-    vieraJobs.value.find((element: any) => element.name == event.target.id).enabled = !vieraJobs.value.find((element: any) => element.name == event.target.id).enabled
-    callback(vieraJobs.setting, vieraJobs.value)
-  }
-  const moogleJobChange = (event: any) => {
-    console.log(event.target.id);
-    moogleJobs.value.find((element: any) => element.name == event.target.id).enabled = !moogleJobs.value.find((element: any) => element.name == event.target.id).enabled
-    callback(moogleJobs.setting, moogleJobs.value)
-  }
+    jobs.value.find((element: any) => element.name == event.target.id).enabled = !jobs.value.find(
+      (element: any) => element.name == event.target.id
+    ).enabled;
 
-  humanJobs.value.forEach((element: any) => {
-    humanJobList.push(
-      <>
-        <input type="checkbox" id={element.name} checked={element.enabled} onChange={humanJobChange}/>
-        <label>{element.name}</label>
-        <br />
-      </>
-    );
-  });
+    callback(jobs.setting, jobs.value);
+  };
 
-  bangaaJobs.value.forEach((element: any) => {
-    bangaaJobList.push(
-      <>
-        <input type="checkbox" id={element.name} checked={element.enabled} onChange={bangaaJobChange}/>
-        <label>{element.name}</label>
-        <br />
-      </>
-    );
-  });
+  const setJobList = (data: any, race: string): Array<JSX.Element> => {
+    let list = Array<JSX.Element>();
+    data.value.forEach((element: any) => {
+      list.push(
+        <>
+          <input
+            type="checkbox"
+            id={element.name}
+            checked={element.enabled}
+            onChange={(event) => jobChange(event, race)}
+          />
+          <label>{element.name}</label>
+          <br />
+        </>
+      );
+    });
+    return list;
+  };
 
-  nuMouJobs.value.forEach((element: any) => {
-    nuMouJobList.push(
-      <>
-        <input type="checkbox" id={element.name} checked={element.enabled} onChange={nuMouJobChange}/>
-        <label>{element.name}</label>
-        <br />
-      </>
-    );
-  });
-
-  vieraJobs.value.forEach((element: any) => {
-    vieraJobList.push(
-      <>
-        <input type="checkbox" id={element.name} checked={element.enabled} onChange={vieraJobChange}/>
-        <label>{element.name}</label>
-        <br />
-      </>
-    );
-  });
-
-  moogleJobs.value.forEach((element: any) => {
-    moogleJobList.push(
-      <>
-        <input type="checkbox" id={element.name} checked={element.enabled} onChange={moogleJobChange}/>
-        <label>{element.name}</label>
-        <br />
-      </>
-    );
-  });
-
+  let humanJobList = setJobList(humanJobs, "human");
+  let bangaaJobList = setJobList(bangaaJobs, "bangaa");
+  let nuMouJobList = setJobList(nuMouJobs, "nuMou");
+  let vieraJobList = setJobList(vieraJobs, "viera");
+  let moogleJobList = setJobList(moogleJobs, "moogle");
   return (
     <div>
       <div className="jobList">

@@ -5,7 +5,7 @@ const { api } = window;
 
 
 interface props{
-  globalState: Array<{setting :string,value :any }>;
+  globalState: Array<{setting: string, value: any}>;
 }
 
 export const FileSaver = ({globalState}:props) => {
