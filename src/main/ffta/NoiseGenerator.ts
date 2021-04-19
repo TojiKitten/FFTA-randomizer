@@ -7,7 +7,7 @@ export class NoiseGenerator {
   seed: number;
   position: number;
   constructor() {
-    this.seed = Math.random();
+    this.seed = Math.round(Math.random()*100000);
     this.position = 0;
   }
 

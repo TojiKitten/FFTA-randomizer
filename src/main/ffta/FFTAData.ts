@@ -11,8 +11,8 @@ import * as MissionHacks from "../enginehacks/missionHacks";
 import * as StartingPartyHacks from "../enginehacks/startingParty";
 import * as JobHacks from "../enginehacks/jobHacks";
 import * as ItemHacks from "../enginehacks/itemHacks";
+import * as ForcedHacks from "../enginehacks/forcedHacks";
 import NoiseGenerator from "./NoiseGenerator";
-import { kebabCase } from "lodash";
 
 type MemorySpace = {
   readonly offset: number;
@@ -169,8 +169,10 @@ const FFTAMap: FFTAMemoryMap = {
     offset: 0x55ae4c,
     byteSize: 0x46,
     length: 396,
-  },
+  }
 };
+const allowedWeaponAddress = 0x51D0F4;
+const allowedWeaponSize = 0x4;
 
 // Only one of these should exist
 export class FFTAData {
@@ -185,6 +187,7 @@ export class FFTAData {
   raceAbilities: RaceMap<FFTARaceAbility>;
   abilities: Array<FFTAAbility>;
   jobs: RaceMap<FFTAJob>;
+  
   lawSets: Array<FFTALawSet>;
   rewardItemSets: Array<FFTARewardItemSet>;
   rng: NoiseGenerator;
@@ -460,21 +463,26 @@ export class FFTAData {
   initializeJobs(): RaceMap<FFTAJob> {
     let dataType = FFTAMap.RaceJobs;
     let races: Array<MemorySpace> = [dataType.Human, dataType.Bangaa, dataType.NuMou, dataType.Viera, dataType.Moogle];
+    let abilityLimits = [0x8C, 0x4C, 0x5E, 0x54, 0x57];
     let allJobs: Array<Array<FFTAJob>> = [];
     let jobID = 2; // ID of Soldier
-    races.forEach((race) => {
+    races.forEach((race, key) => {
       let raceJobs: Array<FFTAJob> = [];
       for (var i = 0; i < race.length; i++) {
         let memory = race.offset + race.byteSize * i;
-
         let newJob = new FFTAJob(
           memory,
           jobID,
           this.itemJobNames[(this.rom[memory + 1] << 8) | this.rom[memory]],
           this.rom.slice(memory, memory + race.byteSize)
         );
+
+        let allowedMemory = allowedWeaponAddress + (allowedWeaponSize * newJob.getAllowedWeapons());
+        newJob.allowedWeapons = this.rom.slice(allowedMemory, allowedMemory + allowedWeaponSize);
+        newJob.abilityLimit = abilityLimits[key];
         raceJobs.push(newJob);
         jobID++;
+        
       }
       allJobs.push(raceJobs);
     });
@@ -669,7 +677,7 @@ export class FFTAData {
   ) {
     this.rng.setPosition(2000);
     options.forEach((unit, i) => {
-      StartingPartyHacks.setUnitData(this.formations[0].units[i], this.jobs, unit, this.rng);
+      StartingPartyHacks.setUnitData(this.formations[0].units[i], this.jobs, this.items, unit, this.rng);
     })
   }
 
@@ -693,6 +701,11 @@ export class FFTAData {
       default:
         throw new Error("case: " + options + " unhandled!");
     }
+  }
+
+  runForcedHacks()
+  {
+    ForcedHacks.animationFixRaw(this.rom);
   }
 }
 

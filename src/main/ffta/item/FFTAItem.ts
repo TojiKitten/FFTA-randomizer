@@ -84,6 +84,11 @@ export class FFTAItem extends FFTAObject {
     this.setProperty(OFFSET.WORN, 1, value);
   }
 
+  getWorn():number
+  {
+    return this.properties[OFFSET.WORN];
+  }
+
   setDoubleSword(value: 0 | 1) {
     this.setFlag(ITEMFLAG.DOUBLESWORD, value);
   }

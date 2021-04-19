@@ -18,16 +18,33 @@ const enum OFFSET {
 
 export class FFTAUnit extends FFTAObject {
   constructor(memory: number, properties: Uint8Array) {
-   super(memory, properties, undefined);
+    super(memory, properties, undefined);
   }
 
-  setLevel(level:number)
-  {
+  setLevel(level: number) {
     this.setProperty(OFFSET.UNITLEVEL, 1, level);
   }
 
-  setJob(jobID:number)
-  {
+  setJob(jobID: number) {
     this.setProperty(OFFSET.UNITJOB, 1, jobID);
+  }
+
+  setItem(itemID: number, slot: number) {
+    if (slot < 5) {
+      let offset = OFFSET.UNITITEM1 + slot * 2;
+      this.setProperty(offset, 2, itemID);
+    }
+  }
+
+  setMasterAbility(offset:number, mastered:boolean){
+    let masteredBit = mastered? 1 : 0;
+    let abilityByte = OFFSET.UNITABILITIES + Math.floor(offset/8); 
+    let abilityBit = offset%8;
+    let mask = 0x1 << abilityBit;
+
+    let newFlags = new Uint8Array([
+      (this.properties[abilityByte] & ~mask) | (masteredBit << abilityBit),
+    ]);
+    this.properties.set(newFlags, abilityByte);
   }
 }
