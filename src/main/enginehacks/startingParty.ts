@@ -65,69 +65,28 @@ function getAvailableJobs(race: string, raceJobs: RaceMap<FFTAJob>) {
   let allowedJobs: Array<FFTAJob> = [];
   switch (race) {
     case "human":
-      raceJobs.Human.forEach((job) => {
-        if (job.allowed) {
-          allowedJobs.push(job);
-        }
-      });
+      allowedJobs.concat(raceJobs.Human.filter((job) => job.allowed === true));
       break;
     case "bangaa":
-      raceJobs.Bangaa.forEach((job) => {
-        if (job.allowed) {
-          allowedJobs.push(job);
-        }
-      });
+      allowedJobs.concat(raceJobs.Bangaa.filter((job) => job.allowed === true));
       break;
     case "nuMou":
-      raceJobs.NuMou.forEach((job) => {
-        if (job.allowed) {
-          allowedJobs.push(job);
-        }
-      });
+      allowedJobs.concat(raceJobs.NuMou.filter((job) => job.allowed === true));
       break;
     case "viera":
-      raceJobs.Viera.forEach((job) => {
-        if (job.allowed) {
-          allowedJobs.push(job);
-        }
-      });
+      allowedJobs.concat(raceJobs.Viera.filter((job) => job.allowed === true));
       break;
     case "moogle":
-      raceJobs.Moogle.forEach((job) => {
-        if (job.allowed) {
-          allowedJobs.push(job);
-        }
-      });
+      allowedJobs.concat(raceJobs.Moogle.filter((job) => job.allowed === true));
       break;
     default:
-      raceJobs.Human.forEach((job) => {
-        if (job.allowed) {
-          allowedJobs.push(job);
-        }
-      });
-      raceJobs.Bangaa.forEach((job) => {
-        if (job.allowed) {
-          allowedJobs.push(job);
-        }
-      });
-      raceJobs.NuMou.forEach((job) => {
-        if (job.allowed) {
-          allowedJobs.push(job);
-        }
-      });
-      raceJobs.Viera.forEach((job) => {
-        if (job.allowed) {
-          allowedJobs.push(job);
-        }
-      });
-      raceJobs.Moogle.forEach((job) => {
-        if (job.allowed) {
-          allowedJobs.push(job);
-        }
-      });
+      allowedJobs.concat(raceJobs.Human.filter((job) => job.allowed === true));
+      allowedJobs.concat(raceJobs.Bangaa.filter((job) => job.allowed === true));
+      allowedJobs.concat(raceJobs.NuMou.filter((job) => job.allowed === true));
+      allowedJobs.concat(raceJobs.Viera.filter((job) => job.allowed === true));
+      allowedJobs.concat(raceJobs.Moogle.filter((job) => job.allowed === true));
       break;
   }
-
   return allowedJobs;
 }
 
