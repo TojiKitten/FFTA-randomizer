@@ -156,6 +156,7 @@ function getValidLoadOut(
     });
   }
 
+  //console.log(validWeapons)
   //get validArmor
   for (let iter = ITEMTYPES.Armor; iter <= ITEMTYPES.Robe; iter++){
     let typedArmor = items.filter((item) => item.getType() === iter);
@@ -167,7 +168,8 @@ function getValidLoadOut(
   }
 
 
-  let weaponID = randomized ? rng.randomIntMax(validWeapons.length - 1) : 0;
+  let subWeaponID = randomized ? rng.randomIntMax(validWeapons.length - 1) : 0;
+  let weaponID = items.findIndex((element) => element === validWeapons[subWeaponID])
   loadout.push(weaponID);
 
   enum FEMALEONLY {
@@ -179,14 +181,15 @@ function getValidLoadOut(
   }
 
   //find an allowed armorId for a non FEMALEONLY ITEM
-  let armorID = 0;
+  let subArmorID = 0;
   do {
-    armorID = randomized?rng.randomIntMax(validArmor.length - 1):0;
-  } while (validArmor[armorID].displayName! in FEMALEONLY);
+    subArmorID = randomized?rng.randomIntMax(validArmor.length - 1):0;
+  } while (validArmor[subArmorID].displayName! in FEMALEONLY);
 
+  let armorID = items.findIndex((element) => element === validArmor[subWeaponID])
   loadout.push(armorID);
 
-  if (validWeapons[weaponID].getWorn() == 1 && job.isTypeAllowed(ITEMTYPES.Shield)) {
+  if (validWeapons[subWeaponID].getWorn() == 1 && job.isTypeAllowed(ITEMTYPES.Shield)) {
     let shieldID = items.findIndex((item) => item.getType() === ITEMTYPES.Shield);
     loadout.push(shieldID);
   }
