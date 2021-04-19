@@ -2,6 +2,7 @@ import { RaceMap } from "../ffta/FFTAData";
 import { getShortUint8Array } from "../ffta/FFTAUtils";
 import { FFTAUnit } from "../ffta/formation/FFTAUnit";
 import { FFTAItem, ITEMTYPES } from "../ffta/item/FFTAItem";
+
 import { FFTAJob } from "../ffta/job/FFTAJob";
 import NoiseGenerator from "../ffta/NoiseGenerator";
 
@@ -26,7 +27,8 @@ export function setUnitData(
 ) {
   unit.setLevel(options.level);
   // Change Job
-  let newJob = changeUnitJob(options.race, options.job, raceJobs, unit, rng);
+  let newJob = getNewJob(options.race, options.job, raceJobs, unit, rng);
+  unit.setJob(newJob.jobId);
   // Change Equipment (Make sure it's valid)
   let newLoadout: Array<number> = getValidLoadOut(newJob, items, options.rngEquip, rng);
   newLoadout.forEach((item, i) => {
@@ -36,55 +38,50 @@ export function setUnitData(
   masteredAbilities(newJob, unit, options.masteredAbilities, rng);
 }
 
-function changeUnitJob(
+function getNewJob(
   raceString: string,
   jobString: string,
   raceJobs: RaceMap<FFTAJob>,
   unit: FFTAUnit,
   rng: NoiseGenerator
-) {
+): FFTAJob {
   let allowedJobs = getAvailableJobs(raceString, raceJobs);
   if (allowedJobs.length === 0) throw new Error("No allowed jobs");
   if (jobString === "random") {
     let randomJob = allowedJobs[rng.randomIntMax(allowedJobs.length - 1)];
-    unit.setJob(randomJob.jobId);
     return randomJob;
-  } else {
-    let selectedJob = allowedJobs.filter((job) => {
-      if (job.displayName?.replaceAll(" ", "").toLowerCase() === jobString.toLowerCase()) {
-        return job;
-      }
-    });
-    if (selectedJob.length === 0) throw new Error(jobString + " not found");
-    unit.setJob(selectedJob[0].jobId);
-    return selectedJob[0];
   }
+  let selectedJob = allowedJobs.find(
+    (job) => job.displayName?.replaceAll(" ", "").toLowerCase() === jobString.toLowerCase()
+  );
+  if (!selectedJob) throw new Error(jobString + " not found");
+  return selectedJob;
 }
 
 function getAvailableJobs(race: string, raceJobs: RaceMap<FFTAJob>) {
   let allowedJobs: Array<FFTAJob> = [];
   switch (race) {
     case "human":
-      allowedJobs.concat(raceJobs.Human.filter((job) => job.allowed === true));
+      allowedJobs = raceJobs.Human.filter((job) => job.allowed === true);
       break;
     case "bangaa":
-      allowedJobs.concat(raceJobs.Bangaa.filter((job) => job.allowed === true));
+      allowedJobs = raceJobs.Bangaa.filter((job) => job.allowed === true);
       break;
     case "nuMou":
-      allowedJobs.concat(raceJobs.NuMou.filter((job) => job.allowed === true));
+      allowedJobs = raceJobs.NuMou.filter((job) => job.allowed === true);
       break;
     case "viera":
-      allowedJobs.concat(raceJobs.Viera.filter((job) => job.allowed === true));
+      allowedJobs = raceJobs.Viera.filter((job) => job.allowed === true);
       break;
     case "moogle":
-      allowedJobs.concat(raceJobs.Moogle.filter((job) => job.allowed === true));
+      allowedJobs = raceJobs.Moogle.filter((job) => job.allowed === true);
       break;
     default:
-      allowedJobs.concat(raceJobs.Human.filter((job) => job.allowed === true));
-      allowedJobs.concat(raceJobs.Bangaa.filter((job) => job.allowed === true));
-      allowedJobs.concat(raceJobs.NuMou.filter((job) => job.allowed === true));
-      allowedJobs.concat(raceJobs.Viera.filter((job) => job.allowed === true));
-      allowedJobs.concat(raceJobs.Moogle.filter((job) => job.allowed === true));
+      allowedJobs = allowedJobs.concat(raceJobs.Human.filter((job) => job.allowed === true));
+      allowedJobs = allowedJobs.concat(raceJobs.Bangaa.filter((job) => job.allowed === true));
+      allowedJobs = allowedJobs.concat(raceJobs.NuMou.filter((job) => job.allowed === true));
+      allowedJobs = allowedJobs.concat(raceJobs.Viera.filter((job) => job.allowed === true));
+      allowedJobs = allowedJobs.concat(raceJobs.Moogle.filter((job) => job.allowed === true));
       break;
   }
   return allowedJobs;
