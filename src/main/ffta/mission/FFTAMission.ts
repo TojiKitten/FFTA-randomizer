@@ -10,7 +10,7 @@ export class FFTAMission extends FFTAObject {
     super(memory, properties, name);
   }
 
-  setAPReward(ap: number){
-    this.setProperty(OFFSET.AP, 1, ap/10);
+  setAPReward(ap: number) {
+    this.setProperty(OFFSET.AP, 1, ap / 10);
   }
 }

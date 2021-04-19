@@ -68,6 +68,10 @@ export class FFTAItem extends FFTAObject {
     this.setProperty(OFFSET.TYPE, 1, value);
   }
 
+  getType(): number {
+    return this.properties[OFFSET.TYPE];
+  }
+
   setElement(value: number) {
     this.setProperty(OFFSET.ELEMENT, 1, value);
   }
@@ -78,6 +82,10 @@ export class FFTAItem extends FFTAObject {
 
   setWorn(value: number) {
     this.setProperty(OFFSET.WORN, 1, value);
+  }
+
+  getWorn(): number {
+    return this.properties[OFFSET.WORN];
   }
 
   setDoubleSword(value: 0 | 1) {
@@ -170,6 +178,25 @@ export class FFTAItem extends FFTAObject {
       (this.properties[OFFSET.FLAGS] & ~mask) | (value << flag),
     ]);
     this.properties.set(newFlags, OFFSET.FLAGS);
+  }
+
+  balanceItemPrice() {
+    let attack = this.properties[OFFSET.ATTACK];
+    let power = this.properties[OFFSET.POWER];
+    let defense = this.properties[OFFSET.DEFENSE];
+    let resistance = this.properties[OFFSET.RESISTANCE];
+
+    /* 
+    // Make item's price based on its 
+    // highest Offsensive Stat and Defensive Stat
+    // Increases exponentially
+    */
+    let newBuy =
+      Math.pow(Math.log10(Math.exp(Math.max(attack, power))), 3) +
+      Math.pow(Math.log10(Math.exp(Math.max(defense, resistance))), 3);
+    newBuy = Math.max(300, Math.round(newBuy / 100) * 100);
+    this.setBuyPrice(newBuy);
+    this.setSellPrice(newBuy * 0.5);
   }
 }
 

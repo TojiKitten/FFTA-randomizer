@@ -10,7 +10,7 @@ type props = {
 
 export const PartyMember = ({ unit, callback, jobList }: props) => {
   let raceChanger = <br />;
-  if (unit.raceChangable) {
+  if (unit.raceChangeable) {
     raceChanger = (
       <>
         Race:

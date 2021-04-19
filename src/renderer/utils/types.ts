@@ -5,7 +5,7 @@ export type Config = {
 
 export type Unit = {
   name: string;
-  raceChangable: boolean;
+  raceChangeable: boolean;
   race: string;
   job: string;
   rngEquip: boolean;

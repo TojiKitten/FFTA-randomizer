@@ -7,7 +7,7 @@ export class NoiseGenerator {
   seed: number;
   position: number;
   constructor() {
-    this.seed = Math.random();
+    this.seed = Math.round(Math.random() * 100000);
     this.position = 0;
   }
 
@@ -73,6 +73,7 @@ export class NoiseGenerator {
 
   randomIntMax(range: number): number {
     var range = range;
+    if (range <= 0) return 0;
     var bits = Math.floor(Math.log2(range)) + 1;
     var number = 0;
     do {
@@ -87,6 +88,7 @@ export class NoiseGenerator {
 
   randomIntRange(min: number, max: number): number {
     var range = max - min;
+    if (range <= 0) return 0;
     var min = min;
     var bits = Math.floor(Math.log2(range)) + 1;
     var number = 0;

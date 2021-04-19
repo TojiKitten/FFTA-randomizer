@@ -10,6 +10,8 @@ import * as CutsceneHacks from "../enginehacks/cutsceneskip";
 import * as MissionHacks from "../enginehacks/missionHacks";
 import * as StartingPartyHacks from "../enginehacks/startingParty";
 import * as JobHacks from "../enginehacks/jobHacks";
+import * as ItemHacks from "../enginehacks/itemHacks";
+import * as ForcedHacks from "../enginehacks/forcedHacks";
 import NoiseGenerator from "./NoiseGenerator";
 
 type MemorySpace = {
@@ -169,6 +171,8 @@ const FFTAMap: FFTAMemoryMap = {
     length: 396,
   },
 };
+const allowedWeaponAddress = 0x51d0f4;
+const allowedWeaponSize = 0x4;
 
 // Only one of these should exist
 export class FFTAData {
@@ -183,6 +187,7 @@ export class FFTAData {
   raceAbilities: RaceMap<FFTARaceAbility>;
   abilities: Array<FFTAAbility>;
   jobs: RaceMap<FFTAJob>;
+
   lawSets: Array<FFTALawSet>;
   rewardItemSets: Array<FFTARewardItemSet>;
   rng: NoiseGenerator;
@@ -273,7 +278,10 @@ export class FFTAData {
 
     for (var i = 0; i < dataType.length; i++) {
       let memory = dataType.offset + dataType.byteSize * i;
-      let stringLookupTable: Uint8Array = this.rom.slice(memory, memory + dataType.byteSize);
+      let stringLookupTable: Uint8Array = this.rom.slice(
+        memory,
+        memory + dataType.byteSize
+      );
       let address = FFTAUtils.getLittleEndianAddress(stringLookupTable);
 
       let startingByte = address;
@@ -282,7 +290,9 @@ export class FFTAData {
         endingByte += 0x01;
       } while (this.rom[endingByte] !== 0);
 
-      names.push(FFTAUtils.decodeFFTAText(this.rom.slice(startingByte, endingByte)));
+      names.push(
+        FFTAUtils.decodeFFTAText(this.rom.slice(startingByte, endingByte))
+      );
     }
 
     return names;
@@ -294,7 +304,10 @@ export class FFTAData {
 
     for (var i = 0; i < dataType.length; i++) {
       let memory = dataType.offset + dataType.byteSize * i;
-      let stringLookupTable: Uint8Array = this.rom.slice(memory, memory + dataType.byteSize);
+      let stringLookupTable: Uint8Array = this.rom.slice(
+        memory,
+        memory + dataType.byteSize
+      );
       let address = FFTAUtils.getLittleEndianAddress(stringLookupTable);
       let startingByte = address;
       let endingByte = startingByte;
@@ -302,7 +315,9 @@ export class FFTAData {
         endingByte += 0x01;
       } while (this.rom[endingByte] !== 0);
 
-      names.push(FFTAUtils.decodeFFTAText(this.rom.slice(startingByte, endingByte)));
+      names.push(
+        FFTAUtils.decodeFFTAText(this.rom.slice(startingByte, endingByte))
+      );
     }
     return names;
   }
@@ -313,7 +328,10 @@ export class FFTAData {
 
     for (var i = 0; i < dataType.length; i++) {
       let memory = dataType.offset + dataType.byteSize * i;
-      let stringLookupTable: Uint8Array = this.rom.slice(memory, memory + dataType.byteSize);
+      let stringLookupTable: Uint8Array = this.rom.slice(
+        memory,
+        memory + dataType.byteSize
+      );
       let address = FFTAUtils.getLittleEndianAddress(stringLookupTable);
       let startingByte = address;
       let endingByte = startingByte;
@@ -321,7 +339,9 @@ export class FFTAData {
         endingByte += 0x01;
       } while (this.rom[endingByte] !== 0);
 
-      names.push(FFTAUtils.decodeFFTAText(this.rom.slice(startingByte, endingByte)));
+      names.push(
+        FFTAUtils.decodeFFTAText(this.rom.slice(startingByte, endingByte))
+      );
     }
     return names;
   }
@@ -334,7 +354,10 @@ export class FFTAData {
     // Get an array of all of the pointers to the array of animation pointers for a given unit/job
     for (var i = 0; i < dataType.length; i++) {
       let memory = dataType.offset + dataType.byteSize * i;
-      let encodedPointer: Uint8Array = this.rom.slice(memory, memory + dataType.byteSize);
+      let encodedPointer: Uint8Array = this.rom.slice(
+        memory,
+        memory + dataType.byteSize
+      );
       animationLookup.push(FFTAUtils.getLittleEndianAddress(encodedPointer));
     }
 
@@ -355,7 +378,10 @@ export class FFTAData {
       // For each address in this range, save it to an array
       for (var i = 0; i < animationCount; i++) {
         let currentAddress = pointer + dataType.byteSize * i;
-        let encodedPointer: Uint8Array = this.rom.slice(currentAddress, currentAddress + dataType.byteSize);
+        let encodedPointer: Uint8Array = this.rom.slice(
+          currentAddress,
+          currentAddress + dataType.byteSize
+        );
         unitAnimations.push(FFTAUtils.getLittleEndianAddress(encodedPointer));
       }
       animations.push(unitAnimations);
@@ -386,8 +412,13 @@ export class FFTAData {
 
     for (var i = 0; i < dataType.length; i++) {
       let memory = dataType.offset + dataType.byteSize * i;
-      let newFormation = new FFTAFormation(memory, this.rom.slice(memory, memory + dataType.byteSize));
-      newFormation.loadUnits(this.rom.slice(newFormation.unitStart, newFormation.unitEnd));
+      let newFormation = new FFTAFormation(
+        memory,
+        this.rom.slice(memory, memory + dataType.byteSize)
+      );
+      newFormation.loadUnits(
+        this.rom.slice(newFormation.unitStart, newFormation.unitEnd)
+      );
       formations.push(newFormation);
     }
     return formations;
@@ -411,7 +442,13 @@ export class FFTAData {
 
   initializeRaceAbilities(): RaceMap<FFTARaceAbility> {
     let dataType = FFTAMap.RaceAbilities;
-    let races: Array<MemorySpace> = [dataType.Human, dataType.Bangaa, dataType.NuMou, dataType.Viera, dataType.Moogle];
+    let races: Array<MemorySpace> = [
+      dataType.Human,
+      dataType.Bangaa,
+      dataType.NuMou,
+      dataType.Viera,
+      dataType.Moogle,
+    ];
     let allAbilities: Array<Array<FFTARaceAbility>> = [];
     races.forEach((race, i) => {
       let raceAbilities: Array<FFTARaceAbility> = [];
@@ -457,19 +494,36 @@ export class FFTAData {
 
   initializeJobs(): RaceMap<FFTAJob> {
     let dataType = FFTAMap.RaceJobs;
-    let races: Array<MemorySpace> = [dataType.Human, dataType.Bangaa, dataType.NuMou, dataType.Viera, dataType.Moogle];
+    let races: Array<MemorySpace> = [
+      dataType.Human,
+      dataType.Bangaa,
+      dataType.NuMou,
+      dataType.Viera,
+      dataType.Moogle,
+    ];
+    let abilityLimits = [0x8c, 0x4c, 0x5e, 0x54, 0x57];
     let allJobs: Array<Array<FFTAJob>> = [];
-    races.forEach((race, i) => {
+    let jobID = 2; // ID of Soldier
+    races.forEach((race, key) => {
       let raceJobs: Array<FFTAJob> = [];
       for (var i = 0; i < race.length; i++) {
         let memory = race.offset + race.byteSize * i;
-
         let newJob = new FFTAJob(
           memory,
+          jobID,
           this.itemJobNames[(this.rom[memory + 1] << 8) | this.rom[memory]],
           this.rom.slice(memory, memory + race.byteSize)
         );
+
+        let allowedMemory =
+          allowedWeaponAddress + allowedWeaponSize * newJob.getAllowedWeapons();
+        newJob.allowedWeapons = this.rom.slice(
+          allowedMemory,
+          allowedMemory + allowedWeaponSize
+        );
+        newJob.abilityLimit = abilityLimits[key];
         raceJobs.push(newJob);
+        jobID++;
       }
       allJobs.push(raceJobs);
     });
@@ -490,7 +544,10 @@ export class FFTAData {
 
     for (var i = 0; i < dataType.length; i++) {
       let memory = dataType.offset + dataType.byteSize * i;
-      let newLawSet = new FFTALawSet(memory, this.rom.slice(memory, memory + dataType.byteSize));
+      let newLawSet = new FFTALawSet(
+        memory,
+        this.rom.slice(memory, memory + dataType.byteSize)
+      );
       lawSets.push(newLawSet);
     }
     return lawSets;
@@ -502,7 +559,10 @@ export class FFTAData {
 
     for (var i = 0; i < dataType.length; i++) {
       let memory = dataType.offset + dataType.byteSize * i;
-      let newItemSet = new FFTARewardItemSet(memory, this.rom.slice(memory, memory + dataType.byteSize));
+      let newItemSet = new FFTARewardItemSet(
+        memory,
+        this.rom.slice(memory, memory + dataType.byteSize)
+      );
       rewardItemSets.push(newItemSet);
     }
     return rewardItemSets;
@@ -608,32 +668,36 @@ export class FFTAData {
     }
   }
 
-  handleDisableJobs(options: Array<Array<{ name: string; enable: boolean }>>) {
-    if (this.jobs.Human.length !== options[0].length) throw new Error("Mismatch of human jobs unhandled!");
+  handleDisableJobs(options: Array<Array<{ name: string; enabled: boolean }>>) {
+    if (this.jobs.Human.length !== options[0].length)
+      throw new Error("Mismatch of human jobs unhandled!");
     options[0].forEach((option, i) => {
-      this.jobs.Human[i].setAllowed(option.enable);
+      this.jobs.Human[i].setAllowed(option.enabled);
     });
 
-    if (this.jobs.Bangaa.length !== options[1].length) throw new Error("Mismatch of bangaa jobs unhandled!");
+    if (this.jobs.Bangaa.length !== options[1].length)
+      throw new Error("Mismatch of bangaa jobs unhandled!");
     options[1].forEach((option, i) => {
-      this.jobs.Bangaa[i].setAllowed(option.enable);
+      this.jobs.Bangaa[i].setAllowed(option.enabled);
     });
 
     if (this.jobs.NuMou.length !== options[2].length) {
       throw new Error("Mismatch of nu mou jobs unhandled!");
     }
     options[2].forEach((option, i) => {
-      this.jobs.NuMou[i].setAllowed(option.enable);
+      this.jobs.NuMou[i].setAllowed(option.enabled);
     });
 
-    if (this.jobs.Viera.length !== options[3].length) throw new Error("Mismatch of Viera jobs unhandled!");
+    if (this.jobs.Viera.length !== options[3].length)
+      throw new Error("Mismatch of Viera jobs unhandled!");
     options[3].forEach((option, i) => {
-      this.jobs.Viera[i].setAllowed(option.enable);
+      this.jobs.Viera[i].setAllowed(option.enabled);
     });
 
-    if (this.jobs.Moogle.length !== options[4].length) throw new Error("Mismatch of Moogle jobs unhandled!");
+    if (this.jobs.Moogle.length !== options[4].length)
+      throw new Error("Mismatch of Moogle jobs unhandled!");
     options[4].forEach((option, i) => {
-      this.jobs.Moogle[i].setAllowed(option.enable);
+      this.jobs.Moogle[i].setAllowed(option.enabled);
     });
   }
 
@@ -654,7 +718,7 @@ export class FFTAData {
   handlePartyMembers(
     options: Array<{
       name: string;
-      raceChangable: boolean;
+      raceChangeable: boolean;
       race: string;
       job: string;
       rngEquip: boolean;
@@ -662,26 +726,42 @@ export class FFTAData {
       masteredAbilities: number;
     }>
   ) {
-    //todo handle this
-
-    return
+    this.rng.setPosition(2000);
+    options.forEach((unit, i) => {
+      StartingPartyHacks.setUnitData(
+        this.formations[0].units[i],
+        this.jobs,
+        this.items,
+        unit,
+        this.rng
+      );
+    });
   }
 
   handleShopItems(options: string) {
+    this.rng.setPosition(1100);
     switch (options) {
       case "default":
         break;
       case "limited":
+        ItemHacks.toggleLimitedShopItems(this.items, this.rng);
         break;
       case "random":
+        ItemHacks.toggleRandomShopItems(this.items, this.rng);
         break;
       case "all":
+        ItemHacks.toggleAllShopItems(this.items, true);
         break;
       case "none":
+        ItemHacks.toggleAllShopItems(this.items, false);
         break;
       default:
         throw new Error("case: " + options + " unhandled!");
     }
+  }
+
+  runForcedHacks() {
+    ForcedHacks.animationFixRaw(this.rom);
   }
 }
 

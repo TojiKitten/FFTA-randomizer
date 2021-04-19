@@ -31,7 +31,7 @@ export function MainComponent() {
       value: [
         {
           name: "march",
-          raceChangable: false,
+          raceChangeable: false,
           race: "human",
           class: "fighter",
           job: "random",
@@ -41,7 +41,7 @@ export function MainComponent() {
         },
         {
           name: "montblanc",
-          raceChangable: false,
+          raceChangeable: false,
           race: "moogle",
           job: "blackMage",
           rngEquip: false,
@@ -50,7 +50,7 @@ export function MainComponent() {
         },
         {
           name: "unit 3",
-          raceChangable: true,
+          raceChangeable: true,
           race: "human",
           job: "random",
           rngEquip: false,
@@ -59,7 +59,7 @@ export function MainComponent() {
         },
         {
           name: "unit 4",
-          raceChangable: true,
+          raceChangeable: true,
           race: "human",
           job: "random",
           rngEquip: false,
@@ -68,7 +68,7 @@ export function MainComponent() {
         },
         {
           name: "unit 5",
-          raceChangable: true,
+          raceChangeable: true,
           race: "human",
           job: "random",
           rngEquip: false,
@@ -77,7 +77,7 @@ export function MainComponent() {
         },
         {
           name: "unit 6",
-          raceChangable: true,
+          raceChangeable: true,
           race: "human",
           job: "random",
           rngEquip: false,
