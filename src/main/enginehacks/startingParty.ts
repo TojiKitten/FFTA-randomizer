@@ -1,10 +1,9 @@
 import { RaceMap } from "../ffta/FFTAData";
 import { getShortUint8Array } from "../ffta/FFTAUtils";
 import { FFTAUnit } from "../ffta/formation/FFTAUnit";
-import FFTAItem from "../ffta/item/FFTAItem";
+import { FFTAItem, ITEMTYPES } from "../ffta/item/FFTAItem";
 import { FFTAJob } from "../ffta/job/FFTAJob";
 import NoiseGenerator from "../ffta/NoiseGenerator";
-import * as FFTAUtils from "../ffta/FFTAUtils";
 
 export function setStartingGold(rom: Uint8Array, gold: number) {
   rom.set(getShortUint8Array(gold, true), 0x986c);
@@ -29,12 +28,7 @@ export function setUnitData(
   // Change Job
   let newJob = changeUnitJob(options.race, options.job, raceJobs, unit, rng);
   // Change Equipment (Make sure it's valid)
-  let newLoadout: Array<number> = getValidLoadOut(
-    newJob,
-    items,
-    options.rngEquip,
-    rng
-  );
+  let newLoadout: Array<number> = getValidLoadOut(newJob, items, options.rngEquip, rng);
   newLoadout.forEach((item, i) => {
     unit.setItem(item, i);
   });
@@ -57,10 +51,7 @@ function changeUnitJob(
     return randomJob;
   } else {
     let selectedJob = allowedJobs.filter((job) => {
-      if (
-        job.displayName?.replaceAll(" ", "").toLowerCase() ===
-        jobString.toLowerCase()
-      ) {
+      if (job.displayName?.replaceAll(" ", "").toLowerCase() === jobString.toLowerCase()) {
         return job;
       }
     });
@@ -140,120 +131,44 @@ function getAvailableJobs(race: string, raceJobs: RaceMap<FFTAJob>) {
   return allowedJobs;
 }
 
+///
+///randomizer = false, pick starting weapon of class; true pick random valid weapon
+///
 function getValidLoadOut(
   job: FFTAJob,
   items: Array<FFTAItem>,
   randomized: boolean,
   rng: NoiseGenerator
-) {
+): Array<number> {
   let loadout: Array<number> = [];
-
-  // Filter Items to type
-  let itemsByType: Array<Array<FFTAItem>> = [
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-  ];
-
-  items.forEach((item) => {
-    itemsByType[item.getType()].push(item);
-  });
-
-  // Shuffle Items if random equipment
-  if (randomized) {
-    itemsByType.forEach((type) => {
-      type.sort((a, b) => {
-        return rng.randomBit() ? 1 : -1;
-      });
-    });
-  }
-
-  enum ItemTypes {
-    Null = 0,
-    Sword,
-    Blade,
-    Saber,
-    KnightSword,
-    GreatSword,
-    BroadSword,
-    Knife,
-    Rapier,
-    Katana,
-    Staff,
-    Rod,
-    Mace,
-    Bow,
-    GreatBow,
-    Spear,
-    Instrument,
-    Knuckle,
-    Soul,
-    Gun,
-    Shield,
-    Helmet,
-    Ribbon,
-    Hat,
-    Armor,
-    Cloth,
-    Robe,
-    Shoes,
-    Armlet,
-    Accessory,
-    Consumable,
-  }
 
   let validWeapons: Array<FFTAItem> = [];
   let validArmor: Array<FFTAItem> = [];
-  // Get Random Valid Weapon
 
-  itemsByType.forEach((type, i) => {
-    if (
-      type.length > 0 &&
-      type[0].getType() <= ItemTypes.Gun &&
-      job.isTypeAllowed(type[0].getType())
-    ) {
-      validWeapons.push(type[0]);
-    }
-    if (
-      type.length > 0 &&
-      type[0].getType() >= ItemTypes.Armor &&
-      type[0].getType() <= ItemTypes.Robe &&
-      job.isTypeAllowed(type[0].getType())
-    ) {
-      validArmor.push(type[0]);
-    }
-  });
 
-  let weapon = validWeapons[rng.randomIntMax(validWeapons.length - 1)];
-  loadout.push(weapon.itemID);
+  //get validWeapons
+  for (let iter = 1; iter <= ITEMTYPES.Gun; iter++) {
+    let typedWeapons = items.filter((item) => item.getType() === iter);
+    typedWeapons.forEach((element) => {
+      if (job.isTypeAllowed(element.getType())) {
+        validWeapons.push(element);
+      }
+    });
+  }
+
+  //get validArmor
+  for (let iter = ITEMTYPES.Armor; iter <= ITEMTYPES.Robe; iter++){
+    let typedArmor = items.filter((item) => item.getType() === iter);
+    typedArmor.forEach((element) => {
+      if (job.isTypeAllowed(element.getType())) {
+        validArmor.push(element);
+      }
+    });
+  }
+
+
+  let weaponID = randomized ? rng.randomIntMax(validWeapons.length - 1) : 0;
+  loadout.push(weaponID);
 
   enum FEMALEONLY {
     CACHUSHA = "Cachusha",
@@ -263,18 +178,20 @@ function getValidLoadOut(
     RUBBERSUIT = "Rubber Suit",
   }
 
-  let armor; 
-  do{
-    armor = validArmor[rng.randomIntMax(validArmor.length - 1)];
-  }while(armor.displayName && armor.displayName in FEMALEONLY)
-  
-  loadout.push(armor.itemID);
+  //find an allowed armorId for a non FEMALEONLY ITEM
+  let armorID = 0;
+  do {
+    armorID = randomized?rng.randomIntMax(validArmor.length - 1):0;
+  } while (validArmor[armorID].displayName! in FEMALEONLY);
 
-  if (weapon.getWorn() == 1 && job.isTypeAllowed(ItemTypes.Shield)) {
-    let shield = itemsByType[ItemTypes.Shield][0];
-    loadout.push(shield.itemID);
+  loadout.push(armorID);
+
+  if (validWeapons[weaponID].getWorn() == 1 && job.isTypeAllowed(ITEMTYPES.Shield)) {
+    let shieldID = items.findIndex((item) => item.getType() === ITEMTYPES.Shield);
+    loadout.push(shieldID);
   }
 
+  //fill empty item slots
   while (loadout.length < 5) {
     loadout.push(0);
   }
@@ -282,12 +199,7 @@ function getValidLoadOut(
   return loadout;
 }
 
-function masteredAbilities(
-  job: FFTAJob,
-  unit: FFTAUnit,
-  count: number,
-  rng: NoiseGenerator
-) {
+function masteredAbilities(job: FFTAJob, unit: FFTAUnit, count: number, rng: NoiseGenerator) {
   let abilityIndicies: Array<number> = [];
   for (var i = 0; i < job.abilityLimit; i++) {
     abilityIndicies.push(i);
