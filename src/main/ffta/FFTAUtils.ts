@@ -35,9 +35,10 @@ export function convertWordUint8Array(
   var thirdByte = littleEndian ? value[1] : value[2];
   var fourthByte = littleEndian ? value[0] : value[3];
 
-
   return (
-    ((firstByte << 0x8) | (secondByte) << 0x16 ) | ((thirdByte << 0x8) | fourthByte)
+    (firstByte << 0x8) |
+    (secondByte << 0x16) |
+    ((thirdByte << 0x8) | fourthByte)
   );
 }
 

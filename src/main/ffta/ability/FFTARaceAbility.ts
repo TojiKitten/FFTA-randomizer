@@ -1,7 +1,6 @@
 import * as FFTAUtils from "../FFTAUtils";
 import { FFTAObject } from "../FFTAObject";
 
-
 const enum OFFSET {
   NAME = 0x00,
   DESCRIPTION = 0x02,
@@ -15,8 +14,7 @@ export class FFTARaceAbility extends FFTAObject {
     super(memory, properties, name);
   }
 
-  getAbilityType()
-  {
+  getAbilityType() {
     return this.properties[OFFSET.TYPE];
   }
 }

@@ -1,7 +1,6 @@
 import { FFTAObject } from "../FFTAObject";
 
-const enum OFFSET {
-}
+const enum OFFSET {}
 
 export class FFTALaw extends FFTAObject {
   constructor(memory: number, name: string, properties: Uint8Array) {

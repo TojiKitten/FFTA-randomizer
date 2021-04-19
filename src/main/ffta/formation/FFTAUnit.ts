@@ -36,10 +36,10 @@ export class FFTAUnit extends FFTAObject {
     }
   }
 
-  setMasterAbility(offset:number, mastered:boolean){
-    let masteredBit = mastered? 1 : 0;
-    let abilityByte = OFFSET.UNITABILITIES + Math.floor(offset/8); 
-    let abilityBit = offset%8;
+  setMasterAbility(offset: number, mastered: boolean) {
+    let masteredBit = mastered ? 1 : 0;
+    let abilityByte = OFFSET.UNITABILITIES + Math.floor(offset / 8);
+    let abilityBit = offset % 8;
     let mask = 0x1 << abilityBit;
 
     let newFlags = new Uint8Array([

@@ -16,7 +16,7 @@ export function setUnitData(
   items: Array<FFTAItem>,
   options: {
     name: string;
-    raceChangable: boolean;
+    raceChangeable: boolean;
     race: string;
     job: string;
     rngEquip: boolean;
@@ -255,7 +255,19 @@ function getValidLoadOut(
   let weapon = validWeapons[rng.randomIntMax(validWeapons.length - 1)];
   loadout.push(weapon.itemID);
 
-  let armor = validArmor[rng.randomIntMax(validArmor.length - 1)];
+  enum FEMALEONLY {
+    CACHUSHA = "Cachusha",
+    BARETTE = "Barette",
+    RIBBON = "Ribbon",
+    MINERVAPLATE = "Minerva Plate",
+    RUBBERSUIT = "Rubber Suit",
+  }
+
+  let armor; 
+  do{
+    armor = validArmor[rng.randomIntMax(validArmor.length - 1)];
+  }while(armor.displayName && armor.displayName in FEMALEONLY)
+  
   loadout.push(armor.itemID);
 
   if (weapon.getWorn() == 1 && job.isTypeAllowed(ItemTypes.Shield)) {
@@ -280,11 +292,11 @@ function masteredAbilities(
   for (var i = 0; i < job.abilityLimit; i++) {
     abilityIndicies.push(i);
   }
-  
+
   abilityIndicies.sort((a, b) => {
     return rng.randomBit() ? 1 : -1;
   });
-  
+
   for (var i = 0; i < count && i < job.abilityLimit; i++) {
     unit.setMasterAbility(abilityIndicies[i], true);
   }
