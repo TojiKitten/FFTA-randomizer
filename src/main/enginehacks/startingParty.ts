@@ -145,7 +145,6 @@ function getValidLoadOut(
   let validWeapons: Array<FFTAItem> = [];
   let validArmor: Array<FFTAItem> = [];
 
-
   //get validWeapons
   for (let iter = 1; iter <= ITEMTYPES.Gun; iter++) {
     let typedWeapons = items.filter((item) => item.getType() === iter);
@@ -156,9 +155,9 @@ function getValidLoadOut(
     });
   }
 
-  //console.log(validWeapons)
+  //console.log(job, " : ",validWeapons)
   //get validArmor
-  for (let iter = ITEMTYPES.Armor; iter <= ITEMTYPES.Robe; iter++){
+  for (let iter = ITEMTYPES.Armor; iter <= ITEMTYPES.Robe; iter++) {
     let typedArmor = items.filter((item) => item.getType() === iter);
     typedArmor.forEach((element) => {
       if (job.isTypeAllowed(element.getType())) {
@@ -167,10 +166,9 @@ function getValidLoadOut(
     });
   }
 
-
   let subWeaponID = randomized ? rng.randomIntMax(validWeapons.length - 1) : 0;
-  let weaponID = items.findIndex((element) => element === validWeapons[subWeaponID])
-  loadout.push(weaponID);
+  let weaponID = items.findIndex((element) => element === validWeapons[subWeaponID]);
+  loadout.push(weaponID+1); //+1 because item ids start at 1 not 0 NotLikeThis
 
   enum FEMALEONLY {
     CACHUSHA = "Cachusha",
@@ -183,22 +181,21 @@ function getValidLoadOut(
   //find an allowed armorId for a non FEMALEONLY ITEM
   let subArmorID = 0;
   do {
-    subArmorID = randomized?rng.randomIntMax(validArmor.length - 1):0;
+    subArmorID = randomized ? rng.randomIntMax(validArmor.length - 1) : 0;
   } while (validArmor[subArmorID].displayName! in FEMALEONLY);
 
-  let armorID = items.findIndex((element) => element === validArmor[subWeaponID])
-  loadout.push(armorID);
+  let armorID = items.findIndex((element) => element === validArmor[subWeaponID]);
+  loadout.push(armorID +1);//+1 because item ids start at 1 not 0 NotLikeThis
 
   if (validWeapons[subWeaponID].getWorn() == 1 && job.isTypeAllowed(ITEMTYPES.Shield)) {
     let shieldID = items.findIndex((item) => item.getType() === ITEMTYPES.Shield);
-    loadout.push(shieldID);
+    loadout.push(shieldID +1);//+1 because item ids start at 1 not 0 NotLikeThis
   }
 
   //fill empty item slots
   while (loadout.length < 5) {
     loadout.push(0);
   }
-
   return loadout;
 }
 
