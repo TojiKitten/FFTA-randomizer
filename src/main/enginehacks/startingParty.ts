@@ -148,27 +148,35 @@ function getValidLoadOut(
   //get validWeapons
   for (let iter = 1; iter <= ITEMTYPES.Gun; iter++) {
     let typedWeapons = items.filter((item) => item.getType() === iter);
-    typedWeapons.forEach((element) => {
-      if (job.isTypeAllowed(element.getType())) {
-        validWeapons.push(element);
+    if (job.isTypeAllowed(iter)) {
+      if (!randomized) {
+        validWeapons.push(typedWeapons[0]);
+        continue;
       }
-    });
+      typedWeapons.forEach((element) => {
+        validWeapons.push(element);
+      });
+    }
   }
 
-  //console.log(job, " : ",validWeapons)
   //get validArmor
   for (let iter = ITEMTYPES.Armor; iter <= ITEMTYPES.Robe; iter++) {
     let typedArmor = items.filter((item) => item.getType() === iter);
-    typedArmor.forEach((element) => {
-      if (job.isTypeAllowed(element.getType())) {
-        validArmor.push(element);
+    if (job.isTypeAllowed(iter)) {
+      if (!randomized) {
+        validArmor.push(typedArmor[0]);
+        continue;
       }
-    });
+      typedArmor.forEach((element) => {
+        validArmor.push(element);
+      });
+    }
   }
 
-  let subWeaponID = randomized ? rng.randomIntMax(validWeapons.length - 1) : 0;
+  //find valid weapon from validweapons array and find the correct index for full item array
+  let subWeaponID = rng.randomIntMax(validWeapons.length - 1);
   let weaponID = items.findIndex((element) => element === validWeapons[subWeaponID]);
-  loadout.push(weaponID+1); //+1 because item ids start at 1 not 0 NotLikeThis
+  loadout.push(weaponID + 1); //+1 because item ids start at 1 not 0 NotLikeThis
 
   enum FEMALEONLY {
     CACHUSHA = "Cachusha",
@@ -178,18 +186,19 @@ function getValidLoadOut(
     RUBBERSUIT = "Rubber Suit",
   }
 
-  //find an allowed armorId for a non FEMALEONLY ITEM
+  //find valid weapon from validArmors array and find the correct index for full item array
+  //doesnt allow for female only items right now
   let subArmorID = 0;
   do {
-    subArmorID = randomized ? rng.randomIntMax(validArmor.length - 1) : 0;
+    subArmorID = rng.randomIntMax(validArmor.length - 1);
   } while (validArmor[subArmorID].displayName! in FEMALEONLY);
 
   let armorID = items.findIndex((element) => element === validArmor[subWeaponID]);
-  loadout.push(armorID +1);//+1 because item ids start at 1 not 0 NotLikeThis
+  loadout.push(armorID + 1); //+1 because item ids start at 1 not 0 NotLikeThis
 
   if (validWeapons[subWeaponID].getWorn() == 1 && job.isTypeAllowed(ITEMTYPES.Shield)) {
     let shieldID = items.findIndex((item) => item.getType() === ITEMTYPES.Shield);
-    loadout.push(shieldID +1);//+1 because item ids start at 1 not 0 NotLikeThis
+    loadout.push(shieldID + 1); //+1 because item ids start at 1 not 0 NotLikeThis
   }
 
   //fill empty item slots
@@ -201,15 +210,13 @@ function getValidLoadOut(
 
 function masteredAbilities(job: FFTAJob, unit: FFTAUnit, count: number, rng: NoiseGenerator) {
   let abilityIndicies: Array<number> = [];
-  for (var i = 0; i < job.abilityLimit; i++) {
-    abilityIndicies.push(i);
-  }
-
-  abilityIndicies.sort((a, b) => {
-    return rng.randomBit() ? 1 : -1;
-  });
-
-  for (var i = 0; i < count && i < job.abilityLimit; i++) {
-    unit.setMasterAbility(abilityIndicies[i], true);
+  count = count <= job.abilityLimit ? count : job.abilityLimit; //check for ability limit on per job bases
+  while (abilityIndicies.length < count) {
+    let abilityIndex = rng.randomIntMax(job.abilityLimit);
+    if (!abilityIndicies.includes(abilityIndex)) {
+      //if not in list push to list so we know it already got mastered then master it
+      abilityIndicies.push(abilityIndex);
+      unit.setMasterAbility(abilityIndex, true);
+    }
   }
 }
