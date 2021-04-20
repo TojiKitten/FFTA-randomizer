@@ -51,6 +51,7 @@ export function percentageMPRegen(rom: Uint8Array) {
   rom.set(codeInject, 0x93092);
 }
 
+// Set jobs to have no requirements
 export function unlockAllJobs(jobs: RaceMap<FFTAJob>) {
   let allJobs = [jobs.Human, jobs.Bangaa, jobs.NuMou, jobs.Viera, jobs.Moogle];
 
@@ -61,6 +62,7 @@ export function unlockAllJobs(jobs: RaceMap<FFTAJob>) {
   });
 }
 
+// Set jobs to have impossible requirements
 export function lockAllJobs(jobs: RaceMap<FFTAJob>) {
   let allJobs = [jobs.Human, jobs.Bangaa, jobs.NuMou, jobs.Viera, jobs.Moogle];
 
@@ -75,104 +77,46 @@ export function changeRaceAbilities(
   raceAbilities: RaceMap<FFTARaceAbility>,
   rng: NoiseGenerator,
   shuffled: boolean
-) {
-  // Get an array of abilities sorted by type for each race
-  let abilityRecord = sortedRaceAbilities(raceAbilities);
-  // For each race's abilities, change the ID, name, and cost to a matching ability type
-  // Based on shuffle setting, remove "used" abilities or not
-  let abilityState;
-  let allRaceAbilities = [raceAbilities.Human, raceAbilities.Bangaa, raceAbilities.NuMou, raceAbilities.Viera, raceAbilities.Moogle];
+): RaceMap<FFTARaceAbility> {
 
-  allRaceAbilities.forEach((iter) =>{
-    abilityState = abilityReplace(iter, abilityRecord, rng, shuffled);
-    iter = abilityState.randomizedAbilities;
-    abilityRecord = abilityState.newSortedAbilities
-  })
+  // Get an array of all race abilities
+  // For randomized case, abilities that appear multiple times are more likely to appear
+  // Examples: Fire, Shield Bearer, Counter, Bow Combo
+  let abilityRecord = flattenRaceMapAbilities(raceAbilities);
+  
+  // Set up a new map with new abilities to return
+  let newMap: Array<Array<FFTARaceAbility>> = [];
+  // Set up an array with the sets of abilities to change
+  let allRaceAbilities = [
+    raceAbilities.Human,
+    raceAbilities.Bangaa,
+    raceAbilities.NuMou,
+    raceAbilities.Viera,
+    raceAbilities.Moogle,
+  ];
+
+  // For each race ability, randomize or shuffle the abilities
+  // If shuffling, remove the shuffled ability from the pool
+  allRaceAbilities.forEach((iter) => {
+    let abilityState = abilityReplace(iter, abilityRecord, rng, shuffled);
+    newMap.push(abilityState.randomizedAbilities);
+    abilityRecord = abilityState.newSortedAbilities;
+  });
+
+  return {
+    Human: newMap[0],
+    Bangaa: newMap[1],
+    NuMou: newMap[2],
+    Viera: newMap[3],
+    Moogle: newMap[4],
+  };
 }
 
-export function shuffleAbilities(
-  raceAbilities: RaceMap<FFTARaceAbility>,
-  rng: NoiseGenerator
-) {
-  let abilityRecord: Array<Array<FFTARaceAbility>> = [[], [], [], [], [], []];
-
-  // Map all abilities according to their type
-  raceAbilities.Human.forEach((ability) => {
-    abilityRecord[ability.getAbilityType()].push(ability);
-  });
-  raceAbilities.Bangaa.forEach((ability) => {
-    abilityRecord[ability.getAbilityType()].push(ability);
-  });
-  raceAbilities.NuMou.forEach((ability) => {
-    abilityRecord[ability.getAbilityType()].push(ability);
-  });
-  raceAbilities.Viera.forEach((ability) => {
-    abilityRecord[ability.getAbilityType()].push(ability);
-  });
-  raceAbilities.Moogle.forEach((ability) => {
-    abilityRecord[ability.getAbilityType()].push(ability);
-  });
-
-  abilityRecord.forEach((array) => {
-    array.sort((a, b) => {
-      return rng.randomBit() === 1 ? 1 : -1;
-    });
-  });
-
-  // For each race's abilities, change the ID, name, and cost to a matching ability type
-  raceAbilities.Human.forEach((ability) => {
-    let type = abilityRecord[ability.getAbilityType()];
-    let newAbility = type.pop();
-    if (newAbility) {
-      ability.properties = newAbility.properties;
-    } else {
-      throw new Error("Ran out of abilities");
-    }
-  });
-  raceAbilities.Bangaa.forEach((ability) => {
-    let type = abilityRecord[ability.getAbilityType()];
-    let newAbility = type.pop();
-    if (newAbility) {
-      ability.properties = newAbility.properties;
-    } else {
-      throw new Error("Ran out of abilities");
-    }
-  });
-  raceAbilities.NuMou.forEach((ability) => {
-    let type = abilityRecord[ability.getAbilityType()];
-    let newAbility = type.pop();
-    if (newAbility) {
-      ability.properties = newAbility.properties;
-    } else {
-      throw new Error("Ran out of abilities");
-    }
-  });
-  raceAbilities.Viera.forEach((ability) => {
-    let type = abilityRecord[ability.getAbilityType()];
-    let newAbility = type.pop();
-    if (newAbility) {
-      ability.properties = newAbility.properties;
-    } else {
-      throw new Error("Ran out of abilities");
-    }
-  });
-  raceAbilities.Moogle.forEach((ability) => {
-    let type = abilityRecord[ability.getAbilityType()];
-    let newAbility = type.pop();
-    if (newAbility) {
-      ability.properties = newAbility.properties;
-    } else {
-      throw new Error("Ran out of abilities");
-    }
-  });
-}
-
-
-function sortedRaceAbilities(raceAbilities: RaceMap<FFTARaceAbility>)
-{
+function flattenRaceMapAbilities(raceAbilities: RaceMap<FFTARaceAbility>) {
   let abilityRecord: Array<FFTARaceAbility> = [];
 
   // Map all abilities according to their type
+  // Add to new array
   raceAbilities.Human.forEach((ability) => {
     abilityRecord.push(ability);
   });
@@ -192,16 +136,46 @@ function sortedRaceAbilities(raceAbilities: RaceMap<FFTARaceAbility>)
   return abilityRecord;
 }
 
-function abilityReplace(raceAbilities:Array<FFTARaceAbility>, sortedAbilities:Array<FFTARaceAbility>, rng: NoiseGenerator, shuffle:boolean)
-{
-  console.log(raceAbilities);
-  //console.log(sortedAbilities);
+function abilityReplace(
+  raceAbilities: Array<FFTARaceAbility>,
+  sortedAbilities: Array<FFTARaceAbility>,
+  rng: NoiseGenerator,
+  shuffle: boolean
+) {
+  // Create a new array to store new abilities
+  let newRaceAbilities: Array<FFTARaceAbility> = [];
+
+  // Randomize each ability in the passed in list
   raceAbilities.forEach((ability) => {
     // Iterate through all abilities and filter to matching ability types
-    let type = sortedAbilities.filter((iter) =>{iter.getAbilityType() === ability.getAbilityType()});
+    // Removes duplicates
+    // Shuffled case, sortedAbilities gets smaller and smaller
+    let type = sortedAbilities.filter((iter, i) => {
+      return (iter.getAbilityType() === ability.getAbilityType() && sortedAbilities.indexOf(iter) === i);
+    });
+
+    // Get a random valid ability and its information
     let abilityIndex = rng.randomIntMax(type.length - 1);
-    ability.properties = type[abilityIndex].properties;
-    if(shuffle) sortedAbilities.splice(abilityIndex, 1);
+    let selectedAbility = type[abilityIndex];
+    let name = selectedAbility.displayName ? selectedAbility.displayName : "";
+    // Create a new ability and add it to the new list
+    newRaceAbilities.push(
+      new FFTARaceAbility(ability.memory, name, selectedAbility.properties)
+    );
+
+    // If shuffling abilities, remove the selected ability from the list
+    // Uses memory address for duplicate case
+    if (shuffle && sortedAbilities.length > 0) {
+      let globalIndex: number = sortedAbilities.findIndex((iter) => {
+        return iter.memory === selectedAbility.memory;
+      });
+      if (globalIndex === -1) throw new Error("Couldn't find ability index");
+      sortedAbilities.splice(globalIndex, 1);
+    }
   });
-  return {randomizedAbilities: raceAbilities, newSortedAbilities: sortedAbilities};
+
+  return {
+    randomizedAbilities: newRaceAbilities,
+    newSortedAbilities: sortedAbilities,
+  };
 }

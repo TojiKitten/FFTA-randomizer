@@ -226,6 +226,7 @@ export class FFTAData {
       this.rom.set(mission.properties, mission.memory);
     });
 
+    console.log(this.raceAbilities.Human[0]);
     this.raceAbilities.Human.forEach((raceAbility) => {
       this.rom.set(raceAbility.properties, raceAbility.memory);
     });
@@ -707,10 +708,18 @@ export class FFTAData {
       case "normal":
         break;
       case "shuffled":
-        JobHacks.changeRaceAbilities(this.raceAbilities, this.rng, true);
+        this.raceAbilities = JobHacks.changeRaceAbilities(
+          this.raceAbilities,
+          this.rng,
+          true
+        );
         break;
       case "random":
-        JobHacks.changeRaceAbilities(this.raceAbilities, this.rng, false);
+        this.raceAbilities = JobHacks.changeRaceAbilities(
+          this.raceAbilities,
+          this.rng,
+          false
+        );
         break;
     }
   }
