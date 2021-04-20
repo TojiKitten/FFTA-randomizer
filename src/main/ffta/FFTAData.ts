@@ -707,10 +707,10 @@ export class FFTAData {
       case "normal":
         break;
       case "shuffled":
-        JobHacks.shuffleAbilities(this.raceAbilities, this.rng);
+        JobHacks.changeRaceAbilities(this.raceAbilities, this.rng, true);
         break;
       case "random":
-        JobHacks.randomizeAbilities(this.raceAbilities, this.rng);
+        JobHacks.changeRaceAbilities(this.raceAbilities, this.rng, false);
         break;
     }
   }
