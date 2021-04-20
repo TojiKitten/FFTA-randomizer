@@ -30,12 +30,25 @@ export function setUnitData(
   let newJob = getNewJob(options.race, options.job, raceJobs, unit, rng);
   unit.setJob(newJob.jobId);
   // Change Equipment (Make sure it's valid)
-  let newLoadout: Array<number> = getValidLoadOut(newJob, items, options.rngEquip, rng);
+  let newLoadout: Array<number> = getValidLoadOut(
+    newJob,
+    items,
+    options.rngEquip,
+    rng
+  );
   newLoadout.forEach((item, i) => {
     unit.setItem(item, i);
   });
-  // Set mastered Abilities
-  masteredAbilities(newJob, unit, options.masteredAbilities, rng);
+  // get set of random abilities and master them
+  let mastered: Array<number> = getRandomAbilityIDs(
+    newJob,
+    unit,
+    options.masteredAbilities,
+    rng
+  );
+  mastered.forEach((ability) => {
+    unit.setMasterAbility(ability, true);
+  });
 }
 
 function getNewJob(
@@ -52,7 +65,9 @@ function getNewJob(
     return randomJob;
   }
   let selectedJob = allowedJobs.find(
-    (job) => job.displayName?.replaceAll(" ", "").toLowerCase() === jobString.toLowerCase()
+    (job) =>
+      job.displayName?.replaceAll(" ", "").toLowerCase() ===
+      jobString.toLowerCase()
   );
   if (!selectedJob) throw new Error(jobString + " not found");
   return selectedJob;
@@ -77,11 +92,21 @@ function getAvailableJobs(race: string, raceJobs: RaceMap<FFTAJob>) {
       allowedJobs = raceJobs.Moogle.filter((job) => job.allowed === true);
       break;
     default:
-      allowedJobs = allowedJobs.concat(raceJobs.Human.filter((job) => job.allowed === true));
-      allowedJobs = allowedJobs.concat(raceJobs.Bangaa.filter((job) => job.allowed === true));
-      allowedJobs = allowedJobs.concat(raceJobs.NuMou.filter((job) => job.allowed === true));
-      allowedJobs = allowedJobs.concat(raceJobs.Viera.filter((job) => job.allowed === true));
-      allowedJobs = allowedJobs.concat(raceJobs.Moogle.filter((job) => job.allowed === true));
+      allowedJobs = allowedJobs.concat(
+        raceJobs.Human.filter((job) => job.allowed === true)
+      );
+      allowedJobs = allowedJobs.concat(
+        raceJobs.Bangaa.filter((job) => job.allowed === true)
+      );
+      allowedJobs = allowedJobs.concat(
+        raceJobs.NuMou.filter((job) => job.allowed === true)
+      );
+      allowedJobs = allowedJobs.concat(
+        raceJobs.Viera.filter((job) => job.allowed === true)
+      );
+      allowedJobs = allowedJobs.concat(
+        raceJobs.Moogle.filter((job) => job.allowed === true)
+      );
       break;
   }
   return allowedJobs;
@@ -131,7 +156,9 @@ function getValidLoadOut(
 
   //find valid weapon from validweapons array and find the correct index for full item array
   let subWeaponID = rng.randomIntMax(validWeapons.length - 1);
-  let weaponID = items.findIndex((element) => element === validWeapons[subWeaponID]);
+  let weaponID = items.findIndex(
+    (element) => element === validWeapons[subWeaponID]
+  );
   loadout.push(weaponID + 1); //+1 because item ids start at 1 not 0 NotLikeThis
 
   enum FEMALEONLY {
@@ -142,18 +169,25 @@ function getValidLoadOut(
     RUBBERSUIT = "Rubber Suit",
   }
 
-  //find valid weapon from validArmors array and find the correct index for full item array
+  //find valid armor from validArmors array and find the correct index for full item array
   //doesnt allow for female only items right now
   let subArmorID = 0;
   do {
     subArmorID = rng.randomIntMax(validArmor.length - 1);
   } while (validArmor[subArmorID].displayName! in FEMALEONLY);
 
-  let armorID = items.findIndex((element) => element === validArmor[subWeaponID]);
+  let armorID = items.findIndex(
+    (element) => element === validArmor[subWeaponID]
+  );
   loadout.push(armorID + 1); //+1 because item ids start at 1 not 0 NotLikeThis
 
-  if (validWeapons[subWeaponID].getWorn() == 1 && job.isTypeAllowed(ITEMTYPES.Shield)) {
-    let shieldID = items.findIndex((item) => item.getType() === ITEMTYPES.Shield);
+  if (
+    validWeapons[subWeaponID].getWorn() == 1 &&
+    job.isTypeAllowed(ITEMTYPES.Shield)
+  ) {
+    let shieldID = items.findIndex(
+      (item) => item.getType() === ITEMTYPES.Shield
+    );
     loadout.push(shieldID + 1); //+1 because item ids start at 1 not 0 NotLikeThis
   }
 
@@ -164,15 +198,20 @@ function getValidLoadOut(
   return loadout;
 }
 
-function masteredAbilities(job: FFTAJob, unit: FFTAUnit, count: number, rng: NoiseGenerator) {
+function getRandomAbilityIDs(
+  job: FFTAJob,
+  unit: FFTAUnit,
+  count: number,
+  rng: NoiseGenerator
+): Array<number> {
   let abilityIndicies: Array<number> = [];
   count = count <= job.abilityLimit ? count : job.abilityLimit; //check for ability limit on per job bases
+  //get "count" amount of random abilities no doubles
   while (abilityIndicies.length < count) {
     let abilityIndex = rng.randomIntMax(job.abilityLimit);
     if (!abilityIndicies.includes(abilityIndex)) {
-      //if not in list push to list so we know it already got mastered then master it
       abilityIndicies.push(abilityIndex);
-      unit.setMasterAbility(abilityIndex, true);
     }
   }
+  return abilityIndicies;
 }
