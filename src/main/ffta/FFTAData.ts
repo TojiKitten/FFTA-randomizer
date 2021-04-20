@@ -226,7 +226,6 @@ export class FFTAData {
       this.rom.set(mission.properties, mission.memory);
     });
 
-    console.log(this.raceAbilities.Human[0]);
     this.raceAbilities.Human.forEach((raceAbility) => {
       this.rom.set(raceAbility.properties, raceAbility.memory);
     });
