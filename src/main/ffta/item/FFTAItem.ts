@@ -82,7 +82,6 @@ export class FFTAItem extends FFTAObject {
     properties: Uint8Array
   ) {
     super(memory, properties, itemName);
-    // Save Item Specific Properties
   }
 
   setBuyPrice(value: number) {
