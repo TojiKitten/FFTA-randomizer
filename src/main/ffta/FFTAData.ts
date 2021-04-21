@@ -43,14 +43,6 @@ type StringTableSpaces = {
   readonly Animations: MemorySpace;
 };
 
-export type RaceMap<Type> = {
-  Human: Array<Type>;
-  Bangaa: Array<Type>;
-  NuMou: Array<Type>;
-  Viera: Array<Type>;
-  Moogle: Array<Type>;
-};
-
 type FFTAMemoryMap = {
   readonly PointerTables: StringTableSpaces;
   readonly RaceAbilities: RaceAbilitySpaces;
@@ -184,9 +176,9 @@ export class FFTAData {
   animations: Array<Array<number>>;
   formations: Array<FFTAFormation>;
   missions: Array<FFTAMission>;
-  raceAbilities: RaceMap<FFTARaceAbility>;
+  raceAbilities: Map<string,Array<FFTARaceAbility>>;
   abilities: Array<FFTAAbility>;
-  jobs: RaceMap<FFTAJob>;
+  jobs: Map<string,Array<FFTAJob>>;
 
   lawSets: Array<FFTALawSet>;
   rewardItemSets: Array<FFTARewardItemSet>;
@@ -226,41 +218,21 @@ export class FFTAData {
       this.rom.set(mission.properties, mission.memory);
     });
 
-    this.raceAbilities.Human.forEach((raceAbility) => {
+    for (let raceAbilitiesElement of this.raceAbilities.values()) {
+     raceAbilitiesElement.forEach( (raceAbility) => {
       this.rom.set(raceAbility.properties, raceAbility.memory);
-    });
-    this.raceAbilities.Bangaa.forEach((raceAbility) => {
-      this.rom.set(raceAbility.properties, raceAbility.memory);
-    });
-    this.raceAbilities.NuMou.forEach((raceAbility) => {
-      this.rom.set(raceAbility.properties, raceAbility.memory);
-    });
-    this.raceAbilities.Viera.forEach((raceAbility) => {
-      this.rom.set(raceAbility.properties, raceAbility.memory);
-    });
-    this.raceAbilities.Moogle.forEach((raceAbility) => {
-      this.rom.set(raceAbility.properties, raceAbility.memory);
-    });
+     });
+    }
 
     this.abilities.forEach((ability) => {
       this.rom.set(ability.properties, ability.memory);
     });
 
-    this.jobs.Human.forEach((job) => {
-      this.rom.set(job.properties, job.memory);
-    });
-    this.jobs.Bangaa.forEach((job) => {
-      this.rom.set(job.properties, job.memory);
-    });
-    this.jobs.NuMou.forEach((job) => {
-      this.rom.set(job.properties, job.memory);
-    });
-    this.jobs.Viera.forEach((job) => {
-      this.rom.set(job.properties, job.memory);
-    });
-    this.jobs.Moogle.forEach((job) => {
-      this.rom.set(job.properties, job.memory);
-    });
+    for (let jobsElement of this.jobs.values()) {
+      jobsElement.forEach( (job) => {
+       this.rom.set(job.properties, job.memory);
+      });
+     }
 
     this.lawSets.forEach((lawSet) => {
       this.rom.set(lawSet.properties, lawSet.memory);
@@ -439,40 +411,37 @@ export class FFTAData {
     return items;
   }
 
-  initializeRaceAbilities(): RaceMap<FFTARaceAbility> {
+  initializeRaceAbilities(): Map<string, Array<FFTARaceAbility>> {
+    let outAbilities: Map<string, Array<FFTARaceAbility>> = new Map();
     let dataType = FFTAMap.RaceAbilities;
-    let races: Array<MemorySpace> = [
-      dataType.Human,
-      dataType.Bangaa,
-      dataType.NuMou,
-      dataType.Viera,
-      dataType.Moogle,
-    ];
-    let allAbilities: Array<Array<FFTARaceAbility>> = [];
-    races.forEach((race, i) => {
-      let raceAbilities: Array<FFTARaceAbility> = [];
-      for (var i = 0; i < race.length; i++) {
-        let memory = race.offset + race.byteSize * i;
+    let races: Map<string, MemorySpace> = new Map();
+    races.set("human", dataType.Human);
+    races.set("bangaa", dataType.Bangaa);
+    races.set("nuMou", dataType.NuMou);
+    races.set("viera", dataType.Viera);
+    races.set("moogle", dataType.Moogle);
 
+    for (let [race, raceData] of races) {
+      let raceAbilities: Array<FFTARaceAbility> = [];
+      for (var iter = 0; iter < raceData.length; iter++) {
+        let memoryOffset = raceData.offset + raceData.byteSize * iter;
+        let abilityName = this.abilityNames[
+          (this.rom[memoryOffset + 1] << 8) | this.rom[memoryOffset]
+        ];
+        let abilityProperties = this.rom.slice(
+          memoryOffset,
+          memoryOffset + raceData.byteSize
+        );
         let newAbility = new FFTARaceAbility(
-          memory,
-          this.abilityNames[(this.rom[memory + 1] << 8) | this.rom[memory]],
-          this.rom.slice(memory, memory + race.byteSize)
+          memoryOffset,
+          abilityName,
+          abilityProperties
         );
         raceAbilities.push(newAbility);
       }
-      allAbilities.push(raceAbilities);
-    });
-
-    let abilities: RaceMap<FFTARaceAbility> = {
-      Human: allAbilities[0],
-      Bangaa: allAbilities[1],
-      NuMou: allAbilities[2],
-      Viera: allAbilities[3],
-      Moogle: allAbilities[4],
-    };
-
-    return abilities;
+      outAbilities.set(race,raceAbilities);
+    }
+    return outAbilities;
   }
 
   initializeAbilities() {
@@ -491,27 +460,31 @@ export class FFTAData {
     return abilities;
   }
 
-  initializeJobs(): RaceMap<FFTAJob> {
+  initializeJobs(): Map<string, Array<FFTAJob>>{
+    let outJobs:Map<string, Array<FFTAJob>> = new Map();
     let dataType = FFTAMap.RaceJobs;
-    let races: Array<MemorySpace> = [
-      dataType.Human,
-      dataType.Bangaa,
-      dataType.NuMou,
-      dataType.Viera,
-      dataType.Moogle,
-    ];
+    let races: Map<string, MemorySpace> = new Map();
+    races.set("human", dataType.Human);
+    races.set("bangaa", dataType.Bangaa);
+    races.set("nuMou", dataType.NuMou);
+    races.set("viera", dataType.Viera);
+    races.set("moogle", dataType.Moogle);
+
+
     let abilityLimits = [0x8c, 0x4c, 0x5e, 0x54, 0x57];
     let allJobs: Array<Array<FFTAJob>> = [];
     let jobID = 2; // ID of Soldier
-    races.forEach((race, key) => {
+
+    let abilityLimitIter = 0;
+    for (let [race, raceData] of races){
       let raceJobs: Array<FFTAJob> = [];
-      for (var i = 0; i < race.length; i++) {
-        let memory = race.offset + race.byteSize * i;
+      for (var i = 0; i < raceData.length; i++) {
+        let memory = raceData.offset + raceData.byteSize * i;
         let newJob = new FFTAJob(
           memory,
           jobID,
           this.itemJobNames[(this.rom[memory + 1] << 8) | this.rom[memory]],
-          this.rom.slice(memory, memory + race.byteSize)
+          this.rom.slice(memory, memory + raceData.byteSize)
         );
 
         let allowedMemory =
@@ -520,21 +493,15 @@ export class FFTAData {
           allowedMemory,
           allowedMemory + allowedWeaponSize
         );
-        newJob.abilityLimit = abilityLimits[key];
+        newJob.abilityLimit = abilityLimits[abilityLimitIter];
         raceJobs.push(newJob);
         jobID++;
       }
-      allJobs.push(raceJobs);
-    });
+      outJobs.set(race, raceJobs);
+      abilityLimitIter++;
+    }
 
-    let jobs: RaceMap<FFTAJob> = {
-      Human: allJobs[0],
-      Bangaa: allJobs[1],
-      NuMou: allJobs[2],
-      Viera: allJobs[3],
-      Moogle: allJobs[4],
-    };
-    return jobs;
+    return outJobs;
   }
 
   initializeLawSets(): Array<FFTALawSet> {
@@ -668,36 +635,16 @@ export class FFTAData {
   }
 
   handleDisableJobs(options: Array<Array<{ name: string; enabled: boolean }>>) {
-    if (this.jobs.Human.length !== options[0].length)
-      throw new Error("Mismatch of human jobs unhandled!");
-    options[0].forEach((option, i) => {
-      this.jobs.Human[i].setAllowed(option.enabled);
-    });
-
-    if (this.jobs.Bangaa.length !== options[1].length)
-      throw new Error("Mismatch of bangaa jobs unhandled!");
-    options[1].forEach((option, i) => {
-      this.jobs.Bangaa[i].setAllowed(option.enabled);
-    });
-
-    if (this.jobs.NuMou.length !== options[2].length) {
-      throw new Error("Mismatch of nu mou jobs unhandled!");
+    let optionsIter = 0
+    for(let [race,raceJobs] of this.jobs){
+      if(raceJobs.length !== options[optionsIter].length){
+        throw new Error("Mismatch of "+race+ " jobs unhandled!");
+      }
+      options[optionsIter].forEach((job, i) =>{
+        raceJobs[i].setAllowed(job.enabled);
+      });
+      optionsIter++;
     }
-    options[2].forEach((option, i) => {
-      this.jobs.NuMou[i].setAllowed(option.enabled);
-    });
-
-    if (this.jobs.Viera.length !== options[3].length)
-      throw new Error("Mismatch of Viera jobs unhandled!");
-    options[3].forEach((option, i) => {
-      this.jobs.Viera[i].setAllowed(option.enabled);
-    });
-
-    if (this.jobs.Moogle.length !== options[4].length)
-      throw new Error("Mismatch of Moogle jobs unhandled!");
-    options[4].forEach((option, i) => {
-      this.jobs.Moogle[i].setAllowed(option.enabled);
-    });
   }
 
   handleUnitAbilities(options: string) {
@@ -706,10 +653,18 @@ export class FFTAData {
       case "normal":
         break;
       case "shuffled":
-        JobHacks.shuffleAbilities(this.raceAbilities, this.rng);
+        this.raceAbilities = JobHacks.changeRaceAbilities(
+          this.raceAbilities,
+          this.rng,
+          true
+        );
         break;
       case "random":
-        JobHacks.randomizeAbilities(this.raceAbilities, this.rng);
+        this.raceAbilities = JobHacks.changeRaceAbilities(
+          this.raceAbilities,
+          this.rng,
+          false
+        );
         break;
     }
   }

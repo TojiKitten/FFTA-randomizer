@@ -1,4 +1,3 @@
-import { RaceMap } from "../ffta/FFTAData";
 import { getShortUint8Array } from "../ffta/FFTAUtils";
 import { FFTAUnit } from "../ffta/formation/FFTAUnit";
 import { FFTAItem, ITEMTYPES } from "../ffta/item/FFTAItem";
@@ -12,7 +11,7 @@ export function setStartingGold(rom: Uint8Array, gold: number) {
 
 export function setUnitData(
   unit: FFTAUnit,
-  raceJobs: RaceMap<FFTAJob>,
+  raceJobs: Map<string, Array<FFTAJob>>,
   items: Array<FFTAItem>,
   options: {
     name: string;
@@ -54,7 +53,7 @@ export function setUnitData(
 function getNewJob(
   raceString: string,
   jobString: string,
-  raceJobs: RaceMap<FFTAJob>,
+  raceJobs: Map<string, Array<FFTAJob>>,
   unit: FFTAUnit,
   rng: NoiseGenerator
 ): FFTAJob {
@@ -73,41 +72,14 @@ function getNewJob(
   return selectedJob;
 }
 
-function getAvailableJobs(race: string, raceJobs: RaceMap<FFTAJob>) {
+function getAvailableJobs(race: string, raceJobs: Map<string, Array<FFTAJob>>) {
   let allowedJobs: Array<FFTAJob> = [];
-  switch (race) {
-    case "human":
-      allowedJobs = raceJobs.Human.filter((job) => job.allowed === true);
-      break;
-    case "bangaa":
-      allowedJobs = raceJobs.Bangaa.filter((job) => job.allowed === true);
-      break;
-    case "nuMou":
-      allowedJobs = raceJobs.NuMou.filter((job) => job.allowed === true);
-      break;
-    case "viera":
-      allowedJobs = raceJobs.Viera.filter((job) => job.allowed === true);
-      break;
-    case "moogle":
-      allowedJobs = raceJobs.Moogle.filter((job) => job.allowed === true);
-      break;
-    default:
-      allowedJobs = allowedJobs.concat(
-        raceJobs.Human.filter((job) => job.allowed === true)
-      );
-      allowedJobs = allowedJobs.concat(
-        raceJobs.Bangaa.filter((job) => job.allowed === true)
-      );
-      allowedJobs = allowedJobs.concat(
-        raceJobs.NuMou.filter((job) => job.allowed === true)
-      );
-      allowedJobs = allowedJobs.concat(
-        raceJobs.Viera.filter((job) => job.allowed === true)
-      );
-      allowedJobs = allowedJobs.concat(
-        raceJobs.Moogle.filter((job) => job.allowed === true)
-      );
-      break;
+  if (raceJobs.has(race)){
+    allowedJobs = raceJobs.get(race)!.filter((job) => job.allowed === true);
+  }else{
+    for(let jobs of raceJobs.values()){
+      allowedJobs = allowedJobs.concat(jobs.filter((job) => job.allowed === true))
+    }
   }
   return allowedJobs;
 }
