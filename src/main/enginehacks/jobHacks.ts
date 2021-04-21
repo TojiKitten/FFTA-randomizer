@@ -1,5 +1,5 @@
+import { FFTAAbility } from "../ffta/ability/FFTAAbility";
 import { FFTARaceAbility } from "../ffta/ability/FFTARaceAbility";
-import { RaceMap } from "../ffta/FFTAData";
 import { FFTAJob } from "../ffta/job/FFTAJob";
 import NoiseGenerator from "../ffta/NoiseGenerator";
 
@@ -52,86 +52,55 @@ export function percentageMPRegen(rom: Uint8Array) {
 }
 
 // Set jobs to have no requirements
-export function unlockAllJobs(jobs: RaceMap<FFTAJob>) {
-  let allJobs = [jobs.Human, jobs.Bangaa, jobs.NuMou, jobs.Viera, jobs.Moogle];
-
-  allJobs.forEach((race) => {
-    race.forEach((job) => {
+export function unlockAllJobs(jobs: Map<string, Array<FFTAJob>>) {
+  for(let jobsElement of jobs.values()){
+    jobsElement.forEach((job) => {
       job.setRequirements(0x0);
     });
-  });
+  }
 }
 
 // Set jobs to have impossible requirements
-export function lockAllJobs(jobs: RaceMap<FFTAJob>) {
-  let allJobs = [jobs.Human, jobs.Bangaa, jobs.NuMou, jobs.Viera, jobs.Moogle];
-
-  allJobs.forEach((race) => {
-    race.forEach((job) => {
+export function lockAllJobs(jobs: Map<string, Array<FFTAJob>>) {
+  for(let jobsElement of jobs.values()){
+    jobsElement.forEach((job) => {
       job.setRequirements(0x20);
     });
-  });
+  }
 }
 
 export function changeRaceAbilities(
-  raceAbilities: RaceMap<FFTARaceAbility>,
+  raceAbilities: Map<string, Array<FFTARaceAbility>>,
   rng: NoiseGenerator,
   shuffled: boolean
-): RaceMap<FFTARaceAbility> {
+): Map<string, Array<FFTARaceAbility>> {
   // Get an array of all race abilities
   // For randomized case, abilities that appear multiple times are more likely to appear
   // Examples: Fire, Shield Bearer, Counter, Bow Combo
   let abilityRecord = flattenRaceMapAbilities(raceAbilities);
 
   // Set up a new map with new abilities to return
-  let newMap: Array<Array<FFTARaceAbility>> = [];
-  // Set up an array with the sets of abilities to change
-  let allRaceAbilities = [
-    raceAbilities.Human,
-    raceAbilities.Bangaa,
-    raceAbilities.NuMou,
-    raceAbilities.Viera,
-    raceAbilities.Moogle,
-  ];
+  let newMap: Map<string, Array<FFTARaceAbility>> = new Map();
 
-  // For each race ability, randomize or shuffle the abilities
-  // If shuffling, remove the shuffled ability from the pool
-  allRaceAbilities.forEach((iter) => {
-    let abilityState = abilityReplace(iter, abilityRecord, rng, shuffled);
-    newMap.push(abilityState.randomizedAbilities);
+   for(let [key, value] of raceAbilities){
+    let abilityState = abilityReplace(value, abilityRecord, rng, shuffled);
+    newMap.set(key,abilityState.randomizedAbilities)
     abilityRecord = abilityState.newSortedAbilities;
-  });
+  }
 
-  return {
-    Human: newMap[0],
-    Bangaa: newMap[1],
-    NuMou: newMap[2],
-    Viera: newMap[3],
-    Moogle: newMap[4],
-  };
+  return newMap;
 }
 
-function flattenRaceMapAbilities(raceAbilities: RaceMap<FFTARaceAbility>) {
+function flattenRaceMapAbilities(raceAbilities: Map<string, Array<FFTARaceAbility>>) {
   let abilityRecord: Array<FFTARaceAbility> = [];
 
   // Map all abilities according to their type
   // Add to new array
-  raceAbilities.Human.forEach((ability) => {
-    abilityRecord.push(ability);
-  });
-  raceAbilities.Bangaa.forEach((ability) => {
-    abilityRecord.push(ability);
-  });
-  raceAbilities.NuMou.forEach((ability) => {
-    abilityRecord.push(ability);
-  });
-  raceAbilities.Viera.forEach((ability) => {
-    abilityRecord.push(ability);
-  });
-  raceAbilities.Moogle.forEach((ability) => {
-    abilityRecord.push(ability);
-  });
-
+  for(let abilities of raceAbilities.values()){
+    abilities.forEach((ability) => {
+      abilityRecord.push(ability);
+    });
+  }
   return abilityRecord;
 }
 
@@ -181,3 +150,4 @@ function abilityReplace(
     newSortedAbilities: sortedAbilities,
   };
 }
+

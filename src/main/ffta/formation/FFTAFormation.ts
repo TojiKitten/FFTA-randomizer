@@ -22,9 +22,6 @@ export class FFTAFormation extends FFTAObject {
 
   constructor(memory: number, properties: Uint8Array) {
     super(memory, properties, undefined);
-    // Save FFTAObject Properties
-    this.memory = memory;
-    this.properties = properties;
 
     this.unitStart = FFTAUtils.getLittleEndianAddress(
       properties.slice(OFFSET.MEMBERSADDRESS, OFFSET.MEMBERSADDRESS + 4)

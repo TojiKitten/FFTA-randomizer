@@ -12,28 +12,12 @@ export const PartySettings = ({ globalState, callback }: props) => {
     setting: string;
     value: Array<Unit>;
   };
+  
 
-  let humanJobs = globalState.find((element) => element.setting === "humanJobs")! as {
-    setting: string;
-    value: Array<Job>;
-  };
-  let bangaaJobs = globalState.find((element) => element.setting === "bangaaJobs")! as {
-    setting: string;
-    value: Array<Job>;
-  };
-  let nuMouJobs = globalState.find((element) => element.setting === "nuMouJobs")! as {
-    setting: string;
-    value: Array<Job>;
-  };
-  let vieraJobs = globalState.find((element) => element.setting === "vieraJobs")! as {
-    setting: string;
-    value: Array<Job>;
-  };
-  let moogleJobs = globalState.find((element) => element.setting === "moogleJobs")! as {
-    setting: string;
-    value: Array<Job>;
-  };
+  // @ts-ignore
+  let jobMap: Map<string,Array<Job>> = globalState.find((element) => element.setting === "jobMap")!.value;
 
+  console.log(jobMap)
   let partyMemberList = Array<JSX.Element>();
 
   const changeProperty = (event: any, setting: string, unit: Unit) => {
@@ -56,19 +40,19 @@ export const PartySettings = ({ globalState, callback }: props) => {
     let jobs = Array<Job>();
     switch (element.race) {
       case "human":
-        jobs = humanJobs.value;
+        jobs = jobMap!.get("human")!;
         break;
       case "bangaa":
-        jobs = bangaaJobs.value;
+        jobs = jobMap.get("bangaa")!;
         break;
       case "nuMou":
-        jobs = nuMouJobs.value;
+        jobs = jobMap.get("nuMou")!;
         break;
       case "viera":
-        jobs = vieraJobs.value;
+        jobs = jobMap.get("nuMou")!;
         break;
       case "moogle":
-        jobs = moogleJobs.value;
+        jobs = jobMap.get("moogle")!;
         break;
     }
     partyMemberList.push(<PartyMember unit={element} jobList={jobs} callback={changeProperty} />);
