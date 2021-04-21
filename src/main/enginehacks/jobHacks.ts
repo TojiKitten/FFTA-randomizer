@@ -59,6 +59,7 @@ export function unlockAllJobs(jobs: Map<string, Array<FFTAJob>>) {
     });
   }
 }
+
 // Set jobs to have impossible requirements
 export function lockAllJobs(jobs: Map<string, Array<FFTAJob>>) {
   for(let jobsElement of jobs.values()){
@@ -149,3 +150,4 @@ function abilityReplace(
     newSortedAbilities: sortedAbilities,
   };
 }
+
