@@ -397,7 +397,6 @@ export class FFTAData {
       let memory = dataType.offset + dataType.byteSize * i;
       let newItem = new FFTAItem(
         memory,
-        i + 1,
         this.itemJobNames[(this.rom[memory + 1] << 8) | this.rom[memory]],
         this.rom.slice(memory, memory + dataType.byteSize)
       );

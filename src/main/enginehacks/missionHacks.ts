@@ -158,8 +158,8 @@ export function randomRewards(
   rewardSets.forEach((set) => {
     for (var i = 0; i < numberRewards; i++) {
       let offset = rewardSize * i;
-      let randomItem = items[rng.randomIntMax(items.length - 1)].itemID;
-      let randomItemUint8Array = FFTAUtils.getShortUint8Array(randomItem, true);
+      let randomItemID = rng.randomIntRange(1, items.length);
+      let randomItemUint8Array = FFTAUtils.getShortUint8Array(randomItemID, true);
       set.properties.set(randomItemUint8Array, offset);
     }
   });

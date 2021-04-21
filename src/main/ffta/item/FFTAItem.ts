@@ -30,6 +30,39 @@ const enum OFFSET {
   ABILITYSET = 0x1d,
 }
 
+export const enum ITEMTYPES{
+  Null = 0,
+  Sword = 1,
+  Blade = 2,
+  Saber = 3,
+  KnightSword,
+  GreatSword,
+  BroadSword,
+  Knife,
+  Rapier,
+  Katana,
+  Staff,
+  Rod,
+  Mace,
+  Bow,
+  GreatBow,
+  Spear,
+  Instrument,
+  Knuckle,
+  Soul,
+  Gun,
+  Shield,
+  Helmet,
+  Ribbon,
+  Hat,
+  Armor,
+  Cloth,
+  Robe,
+  Shoes,
+  Armlet,
+  Accessory,
+  Consumable,
+}
 const enum ITEMFLAG {
   DOUBLESWORD = 0x0,
   DOUBLEHAND = 0x1,
@@ -43,17 +76,13 @@ const enum ITEMFLAG {
 
 // ==== Class ====
 export class FFTAItem extends FFTAObject {
-  itemID = -1;
-
   constructor(
     memory: number,
-    id: number,
     itemName: string,
     properties: Uint8Array
   ) {
     super(memory, properties, itemName);
     // Save Item Specific Properties
-    this.itemID = id;
   }
 
   setBuyPrice(value: number) {
