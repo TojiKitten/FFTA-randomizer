@@ -14,7 +14,7 @@ import * as ItemHacks from "../enginehacks/itemHacks";
 import * as ForcedHacks from "../enginehacks/forcedHacks";
 import NoiseGenerator from "./NoiseGenerator";
 
-const enum RACES{
+export enum RACES{
   Human= "human",
   Bangaa = "bangaa",
   NuMou = "nuMou",
@@ -642,16 +642,14 @@ export class FFTAData {
     }
   }
 
-  handleDisableJobs(options: Array<Array<{ name: string; enabled: boolean }>>) {
-    let optionsIter = 0
+  handleDisableJobs(jobMapOption: Map<string,Array<{name: string, enabled: boolean}>>) {
     for(let [race,raceJobs] of this.jobs){
-      if(raceJobs.length !== options[optionsIter].length){
+      if(raceJobs.length !== jobMapOption.get(race)!.length){
         throw new Error("Mismatch of "+race+ " jobs unhandled!");
       }
-      options[optionsIter].forEach((job, i) =>{
+      jobMapOption.get(race)!.forEach((job, i) =>{
         raceJobs[i].setAllowed(job.enabled);
       });
-      optionsIter++;
     }
   }
 

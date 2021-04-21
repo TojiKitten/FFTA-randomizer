@@ -1,6 +1,6 @@
 export type Config = {
   setting: string;
-  value: number | boolean | string | Array<Unit> | Array<Job>;
+  value: number | boolean | string | Array<Unit> | Map<string,Array<Job>>;
 };
 
 export type Unit = {

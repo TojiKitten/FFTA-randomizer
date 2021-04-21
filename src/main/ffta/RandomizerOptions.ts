@@ -16,13 +16,7 @@ export function randomizeFFTA(fftaData: FFTAData, options: iRandomizerOptions) {
   fftaData.handleLawOptions(options["laws"]);
   fftaData.handleRewardOptions(options["missionRewards"]);
   fftaData.handleUnitAbilities(options["abilities"]);
-  fftaData.handleDisableJobs([
-    options["humanJobs"],
-    options["bangaaJobs"],
-    options["nuMouJobs"],
-    options["vieraJobs"],
-    options["moogleJobs"],
-  ]);
+  fftaData.handleDisableJobs(options["jobMap"]);
   fftaData.handlePartyMembers(options["partyMember"]);
   fftaData.handleShopItems(options["shopitems"]);
 }

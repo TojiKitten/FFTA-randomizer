@@ -11,23 +11,21 @@ export const JobSettings = ({ globalState, callback }: props) => {
   let abilities = globalState.find((element) => element.setting === "abilities")!;
   let mpRegen = globalState.find((element) => element.setting === "mpRegen")!;
 
-  let humanJobs = globalState.find((element) => element.setting === "humanJobs")!;
-  let bangaaJobs = globalState.find((element) => element.setting === "bangaaJobs")!;
-  let nuMouJobs = globalState.find((element) => element.setting === "nuMouJobs")!;
-  let vieraJobs = globalState.find((element) => element.setting === "vieraJobs")!;
-  let moogleJobs = globalState.find((element) => element.setting === "moogleJobs")!;
+  // @ts-ignore
+  let jobMap: Map<string,Array<Job>> = globalState.find((element) => element.setting === "jobMap")!.value;
 
-  const jobChange = (event: any, raceJobs: { setting: string; value: Array<Job> }) => {
-    raceJobs.value.find((element: any) => element.name == event.target.id)!.enabled = !raceJobs.value.find(
+
+  const jobChange = (event: any, race: string, jobs: Array<Job>) => {
+    jobMap.get(race)!.find((element: any) => element.name == event.target.id)!.enabled = !jobMap.get(race)!.find(
       (element: any) => element.name == event.target.id
     )!.enabled;
 
-    callback(raceJobs);
+    callback({setting: "jobMap", value: jobMap});
   };
 
-  const setJobList = (data: any, race: string): Array<JSX.Element> => {
+  const setJobList = (jobs: Array<Job>, race: string): Array<JSX.Element> => {
     let list = Array<JSX.Element>();
-    data.value.forEach((element: Job) => {
+    jobs.forEach((element: Job) => {
       list.push(
         <>
           <input
@@ -35,7 +33,7 @@ export const JobSettings = ({ globalState, callback }: props) => {
             id={element.name}
             key={element.name+race}
             checked={element.enabled}
-            onChange={(event) => jobChange(event, data)}
+            onChange={(event) => jobChange(event,race, jobs)}
           />
           <label>{element.name}</label>
           <br />
@@ -45,11 +43,12 @@ export const JobSettings = ({ globalState, callback }: props) => {
     return list;
   };
 
-  let humanJobList = setJobList(humanJobs, "human");
-  let bangaaJobList = setJobList(bangaaJobs, "bangaa");
-  let nuMouJobList = setJobList(nuMouJobs, "nuMou");
-  let vieraJobList = setJobList(vieraJobs, "viera");
-  let moogleJobList = setJobList(moogleJobs, "moogle");
+  let humanJobList = setJobList(jobMap.get("human")!, "human");
+  let bangaaJobList = setJobList(jobMap.get("bangaa")!, "bangaa");
+  let nuMouJobList = setJobList(jobMap.get("nuMou")!, "nuMou");
+  let vieraJobList = setJobList(jobMap.get("viera")!, "viera");
+  let moogleJobList = setJobList(jobMap.get("moogle")!, "moogle");
+
   return (
     <div>
       <div className="jobList">
