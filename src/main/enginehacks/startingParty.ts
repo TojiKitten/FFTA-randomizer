@@ -1,7 +1,6 @@
 import { getShortUint8Array } from "../ffta/FFTAUtils";
 import { FFTAUnit } from "../ffta/formation/FFTAUnit";
 import { FFTAItem, ITEMTYPES } from "../ffta/item/FFTAItem";
-
 import { FFTAJob } from "../ffta/job/FFTAJob";
 import NoiseGenerator from "../ffta/NoiseGenerator";
 

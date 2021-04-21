@@ -14,6 +14,14 @@ import * as ItemHacks from "../enginehacks/itemHacks";
 import * as ForcedHacks from "../enginehacks/forcedHacks";
 import NoiseGenerator from "./NoiseGenerator";
 
+export enum RACES{
+  Human= "human",
+  Bangaa = "bangaa",
+  NuMou = "nuMou",
+  Viera = "viera",
+  Moogle = "moogle"
+}
+
 type MemorySpace = {
   readonly offset: number;
   readonly byteSize: number;
@@ -415,11 +423,11 @@ export class FFTAData {
     let outAbilities: Map<string, Array<FFTARaceAbility>> = new Map();
     let dataType = FFTAMap.RaceAbilities;
     let races: Map<string, MemorySpace> = new Map();
-    races.set("human", dataType.Human);
-    races.set("bangaa", dataType.Bangaa);
-    races.set("nuMou", dataType.NuMou);
-    races.set("viera", dataType.Viera);
-    races.set("moogle", dataType.Moogle);
+    races.set(RACES.Human, dataType.Human);
+    races.set(RACES.Bangaa, dataType.Bangaa);
+    races.set(RACES.NuMou, dataType.NuMou);
+    races.set(RACES.Viera, dataType.Viera);
+    races.set(RACES.Moogle, dataType.Moogle);
 
     for (let [race, raceData] of races) {
       let raceAbilities: Array<FFTARaceAbility> = [];
@@ -464,11 +472,11 @@ export class FFTAData {
     let outJobs:Map<string, Array<FFTAJob>> = new Map();
     let dataType = FFTAMap.RaceJobs;
     let races: Map<string, MemorySpace> = new Map();
-    races.set("human", dataType.Human);
-    races.set("bangaa", dataType.Bangaa);
-    races.set("nuMou", dataType.NuMou);
-    races.set("viera", dataType.Viera);
-    races.set("moogle", dataType.Moogle);
+    races.set(RACES.Human, dataType.Human);
+    races.set(RACES.Bangaa, dataType.Bangaa);
+    races.set(RACES.NuMou, dataType.NuMou);
+    races.set(RACES.Viera, dataType.Viera);
+    races.set(RACES.Moogle, dataType.Moogle);
 
 
     let abilityLimits = [0x8c, 0x4c, 0x5e, 0x54, 0x57];
@@ -634,16 +642,14 @@ export class FFTAData {
     }
   }
 
-  handleDisableJobs(options: Array<Array<{ name: string; enabled: boolean }>>) {
-    let optionsIter = 0
+  handleDisableJobs(jobMapOption: Map<string,Array<{name: string, enabled: boolean}>>) {
     for(let [race,raceJobs] of this.jobs){
-      if(raceJobs.length !== options[optionsIter].length){
+      if(raceJobs.length !== jobMapOption.get(race)!.length){
         throw new Error("Mismatch of "+race+ " jobs unhandled!");
       }
-      options[optionsIter].forEach((job, i) =>{
+      jobMapOption.get(race)!.forEach((job, i) =>{
         raceJobs[i].setAllowed(job.enabled);
       });
-      optionsIter++;
     }
   }
 
