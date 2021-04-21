@@ -2,6 +2,7 @@ import { FFTAObject } from "../FFTAObject";
 import * as FFTAUtils from "../FFTAUtils";
 
 const enum OFFSET {
+  NAME = 0x0,
   BUY = 0x04,
   SELL = 0x06,
   // See Item enum for order, Sword = 1
@@ -82,6 +83,12 @@ export class FFTAItem extends FFTAObject {
     properties: Uint8Array
   ) {
     super(memory, properties, itemName);
+  }
+
+  getNameID():number
+  {
+    let nameBuffer = this.properties.slice(OFFSET.NAME, OFFSET.NAME+2);
+    return (nameBuffer[1] << 8) | nameBuffer[0]
   }
 
   setBuyPrice(value: number) {
