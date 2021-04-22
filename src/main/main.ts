@@ -134,6 +134,7 @@ function savefile(filepath: any) {
     RandomizerOptions.randomizeFFTA(fftaData, randomizerOptions);
     fftaData.writeData();
     fs.writeFileSync(filepath, fftaData.rom, null);
+    fs.writeFileSync(filepath+".json", JSON.stringify(randomizerOptions), null)
   }
 }
 
