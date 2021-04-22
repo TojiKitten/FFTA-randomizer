@@ -2,6 +2,7 @@ import { FFTAObject } from "../FFTAObject";
 import * as FFTAUtils from "../FFTAUtils";
 
 const enum OFFSET {
+  NAME = 0x0,
   BUY = 0x04,
   SELL = 0x06,
   // See Item enum for order, Sword = 1

@@ -704,16 +704,16 @@ export class FFTAData {
       case "default":
         break;
       case "limited":
-        ItemHacks.toggleLimitedShopItems(this.items, this.rng);
+        this.items = ItemHacks.toggleLimitedShopItems(this.items, this.rng);
         break;
       case "random":
-        ItemHacks.toggleRandomShopItems(this.items, this.rng);
+        this.items = ItemHacks.toggleRandomShopItems(this.items, this.rng);
         break;
       case "all":
-        ItemHacks.toggleAllShopItems(this.items, true);
+        this.items = ItemHacks.toggleAllShopItems(this.items, true);
         break;
       case "none":
-        ItemHacks.toggleAllShopItems(this.items, false);
+        this.items = ItemHacks.toggleAllShopItems(this.items, false);
         break;
       default:
         throw new Error("case: " + options + " unhandled!");
