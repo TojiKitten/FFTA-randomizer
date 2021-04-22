@@ -207,8 +207,15 @@ export class FFTAData {
     this.lawSets = this.initializeLawSets();
     this.rewardItemSets = this.initializeRewardItemSets();
     this.rng = new NoiseGenerator();
+    
   }
 
+  getSeed(): number{
+    return this.rng.seed
+  }
+  setSeed(seed: number): void{
+    this.rng.setSeed(seed);
+  }
   // Verify nothing breaks by Open and Save in Randomizer, then data compare in hex editor to find 0 changes
   writeData(): void {
     this.items.forEach((item) => {

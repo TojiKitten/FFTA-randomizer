@@ -110,6 +110,7 @@ function openfile(files: any) {
     let filecontent = fs.readFileSync(filepath);
     fftaData = new FFTAData(filecontent);
     mainWindow!.webContents.send("FileName-Change", { filepath: filepath });
+    mainWindow!.webContents.send("get-seed", { seed: fftaData.getSeed() });
   }
 }
 
@@ -135,7 +136,7 @@ function savefile(filepath: any) {
     fftaData.writeData();
     fs.writeFileSync(filepath, fftaData.rom, null);
     if( process.env.NODE_ENV === "development")
-      fs.writeFileSync(filepath+".json", JSON.stringify(randomizerOptions), null)
+      fs.writeFileSync(filepath+".json", JSON.stringify(randomizerOptions,null, 2), null)
   }
 }
 

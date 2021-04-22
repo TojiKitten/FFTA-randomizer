@@ -10,7 +10,7 @@ contextBridge.exposeInMainWorld("api", {
   },
   
   receive: (channel: string, cb: any) => {
-    const allowedChannels: string[] = ["FileName-Change"];
+    const allowedChannels: string[] = ["FileName-Change", "get-seed"];
     if (allowedChannels.includes(channel)) {
       ipcRenderer.on(channel, (event, ...args) => cb(...args));
     }
