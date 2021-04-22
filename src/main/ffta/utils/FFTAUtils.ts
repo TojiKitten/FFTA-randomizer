@@ -1,3 +1,6 @@
+const charTable = require("./charLookup.json");
+
+
 export function getShortUint8Array(value: number, littleEndian: boolean) {
   var firstByte = littleEndian ? value & 0xff : (value >> 0x8) & 0xff;
   var secondByte = littleEndian ? (value >> 0x8) & 0xff : value & 0xff;
@@ -42,7 +45,6 @@ export function convertWordUint8Array(
   );
 }
 
-const charTable = require("./charLookup.json");
 export function decodeFFTAText(encodedName: Uint8Array): string {
   var firstByte;
   var secondByte;

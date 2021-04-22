@@ -1,18 +1,18 @@
-import { FFTAItem, FFTARewardItemSet } from "./item/FFTAItem";
-import * as FFTAUtils from "./FFTAUtils";
-import { FFTAFormation } from "./formation/FFTAFormation";
-import { FFTARaceAbility } from "./ability/FFTARaceAbility";
-import { FFTAAbility } from "./ability/FFTAAbility";
-import { FFTAJob } from "./job/FFTAJob";
-import { FFTALaw, FFTALawSet } from "./item/FFTALaw";
-import { FFTAMission } from "./mission/FFTAMission";
-import * as CutsceneHacks from "../enginehacks/cutsceneskip";
-import * as MissionHacks from "../enginehacks/missionHacks";
-import * as StartingPartyHacks from "../enginehacks/startingParty";
-import * as JobHacks from "../enginehacks/jobHacks";
-import * as ItemHacks from "../enginehacks/itemHacks";
-import * as ForcedHacks from "../enginehacks/forcedHacks";
-import NoiseGenerator from "./NoiseGenerator";
+import { FFTAItem, FFTARewardItemSet } from "./DataWrapper/FFTAItem";
+import * as FFTAUtils from "./utils/FFTAUtils";
+import { FFTAFormation } from "./DataWrapper/FFTAFormation";
+import { FFTARaceAbility } from "./DataWrapper/FFTARaceAbility";
+import { FFTAAbility } from "./DataWrapper/FFTAAbility";
+import { FFTAJob } from "./DataWrapper/FFTAJob";
+import { FFTALaw, FFTALawSet } from "./DataWrapper/FFTALaw";
+import { FFTAMission } from "./DataWrapper/FFTAMission";
+import * as CutsceneHacks from "./enginehacks/cutsceneskip";
+import * as MissionHacks from "./enginehacks/missionHacks";
+import * as StartingPartyHacks from "./enginehacks/startingParty";
+import * as JobHacks from "./enginehacks/jobHacks";
+import * as ItemHacks from "./enginehacks/itemHacks";
+import * as ForcedHacks from "./enginehacks/forcedHacks";
+import NoiseGenerator from "./utils/NoiseGenerator";
 
 export enum RACES{
   Human= "human",

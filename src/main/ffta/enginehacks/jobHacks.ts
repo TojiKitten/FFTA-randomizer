@@ -1,7 +1,7 @@
-import { FFTAAbility } from "../ffta/ability/FFTAAbility";
-import { FFTARaceAbility } from "../ffta/ability/FFTARaceAbility";
-import { FFTAJob } from "../ffta/job/FFTAJob";
-import NoiseGenerator from "../ffta/NoiseGenerator";
+import { FFTAAbility } from "../DataWrapper/FFTAAbility";
+import { FFTARaceAbility } from "../DataWrapper/FFTARaceAbility";
+import { FFTAJob } from "../DataWrapper/FFTAJob";
+import NoiseGenerator from "../utils/NoiseGenerator";
 
 export function percentageMPRegen(rom: Uint8Array) {
   const codeInject = [

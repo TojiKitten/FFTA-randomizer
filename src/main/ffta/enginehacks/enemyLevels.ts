@@ -1,5 +1,5 @@
-import FFTAData from "../ffta/FFTAData";
-import { FFTAFormation } from "../ffta/formation/FFTAFormation";
+import FFTAData from "../FFTAData";
+import { FFTAFormation } from "../DataWrapper/FFTAFormation";
 
 export function lerpStoryMissionLevels(
   formations: Array<FFTAFormation>,
