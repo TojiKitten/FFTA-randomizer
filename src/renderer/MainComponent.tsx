@@ -168,6 +168,10 @@ export function MainComponent() {
     changeSetting({ setting: "romLoaded", value: true });
   });
 
+  api.receive("get-seed", function(msg :any) {
+    changeSetting({ setting: "randomizerSeed", value: msg.seed })
+  })
+  
   const changeSetting = (nconfig: Config) => {
     let newConfig = Array.from(config);
     newConfig.find((element) => element.setting === nconfig.setting)!.value =
