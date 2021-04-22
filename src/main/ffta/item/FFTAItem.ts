@@ -85,12 +85,6 @@ export class FFTAItem extends FFTAObject {
     super(memory, properties, itemName);
   }
 
-  getNameID():number
-  {
-    let nameBuffer = this.properties.slice(OFFSET.NAME, OFFSET.NAME+2);
-    return (nameBuffer[1] << 8) | nameBuffer[0]
-  }
-
   setBuyPrice(value: number) {
     this.setProperty(OFFSET.BUY, 2, value);
   }
