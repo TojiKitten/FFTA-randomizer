@@ -8,7 +8,7 @@ import * as fs from "fs";
 
 import "../../public/favicon-96x96.png";
 import { FFTAData } from "./ffta/FFTAData";
-import * as RandomizerOptions from "./ffta/RandomizerOptions";
+import * as RandomizerOptions from "./Randomizer";
 
 const ipc = require("electron").ipcMain;
 
