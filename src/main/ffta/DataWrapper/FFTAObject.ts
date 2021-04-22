@@ -1,4 +1,4 @@
-import * as FFTAUtils from "./FFTAUtils";
+import * as FFTAUtils from "../utils/FFTAUtils";
 
 // Common Properties
 export class FFTAObject {

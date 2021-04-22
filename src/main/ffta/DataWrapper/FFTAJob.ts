@@ -1,4 +1,4 @@
-import { FFTAObject } from "../FFTAObject";
+import { FFTAObject } from "./FFTAObject";
 
 const enum OFFSET {
   NAME = 0x00,

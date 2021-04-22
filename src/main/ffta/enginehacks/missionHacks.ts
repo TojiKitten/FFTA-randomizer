@@ -1,10 +1,10 @@
-import { FFTAMission } from "../ffta/mission/FFTAMission";
-import * as FFTAUtils from "../ffta/FFTAUtils";
-import FFTAData from "../ffta/FFTAData";
-import { FFTAFormation } from "../ffta/formation/FFTAFormation";
-import { FFTALawSet } from "../ffta/item/FFTALaw";
-import NoiseGenerator from "../ffta/NoiseGenerator";
-import FFTAItem, { FFTARewardItemSet } from "../ffta/item/FFTAItem";
+import { FFTAMission } from "../DataWrapper/FFTAMission";
+import * as FFTAUtils from "../utils/FFTAUtils";
+import FFTAData from "../FFTAData";
+import { FFTAFormation } from "../DataWrapper/FFTAFormation";
+import { FFTALawSet } from "../DataWrapper/FFTALaw";
+import NoiseGenerator from "../utils/NoiseGenerator";
+import FFTAItem, { FFTARewardItemSet } from "../DataWrapper/FFTAItem";
 
 export function lerpStoryMissionLevels(
   formations: Array<FFTAFormation>,

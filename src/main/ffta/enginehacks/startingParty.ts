@@ -1,8 +1,8 @@
-import { getShortUint8Array } from "../ffta/FFTAUtils";
-import { FFTAUnit } from "../ffta/formation/FFTAUnit";
-import { FFTAItem, ITEMTYPES } from "../ffta/item/FFTAItem";
-import { FFTAJob } from "../ffta/job/FFTAJob";
-import NoiseGenerator from "../ffta/NoiseGenerator";
+import { getShortUint8Array } from "../utils/FFTAUtils";
+import { FFTAUnit } from "../DataWrapper/FFTAUnit";
+import { FFTAItem, ITEMTYPES } from "../DataWrapper/FFTAItem";
+import { FFTAJob } from "../DataWrapper/FFTAJob";
+import NoiseGenerator from "../utils/NoiseGenerator";
 
 export function setStartingGold(rom: Uint8Array, gold: number) {
   rom.set(getShortUint8Array(gold, true), 0x986c);

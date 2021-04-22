@@ -1,6 +1,6 @@
-import { FFTAObject } from "../FFTAObject";
+import { FFTAObject } from "./FFTAObject";
 import { FFTAUnit } from "./FFTAUnit";
-import * as FFTAUtils from "../FFTAUtils";
+import * as FFTAUtils from "../utils/FFTAUtils";
 
 const enum OFFSET {
   UNKNOWNADDRESS = 0x08,

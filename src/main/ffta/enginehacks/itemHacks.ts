@@ -1,5 +1,5 @@
-import { FFTAItem, ITEMTYPES } from "../ffta/item/FFTAItem";
-import NoiseGenerator from "../ffta/NoiseGenerator";
+import { FFTAItem, ITEMTYPES } from "../DataWrapper/FFTAItem";
+import NoiseGenerator from "../utils/NoiseGenerator";
 
 export function toggleAllShopItems(items: Array<FFTAItem>, allowed: boolean) {
   // Set all items to the value of allowed

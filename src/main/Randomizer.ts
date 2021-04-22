@@ -1,4 +1,4 @@
-import FFTAData from "./FFTAData";
+import FFTAData from "./ffta/FFTAData";
 
 export type iRandomizerOptions = Record<string, any>;
 
