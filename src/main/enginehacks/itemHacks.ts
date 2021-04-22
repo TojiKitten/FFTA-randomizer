@@ -34,7 +34,7 @@ export function toggleLimitedShopItems(
   rng: NoiseGenerator
 ) {
   let newItems: Array<FFTAItem> = createNewItemArray(items);
-  let numberPerType = 4;
+  
 
   // For every item type that isn't consumables
   for (var iter = ITEMTYPES.Sword; iter <= ITEMTYPES.Accessory; iter++) {
@@ -46,6 +46,9 @@ export function toggleLimitedShopItems(
       }
     });
 
+    // Declare min for cases where items in the type is small
+    let numberPerType = Math.min(4, itemsForType.length);
+   
     // Get the names of randomly selected items to allow in shop
     let randomizedItems: Set<number> = new Set();
     for (var count = 0; count < numberPerType; count++) {
@@ -56,7 +59,7 @@ export function toggleLimitedShopItems(
         possibleItems[rng.randomIntMax(possibleItems.length - 1)].memory
       );
     }
-
+  
     // For every item, enable the randomly selected items, and disable all other items
     itemsForType.forEach((item) => {
       // If the name of the current item is in the random name list, allowed = true, else false
