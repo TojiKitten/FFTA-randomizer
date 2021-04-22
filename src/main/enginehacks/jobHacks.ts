@@ -53,7 +53,7 @@ export function percentageMPRegen(rom: Uint8Array) {
 
 // Set jobs to have no requirements
 export function unlockAllJobs(jobs: Map<string, Array<FFTAJob>>) {
-  for(let jobsElement of jobs.values()){
+  for (let jobsElement of jobs.values()) {
     jobsElement.forEach((job) => {
       job.setRequirements(0x0);
     });
@@ -62,7 +62,7 @@ export function unlockAllJobs(jobs: Map<string, Array<FFTAJob>>) {
 
 // Set jobs to have impossible requirements
 export function lockAllJobs(jobs: Map<string, Array<FFTAJob>>) {
-  for(let jobsElement of jobs.values()){
+  for (let jobsElement of jobs.values()) {
     jobsElement.forEach((job) => {
       job.setRequirements(0x20);
     });
@@ -82,21 +82,23 @@ export function changeRaceAbilities(
   // Set up a new map with new abilities to return
   let newMap: Map<string, Array<FFTARaceAbility>> = new Map();
 
-   for(let [key, value] of raceAbilities){
+  for (let [key, value] of raceAbilities) {
     let abilityState = abilityReplace(value, abilityRecord, rng, shuffled);
-    newMap.set(key,abilityState.randomizedAbilities)
+    newMap.set(key, abilityState.randomizedAbilities);
     abilityRecord = abilityState.newSortedAbilities;
   }
 
   return newMap;
 }
 
-function flattenRaceMapAbilities(raceAbilities: Map<string, Array<FFTARaceAbility>>) {
+function flattenRaceMapAbilities(
+  raceAbilities: Map<string, Array<FFTARaceAbility>>
+) {
   let abilityRecord: Array<FFTARaceAbility> = [];
 
   // Map all abilities according to their type
   // Add to new array
-  for(let abilities of raceAbilities.values()){
+  for (let abilities of raceAbilities.values()) {
     abilities.forEach((ability) => {
       abilityRecord.push(ability);
     });
@@ -118,12 +120,11 @@ function abilityReplace(
     // Iterate through all abilities and filter to matching ability types
     // Removes duplicates
     // Shuffled case, sortedAbilities gets smaller and smaller
-    let type = sortedAbilities.filter((iter, i) => {
-      return (
+    let type = sortedAbilities.filter(
+      (iter, i) =>
         iter.getAbilityType() === ability.getAbilityType() &&
         sortedAbilities.indexOf(iter) === i
-      );
-    });
+    );
 
     // Get a random valid ability and its information
     let abilityIndex = rng.randomIntMax(type.length - 1);
