@@ -1,6 +1,11 @@
 const charTable = require("./charLookup.json");
 
-
+/**
+ * Converts a number into a 2 byte Uint8Array
+ * @param value - The number to convert
+ * @param littleEndian - Use little endian or not
+ * @returns A Uint8Array of length 2
+ */
 export function getShortUint8Array(value: number, littleEndian: boolean) {
   var firstByte = littleEndian ? value & 0xff : (value >> 0x8) & 0xff;
   var secondByte = littleEndian ? (value >> 0x8) & 0xff : value & 0xff;
@@ -8,6 +13,12 @@ export function getShortUint8Array(value: number, littleEndian: boolean) {
   return new Uint8Array([firstByte, secondByte]);
 }
 
+/**
+ * Converts a number into a 4 byte Uint8Array
+ * @param value - The number to convert
+ * @param littleEndian - Use little endian or not
+ * @returns A Uint8Array of length 4
+ */
 export function getWordUint8Array(value: number, littleEndian: boolean) {
   var firstByte = littleEndian ? value & 0xff : (value >> 0x24) & 0xff;
   var secondByte = littleEndian
@@ -19,6 +30,12 @@ export function getWordUint8Array(value: number, littleEndian: boolean) {
   return new Uint8Array([firstByte, secondByte, thirdByte, fourthByte]);
 }
 
+/**
+ * Converts a 2 byte Uint8Array into a number
+ * @param value - The buffer to read in
+ * @param littleEndian - Use little endian or not
+ * @returns Converted number
+ */
 export function convertShortUint8Array(
   value: Uint8Array,
   littleEndian: boolean
@@ -29,6 +46,12 @@ export function convertShortUint8Array(
   return (firstByte << 0x8) | secondByte;
 }
 
+/**
+ * Converts a 4 byte Uint8Array into a number
+ * @param value - The buffer to read in
+ * @param littleEndian - Use little endian or not
+ * @returns Converted number
+ */
 export function convertWordUint8Array(
   value: Uint8Array,
   littleEndian: boolean
@@ -45,6 +68,11 @@ export function convertWordUint8Array(
   );
 }
 
+/**
+ * Decodes a buffer according to the FFTA lookup table
+ * @param encodedName - The buffer holding the text to decode
+ * @returns A decoded string
+ */
 export function decodeFFTAText(encodedName: Uint8Array): string {
   var firstByte;
   var secondByte;
@@ -77,6 +105,11 @@ export function decodeFFTAText(encodedName: Uint8Array): string {
   return name;
 }
 
+/**
+ * Converts an address in FFTA to a number, and localizes to the ROM. Possibly change to allow for localizing or not.
+ * @param address A Uint8Array of length 4 in little endian
+ * @returns The address as a number
+ */
 export function getLittleEndianAddress(address: Uint8Array): number {
   /* An example of how a memory address would appear in the rom would be: A0 D1 54 08 (formation offeset)
 We need to convert that to -> 0x0854D1A0 for little endian.
