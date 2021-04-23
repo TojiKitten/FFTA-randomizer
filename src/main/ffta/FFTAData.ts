@@ -174,7 +174,9 @@ const FFTAMap: FFTAMemoryMap = {
 const allowedWeaponAddress = 0x51d0f4;
 const allowedWeaponSize = 0x4;
 
-// Only one of these should exist
+/**
+ * Only one of these should exist. Hold all data for FFTA used by the randomizer.
+ */
 export class FFTAData {
   rom: Uint8Array;
   items: Array<FFTAItem>;
@@ -210,13 +212,25 @@ export class FFTAData {
     
   }
 
+  /**
+   * The current seed
+   * @returns RNG Seed
+   */
   getSeed(): number{
     return this.rng.seed
   }
+
+  /**
+   * Sets the seed to a new value and resets position
+   * @param seed - New seed
+   */
   setSeed(seed: number): void{
     this.rng.setSeed(seed);
   }
-  // Verify nothing breaks by Open and Save in Randomizer, then data compare in hex editor to find 0 changes
+
+  /**
+   * Write all data back to the buffer.
+   */
   writeData(): void {
     this.items.forEach((item) => {
       this.rom.set(item.properties, item.memory);
@@ -258,7 +272,10 @@ export class FFTAData {
     });
   }
 
-  // Initializers
+  /**
+   * Loads item names into an array
+   * @returns An array of item names
+   */
   initializeItemNames(): Array<string> {
     let names: Array<string> = [];
     let dataType = FFTAMap.PointerTables.ItemNames;
@@ -285,6 +302,10 @@ export class FFTAData {
     return names;
   }
 
+  /**
+   * Loads ability names into an array
+   * @returns Array of ability names
+   */
   initializeAbilityNames(): Array<string> {
     let names: Array<string> = [];
     let dataType = FFTAMap.PointerTables.AbilitityNames;
@@ -309,6 +330,10 @@ export class FFTAData {
     return names;
   }
 
+  /**
+   * Loads mission names into an array
+   * @returns Array of mission names
+   */
   initializeMissionNames(): Array<string> {
     let names: Array<string> = [];
     let dataType = FFTAMap.PointerTables.MissionNames;
@@ -333,6 +358,10 @@ export class FFTAData {
     return names;
   }
 
+  /**
+   * Loads animation pointers into an array
+   * @returns An array of animation pointers
+   */
   initializeAnimations(): Array<Array<number>> {
     let animations: Array<Array<number>> = [];
     let dataType = FFTAMap.PointerTables.Animations;
@@ -376,6 +405,10 @@ export class FFTAData {
     return animations;
   }
 
+  /**
+   * Loads items
+   * @returns An array of items
+   */
   initializeItems(): Array<FFTAItem> {
     let items: Array<FFTAItem> = [];
     let dataType = FFTAMap.Items;
@@ -392,6 +425,10 @@ export class FFTAData {
     return items;
   }
 
+  /**
+   * Loads formations
+   * @returns An array of formations
+   */
   initializeFormations(): Array<FFTAFormation> {
     let formations: Array<FFTAFormation> = [];
     let dataType = FFTAMap.Formations;
@@ -410,6 +447,10 @@ export class FFTAData {
     return formations;
   }
 
+  /**
+   * Loads missions
+   * @returns An array of missions
+   */
   initializeMissions(): Array<FFTAMission> {
     let items: Array<FFTAMission> = [];
     let dataType = FFTAMap.Missions;
@@ -426,6 +467,10 @@ export class FFTAData {
     return items;
   }
 
+  /**
+   * Loads race abilities for all races
+   * @returns A map of Race Abilities, by race
+   */
   initializeRaceAbilities(): Map<string, Array<FFTARaceAbility>> {
     let outAbilities: Map<string, Array<FFTARaceAbility>> = new Map();
     let dataType = FFTAMap.RaceAbilities;
@@ -459,6 +504,10 @@ export class FFTAData {
     return outAbilities;
   }
 
+  /**
+   * Loads abilities
+   * @returns An array of abilities
+   */
   initializeAbilities() {
     let abilities: Array<FFTAAbility> = [];
     let dataType = FFTAMap.Abilities;
@@ -475,6 +524,10 @@ export class FFTAData {
     return abilities;
   }
 
+  /**
+   * Loads jobs, by race
+   * @returns A map of Jobs, by race
+   */
   initializeJobs(): Map<string, Array<FFTAJob>>{
     let outJobs:Map<string, Array<FFTAJob>> = new Map();
     let dataType = FFTAMap.RaceJobs;
@@ -519,6 +572,10 @@ export class FFTAData {
     return outJobs;
   }
 
+  /**
+   * Loads law sets
+   * @returns An array of law sets
+   */
   initializeLawSets(): Array<FFTALawSet> {
     let lawSets: Array<FFTALawSet> = [];
     let dataType = FFTAMap.LawSets;
@@ -534,6 +591,10 @@ export class FFTAData {
     return lawSets;
   }
 
+  /**
+   * Loads mission reward item sets
+   * @returns An array of reward item sets
+   */
   initializeRewardItemSets(): Array<FFTARewardItemSet> {
     let rewardItemSets: Array<FFTARewardItemSet> = [];
     let dataType = FFTAMap.RewardSets;
@@ -549,7 +610,11 @@ export class FFTAData {
     return rewardItemSets;
   }
 
-  // Handlers
+  /**
+   * Updates missions to scale enemy levels
+   * @param option - Type of scaling
+   * @param level - Level to use for lerp scaling
+   */
   handleMissionScaling(option: string, level: number) {
     switch (option) {
       case "normal":
@@ -568,24 +633,44 @@ export class FFTAData {
     }
   }
 
+  /**
+   * Sets AP for missions, or skips if AP is 0
+   * @param option - The value of AP to set
+   */
   handleAPBoost(option: number) {
     if (option > 0) {
       MissionHacks.apBoost(this.missions, option);
     }
   }
 
+  /**
+   * Changes starting gold to the given value
+   * @param option - Amount of starting gold
+   */
   handleStartingGold(option: number) {
     StartingPartyHacks.setStartingGold(this.rom, option);
   }
 
+  /**
+   * Sets orbs of frosty mage to level 50
+   * @param option - Enable flag
+   */
   handleFrostyBoost(option: boolean) {
     if (option) MissionHacks.frostyMageBoost(this.rom);
   }
 
+  /**
+   * Sets judge speed to 0
+   * @param option - Enable flag
+   */
   handleNoJudgeTurn(option: boolean) {
     if (option) MissionHacks.noJudgeTurn(this.rom);
   }
 
+  /**
+   * Locks or unlocks jobs
+   * @param option - State of job requirements
+   */
   handleJobRequirements(option: string) {
     switch (option) {
       case "normal":
@@ -601,6 +686,10 @@ export class FFTAData {
     }
   }
 
+  /**
+   * Shuffles order that laws appear
+   * @param option - State of law sets
+   */
   handleLawOptions(option: string) {
     this.rng.setPosition(1000);
     switch (option) {
@@ -614,6 +703,10 @@ export class FFTAData {
     }
   }
 
+  /**
+   * Shuffles or randomizes mission item rewards
+   * @param option - State of mission item rewards
+   */
   handleRewardOptions(option: string) {
     this.rng.setPosition(1200);
     switch (option) {
@@ -630,10 +723,18 @@ export class FFTAData {
     }
   }
 
+  /**
+   * Sets MP to recover 10% per turn instead of flat 5 MP
+   * @param option - Enable the option
+   */
   handlePercentageMP(option: boolean) {
     if (option) JobHacks.percentageMPRegen(this.rom);
   }
 
+  /**
+   * Skips some cutscenes in the game, optionally skip first two missions
+   * @param option - State of cut scene 
+   */
   handleCutScene(option: string) {
     switch (option) {
       case "all":
@@ -649,6 +750,10 @@ export class FFTAData {
     }
   }
 
+  /**
+   * Removes jobs from randomization pool
+   * @param jobMapOption - All jobs and state of removal
+   */
   handleDisableJobs(jobMapOption: Map<string,Array<{name: string, enabled: boolean}>>) {
     for(let [race,raceJobs] of this.jobs){
       if(raceJobs.length !== jobMapOption.get(race)!.length){
@@ -660,6 +765,10 @@ export class FFTAData {
     }
   }
 
+  /**
+   * Changes abilities that units are able to learn through shuffling or randomness
+   * @param options - State of unit abilities
+   */
   handleUnitAbilities(options: string) {
     this.rng.setPosition(1300);
     switch (options) {
@@ -682,6 +791,10 @@ export class FFTAData {
     }
   }
 
+  /**
+   * Updates each starting member according to the randomizer UI
+   * @param options - Randomizer UI selected options
+   */
   handlePartyMembers(
     options: Array<{
       name: string;
@@ -705,6 +818,10 @@ export class FFTAData {
     });
   }
 
+  /**
+   * Updates the state of all items appearing in shop
+   * @param options - State of shop items
+   */
   handleShopItems(options: string) {
     this.rng.setPosition(1100);
     switch (options) {
@@ -727,6 +844,9 @@ export class FFTAData {
     }
   }
 
+  /**
+   * Runs a set of hacks that cannot be skipped
+   */
   runForcedHacks() {
     ForcedHacks.animationFixRaw(this.rom);
   }

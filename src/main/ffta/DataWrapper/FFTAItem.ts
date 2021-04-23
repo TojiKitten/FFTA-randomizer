@@ -1,5 +1,4 @@
 import { FFTAObject } from "./FFTAObject";
-import * as FFTAUtils from "../utils/FFTAUtils";
 
 const enum OFFSET {
   NAME = 0x0,
@@ -75,8 +74,16 @@ const enum ITEMFLAG {
   MYTHRILORCONSUMABLE = 0x7,
 }
 
-// ==== Class ====
+/**
+ * An {@link FFTAObject} representing an item that is able to appear in the shop.
+ */
 export class FFTAItem extends FFTAObject {
+  /**
+   * Constructor for an Item
+   * @param memory - The address of the ROM
+   * @param itemName - The name of the ability
+   * @param properties - A buffer starting from the address in the ROM
+   */
   constructor(
     memory: number,
     itemName: string,
@@ -85,18 +92,35 @@ export class FFTAItem extends FFTAObject {
     super(memory, properties, itemName);
   }
 
+  /**
+   * Sets the SHORT holding the purchase price of an item.
+   * @param value - The purchase price (base 10) of an item
+   */
   setBuyPrice(value: number) {
     this.setProperty(OFFSET.BUY, 2, value);
   }
 
+  /**
+   * Sets the SHORT holding the selling price of an item.
+   * @param value - The selling price (base 10) of an item
+   */
   setSellPrice(value: number) {
     this.setProperty(OFFSET.SELL, 2, value);
   }
 
-  setType(value: number) {
+  /**
+   * Sets the BYTE holding the item type.
+   * @see ITEMTYPES
+   * @param value - The item type for an item 
+   */
+  setType(value: ITEMTYPES) {
     this.setProperty(OFFSET.TYPE, 1, value);
   }
 
+  /**
+   * Gets the BYTE holding the item type.
+   * @returns The item type as a number
+   */
   getType(): number {
     return this.properties[OFFSET.TYPE];
   }
@@ -201,6 +225,11 @@ export class FFTAItem extends FFTAObject {
     this.setProperty(OFFSET.ABILITYSET, 1, value);
   }
 
+  /**
+   * Sets an inner bit of the item flags to a specific value.
+   * @param flag - The offset of the flag to set
+   * @param value - The bit value to which the flag is set
+   */
   private setFlag(flag: ITEMFLAG, value: 0 | 1): void {
     let mask = 0x1 << flag;
     let newFlags = new Uint8Array([
@@ -209,6 +238,9 @@ export class FFTAItem extends FFTAObject {
     this.properties.set(newFlags, OFFSET.FLAGS);
   }
 
+  /**
+   * Changes the item buy and sell price to be proportionate to its primary Offensive and Defensive stat.
+   */
   balanceItemPrice() {
     let attack = this.properties[OFFSET.ATTACK];
     let power = this.properties[OFFSET.POWER];
@@ -229,7 +261,15 @@ export class FFTAItem extends FFTAObject {
   }
 }
 
+/**
+ * An {@link FFTAObject} representing a set of {@link FFTAItem} that is used as a mission reward.
+ */
 export class FFTARewardItemSet extends FFTAObject {
+  /**
+   * Constructor for a Reward Item Set
+   * @param memory - The address of the ROM
+   * @param properties - A buffer starting from the address in the ROM
+   */
   constructor(memory: number, properties: Uint8Array) {
     super(memory, properties, undefined);
   }

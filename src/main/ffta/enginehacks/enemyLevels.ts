@@ -1,6 +1,13 @@
 import FFTAData from "../FFTAData";
 import { FFTAFormation } from "../DataWrapper/FFTAFormation";
 
+// Duplicate?
+
+/**
+ * Sets the story missions interpolate between a minium and maximum value.
+ * @param formations - An array of all formations
+ * @param liGrimLevel - The desired ending level of the final boss
+ */
 export function lerpStoryMissionLevels(
   formations: Array<FFTAFormation>,
   liGrimLevel: number
@@ -12,7 +19,7 @@ export function lerpStoryMissionLevels(
   // Interpolate the max level for all Story Missions
   for (var i = 3; i < 33; i++) {
     formations[i].units.forEach((unit) => {
-      unit.setLevel(Math.floor(lerp(1, liGrimLevel, i)));
+      unit.setLevel(Math.ceil(lerp(1, liGrimLevel, i)));
     });
   }
   // Set remaining missions to scale
@@ -23,6 +30,10 @@ export function lerpStoryMissionLevels(
   }
 }
 
+/**
+ * Sets all non starting party formations to 0. Causing the game to scale all fights.
+ * @param formations - An array of all formations
+ */
 export function averageMissionLevels(formations: Array<FFTAFormation>) {
   // When "Level" is set to 0, the game scales automatically to avg party level
   formations.forEach((formation, i) => {
@@ -35,6 +46,10 @@ export function averageMissionLevels(formations: Array<FFTAFormation>) {
   });
 }
 
+/**
+ * Sets all non starting party formations to 0. Also change the game to scale to highest level unit.
+ * @param fftaData - Buffer holding FFTA
+ */
 export function highestMissionLevels(fftaData: FFTAData) {
   // When "Level" is set to 0, the game scales automatically to avg party level
   // In addition, change the code so it scales to highest party member level

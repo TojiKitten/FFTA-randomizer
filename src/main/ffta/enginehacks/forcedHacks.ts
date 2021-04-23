@@ -1,3 +1,7 @@
+/**
+ * Change ability animations to ones that won't break the game. Temporary.
+ * @param rom - Buffer holding FFTA
+ */
 export function animationFixRaw(rom: Uint8Array) {
   // Parley
   rom.set([0x58], 0x552188);

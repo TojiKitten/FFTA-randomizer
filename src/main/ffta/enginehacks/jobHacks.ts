@@ -3,6 +3,10 @@ import { FFTARaceAbility } from "../DataWrapper/FFTARaceAbility";
 import { FFTAJob } from "../DataWrapper/FFTAJob";
 import NoiseGenerator from "../utils/NoiseGenerator";
 
+/**
+ * Set MP to recover 10% instead of a flat 5 MP per turn
+ * @param rom - Buffer holding FFTA
+ */
 export function percentageMPRegen(rom: Uint8Array) {
   const codeInject = [
     0x0a,
@@ -51,7 +55,10 @@ export function percentageMPRegen(rom: Uint8Array) {
   rom.set(codeInject, 0x93092);
 }
 
-// Set jobs to have no requirements
+/**
+ * Sets all jobs to have no job requirements.
+ * @param jobs - An array of all jobs
+ */
 export function unlockAllJobs(jobs: Map<string, Array<FFTAJob>>) {
   for (let jobsElement of jobs.values()) {
     jobsElement.forEach((job) => {
@@ -60,7 +67,10 @@ export function unlockAllJobs(jobs: Map<string, Array<FFTAJob>>) {
   }
 }
 
-// Set jobs to have impossible requirements
+/**
+ * Sets all jobs to have impossible job requirements.
+ * @param jobs - An array of all jobs
+ */
 export function lockAllJobs(jobs: Map<string, Array<FFTAJob>>) {
   for (let jobsElement of jobs.values()) {
     jobsElement.forEach((job) => {
@@ -69,6 +79,15 @@ export function lockAllJobs(jobs: Map<string, Array<FFTAJob>>) {
   }
 }
 
+/**
+ * Changes the abilities that races learn.
+ * @remark When shuffling is true, the same occurences of each ability is maintained as vanilla.
+ * When shuffling is false, an ability may appear more or fewer times as compared to vanilla.
+ * @param raceAbilities - A map of races and an array of their abilities
+ * @param rng - The {@link NoiseGenerator} for the randomizer
+ * @param shuffled - The value of shuffling or randomizing
+ * @returns A new map of races and an array of their abilities with updated information.
+ */
 export function changeRaceAbilities(
   raceAbilities: Map<string, Array<FFTARaceAbility>>,
   rng: NoiseGenerator,
@@ -91,13 +110,17 @@ export function changeRaceAbilities(
   return newMap;
 }
 
+/**
+ * Condenses a map Race Abilities keyed by race into a single array
+ * @param raceAbilities - A map of Race Abilities
+ * @returns 
+ */
 function flattenRaceMapAbilities(
   raceAbilities: Map<string, Array<FFTARaceAbility>>
 ) {
   let abilityRecord: Array<FFTARaceAbility> = [];
 
-  // Map all abilities according to their type
-  // Add to new array
+  // Add every race ability to a single array
   for (let abilities of raceAbilities.values()) {
     abilities.forEach((ability) => {
       abilityRecord.push(ability);
@@ -106,6 +129,14 @@ function flattenRaceMapAbilities(
   return abilityRecord;
 }
 
+/**
+ * Changes an array of Race Abilities to have new information
+ * @param raceAbilities - The race abilities to change
+ * @param sortedAbilities - An array of race abilities to use as a source 
+ * @param rng - The {@link NoiseGenerator} for the randomizer
+ * @param shuffle - The value of shuffling or randomizing
+ * @returns Returns an object holding an array of new abilities with updated information, and the list of remaining abilities to use as a source.
+ */
 function abilityReplace(
   raceAbilities: Array<FFTARaceAbility>,
   sortedAbilities: Array<FFTARaceAbility>,
@@ -151,4 +182,3 @@ function abilityReplace(
     newSortedAbilities: sortedAbilities,
   };
 }
-

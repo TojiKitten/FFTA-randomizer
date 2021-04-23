@@ -16,19 +16,40 @@ const enum OFFSET {
   UNITSUPPORT = 0x29,
 }
 
+/**
+ * An {@link FFTAObject} representing a unit.
+ */
 export class FFTAUnit extends FFTAObject {
+  /**
+   * Constructor for a unit
+   * @param memory - The memory address of an object
+   * @param properties - The buffer holding the information of an object
+   */
   constructor(memory: number, properties: Uint8Array) {
     super(memory, properties, undefined);
   }
 
+  /**
+   * Sets the level of a unit.
+   * @param level - The level to set
+   */
   setLevel(level: number) {
     this.setProperty(OFFSET.UNITLEVEL, 1, level);
   }
 
+  /**
+   * Sets the job of a unit to the specified id.
+   * @param jobID -The id of the job to set
+   */
   setJob(jobID: number) {
     this.setProperty(OFFSET.UNITJOB, 1, jobID);
   }
 
+  /**
+   * Sets an item slot to a specified item id.
+   * @param itemID - The id of the item to set
+   * @param slot - The item slot to set
+   */
   setItem(itemID: number, slot: number) {
     if (slot < 5) {
       let offset = OFFSET.UNITITEM1 + slot * 2;
@@ -36,6 +57,11 @@ export class FFTAUnit extends FFTAObject {
     }
   }
 
+  /**
+   * Sets the bit of a mastered ability at an offset to a given value.
+   * @param offset - The offset of the ability
+   * @param mastered - The bit to set
+   */
   setMasterAbility(offset: number, mastered: boolean) {
     let masteredBit = mastered ? 1 : 0;
     let abilityByte = OFFSET.UNITABILITIES + Math.floor(offset / 8);

@@ -4,10 +4,23 @@ import { FFTAItem, ITEMTYPES } from "../DataWrapper/FFTAItem";
 import { FFTAJob } from "../DataWrapper/FFTAJob";
 import NoiseGenerator from "../utils/NoiseGenerator";
 
+/**
+ * Sets starting gold to a value.
+ * @param rom - A buffer holding FFTA
+ * @param gold - The gold to start with
+ */
 export function setStartingGold(rom: Uint8Array, gold: number) {
   rom.set(getShortUint8Array(gold, true), 0x986c);
 }
 
+/**
+ * Sets unit data for the starting party to the values from the randomizer UI
+ * @param unit - The unit to change
+ * @param raceJobs - All Race Jobs
+ * @param items - All items
+ * @param options - The options from UI
+ * @param rng - The {@link NoiseGenerator} for the randomizer
+ */
 export function setUnitData(
   unit: FFTAUnit,
   raceJobs: Map<string, Array<FFTAJob>>,
@@ -25,7 +38,7 @@ export function setUnitData(
 ) {
   unit.setLevel(options.level);
   // Change Job
-  let newJob = getNewJob(options.race, options.job, raceJobs, unit, rng);
+  let newJob = getNewJob(options.race, options.job, raceJobs, rng);
   unit.setJob(newJob.jobId);
   // Change Equipment (Make sure it's valid)
   let newLoadout: Array<number> = getValidLoadOut(
@@ -49,11 +62,18 @@ export function setUnitData(
   });
 }
 
+/**
+ * Changes the job of a unit to a new value
+ * @param raceString - The name of the race
+ * @param jobString - The name of the job of the race
+ * @param raceJobs - All race jobs
+ * @param rng - The {@link NoiseGenerator} for the randomizer
+ * @returns - The selected job for the unit
+ */
 function getNewJob(
   raceString: string,
   jobString: string,
   raceJobs: Map<string, Array<FFTAJob>>,
-  unit: FFTAUnit,
   rng: NoiseGenerator
 ): FFTAJob {
   let allowedJobs = getAvailableJobs(raceString, raceJobs);
@@ -71,6 +91,12 @@ function getNewJob(
   return selectedJob;
 }
 
+/**
+ * Gets an array of jobs that are allowed
+ * @param race - The race of jobs to check
+ * @param raceJobs - All race jobs
+ * @returns An array of jobs that are allowed
+ */
 function getAvailableJobs(race: string, raceJobs: Map<string, Array<FFTAJob>>) {
   let allowedJobs: Array<FFTAJob> = [];
   if (raceJobs.has(race)){
@@ -86,6 +112,14 @@ function getAvailableJobs(race: string, raceJobs: Map<string, Array<FFTAJob>>) {
 ///
 ///randomizer = false, pick starting weapon of class; true pick random valid weapon
 ///
+/**
+ * Given a job, builds a loadout weapon and armor loadout for the job of only allowed items.
+ * @param job - The job of the loadout
+ * @param items - An array of all items
+ * @param randomized - Determines a random items or the first items of each item type used
+ * @param rng - The {@link NoiseGenerator} for the randomizer
+ * @returns An array of the items for a unit
+ */
 function getValidLoadOut(
   job: FFTAJob,
   items: Array<FFTAItem>,
@@ -169,6 +203,14 @@ function getValidLoadOut(
   return loadout;
 }
 
+/**
+ * Returns an array of abilities to master for a race.
+ * @param job - The job of the unit
+ * @param unit - The unit
+ * @param count - The number of abilities to master
+ * @param rng - The {@link NoiseGenerator} for the randomizer
+ * @returns An array of abilities to master
+ */
 function getRandomAbilityIDs(
   job: FFTAJob,
   unit: FFTAUnit,

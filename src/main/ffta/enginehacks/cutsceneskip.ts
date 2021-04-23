@@ -170,13 +170,19 @@ const skipEverythingElse: Codeinject[] = [
   { offset: 0x9b5eef, data: [0x1a, 0x1b, 0x02, 0x01, 0x1d, 0x1e, 0x17, 0x05] },
 ];
 
+/**
+ * ROM Hack to skip post fight cutscenes, and optionally the opening two missions.
+ * @param romData - The entirety of the ROM
+ * @param skipIntro - Flag to skip or keep tutorial
+ * @returns - A new buffer with updated values
+ */
 export function skipCutscenes(
   romData: Uint8Array,
-  skipCutscene: boolean
+  skipIntro: boolean
 ): Uint8Array {
   let newRomData = romData;
   // Depending on if we skip the tutorial or not, set place to warp
-  if (skipCutscene) {
+  if (skipIntro) {
     skipTutorial.forEach((element) => {
       newRomData.set(element.data, element.offset);
     });

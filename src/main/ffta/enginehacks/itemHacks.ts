@@ -1,6 +1,12 @@
 import { FFTAItem, ITEMTYPES } from "../DataWrapper/FFTAItem";
 import NoiseGenerator from "../utils/NoiseGenerator";
 
+/**
+ * Sets all items to appear or be removed from the shop
+ * @param items - An array of all items
+ * @param allowed - Value to set for items in shop
+ * @returns A new array of items with updated information
+ */
 export function toggleAllShopItems(items: Array<FFTAItem>, allowed: boolean) {
   // Set all items to the value of allowed
   let newItems: Array<FFTAItem> = createNewItemArray(items);
@@ -12,6 +18,12 @@ export function toggleAllShopItems(items: Array<FFTAItem>, allowed: boolean) {
   return newItems;
 }
 
+/**
+ * Randomly sets items to appear in shop, while removing the rest.
+ * @param items - An array of all items
+ * @param rng - The {@link NoiseGenerator} for the randomizer
+ * @returns A new array of items with updated information
+ */
 export function toggleRandomShopItems(
   items: Array<FFTAItem>,
   rng: NoiseGenerator
@@ -29,6 +41,12 @@ export function toggleRandomShopItems(
   return newItems;
 }
 
+/**
+ * Sets a minimum number of items per type to appear in shop, while removing the rest.
+ * @param items - An array of all items
+ * @param rng - The {@link NoiseGenerator} for the randomizer
+ * @returns A new array of items with updated information
+ */
 export function toggleLimitedShopItems(
   items: Array<FFTAItem>,
   rng: NoiseGenerator
