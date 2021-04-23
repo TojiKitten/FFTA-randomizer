@@ -78,6 +78,9 @@ const enum ITEMFLAG {
  * An {@link FFTAObject} representing an item that is able to appear in the shop.
  */
 export class FFTAItem extends FFTAObject {
+
+  readonly ITEMIDOFFSET: number = 1; 
+
   /**
    * Constructor for an Item
    * @param memory - The address of the ROM

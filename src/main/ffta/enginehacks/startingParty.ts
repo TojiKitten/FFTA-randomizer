@@ -184,7 +184,7 @@ function getValidLoadOut(
   let armorID = items.findIndex(
     (element) => element === validArmor[subWeaponID]
   );
-  loadout.push(armorID + 1); //+1 because item ids start at 1 not 0 NotLikeThis
+  loadout.push(armorID + items[0].ITEMIDOFFSET); //+1 because item ids start at 1 not 0 NotLikeThis
 
   if (
     validWeapons[subWeaponID].getWorn() == 1 &&
@@ -193,7 +193,7 @@ function getValidLoadOut(
     let shieldID = items.findIndex(
       (item) => item.getType() === ITEMTYPES.Shield
     );
-    loadout.push(shieldID + 1); //+1 because item ids start at 1 not 0 NotLikeThis
+    loadout.push(shieldID + items[0].ITEMIDOFFSET); //+1 because item ids start at 1 not 0 NotLikeThis
   }
 
   //fill empty item slots
