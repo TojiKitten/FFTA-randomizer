@@ -9,6 +9,7 @@ import * as fs from "fs";
 import "../../public/favicon-96x96.png";
 import { FFTAData } from "./ffta/FFTAData";
 import * as RandomizerOptions from "./Randomizer";
+import { PathLike } from "original-fs";
 
 const ipc = require("electron").ipcMain;
 
@@ -26,7 +27,7 @@ function createWindow(): void {
     minHeight: 400,
     minWidth: 400,
     backgroundColor: "#FFFFFF",
-    resizable: false,
+    //resizable: false,
     webPreferences: {
       nodeIntegration: false,
       enableRemoteModule: false,
@@ -35,7 +36,7 @@ function createWindow(): void {
     },
   });
 
-  mainWindow.removeMenu();
+  //mainWindow.removeMenu();
   // and load the index.html of the app.
   mainWindow
     .loadURL(
@@ -135,17 +136,86 @@ function savefile(filepath: any) {
     RandomizerOptions.randomizeFFTA(fftaData, randomizerOptions);
     fftaData.writeData();
     fs.writeFileSync(filepath, fftaData.rom, null);
-    if( process.env.NODE_ENV === "development")
-      fs.writeFileSync(filepath+".json", JSON.stringify(randomizerOptions,null, 2), null)
   }
+}
+
+//
+//Save settings
+//
+ipc.on("save-settings", function (event, options: any) {
+  const choosenfiles = dialog.showSaveDialogSync(mainWindow!, {
+    title: "Save Config",
+    filters: [
+      { name: "json", extensions: ["json"] },
+      { name: "All Files", extensions: ["*"] },
+    ],
+  });
+  SaveSettings(choosenfiles);
+});
+
+function SaveSettings(filepath: any) {
+  //check if dialog got cancelled
+  if (filepath) {
+    let data: String = JSON.stringify(randomizerOptions, MapReplacer, 2);
+    fs.writeFileSync(filepath, data, null);
+  }
+}
+
+//deconstruct Map
+function MapReplacer(key: any, value: any) {
+  if (value instanceof Map) {
+    return {
+      Setting: "jobMap",
+      dataType: "Map",
+      value: Array.from(value.entries()), // or with spread: value: [...value]
+    };
+  } else {
+    return value;
+  }
+}
+//
+//load settings
+//
+ipc.on("load-settings", function (event, options: any) {
+  const choosenfiles = dialog.showOpenDialogSync(mainWindow!, {
+    title: "Open Config",
+    properties: ["openFile"],
+    filters: [
+      { name: "json", extensions: ["json"] },
+      { name: "All Files", extensions: ["*"] },
+    ],
+  });
+  openSettings(choosenfiles);
+});
+
+function openSettings(files: any) {
+  //look if actually selected a file
+  if (files) {
+    let filepath = files[0];
+    let settings = JSON.parse(fs.readFileSync(filepath, "utf-8"),MapReviver);
+    mainWindow!.webContents.send("get-settings", { newConfig: settings });
+  }
+}
+
+//reconstruct Map
+function MapReviver(key: any, value: any) {
+  if (typeof value === "object" && value !== null) {
+    if (value.dataType === "Map") {
+      return new Map(value.value);
+    }
+  }
+  return value;
 }
 
 //
 // get and set settings from frontend
 //
 
-ipc.on("set-settings", function (event, options: Array<{ setting: string; value: any }>) {
-  options.forEach((element) => {
-    randomizerOptions[element.setting] = element.value;
-  });
-});
+ipc.on(
+  "set-settings",
+  function (event, options: Array<{ setting: string; value: any }>) {
+    options.forEach((element) => {
+      randomizerOptions[element.setting] = element.value;
+    });
+  }
+);

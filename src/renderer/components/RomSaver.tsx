@@ -9,10 +9,9 @@ interface props{
   globalState: Array<Config>;
 }
 
-export const FileSaver = ({globalState}:props) => {
+export const RomSaver = ({globalState}:props) => {
   return (
     <button
-      className="file-button"
       onClick={() => {
         api.send("set-settings", globalState);
         api.send("save-file-dialog", "null");
@@ -23,4 +22,4 @@ export const FileSaver = ({globalState}:props) => {
   );
 };
 
-export default FileSaver;
+export default RomSaver;

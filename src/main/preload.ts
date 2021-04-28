@@ -3,14 +3,14 @@ import { ipcRenderer, contextBridge } from "electron";
 contextBridge.exposeInMainWorld("api", {
   send: (channel :string, ...data: any) => {
     //allowed channels to send from Renderer
-    const allowedChannels: string[] = ["open-file-dialog", "save-file-dialog","set-settings"];
+    const allowedChannels: string[] = ["open-file-dialog", "save-file-dialog","set-settings", "save-settings", "load-settings"];
     if (allowedChannels.includes(channel)) {
       ipcRenderer.send(channel, ...data);
     }
   },
   
   receive: (channel: string, cb: any) => {
-    const allowedChannels: string[] = ["FileName-Change", "get-seed"];
+    const allowedChannels: string[] = ["FileName-Change", "get-seed", "get-settings"];
     if (allowedChannels.includes(channel)) {
       ipcRenderer.on(channel, (event, ...args) => cb(...args));
     }
