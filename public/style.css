@@ -3,7 +3,7 @@ body {
   color: #b4a5a5;
 }
 
-.file-button {
+/* .file-button {
   background: #3c415f;
   color: #b4a5a5;
   text-transform: uppercase;
@@ -21,8 +21,7 @@ body {
   text-shadow: 0px 0px 6px rgba(255, 255, 255, 1);
   transition: all 0.4s ease 0s;
 }
-/*4thcolot: #301b3f*/
-
+*/
 .div-fileButtons {
   width: 100px;
   height: 100px;
@@ -37,7 +36,7 @@ body {
 .centering-wrapper {
   text-align: center;
   margin: auto;
-}
+} 
 
 .div-RandoSettings {
   width: 763px;

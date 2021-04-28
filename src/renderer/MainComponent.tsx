@@ -1,11 +1,12 @@
 import * as React from "react";
 
-import FileOpener from "./components/FileOpener";
-import FileSaver from "./components/FileSaver";
+import RomLoader from "./components/RomLoader";
+import RomSaver from "./components/RomSaver";
 import RandomizerSettings from "./components/RandomizerSettings";
 import RomSettings from "./components/RomSettings";
 import { Config, Job } from "./utils/types";
-import { RACES } from "../main/ffta/FFTAData";
+import SettingsSaver from "./components/SettingsSaver";
+import SettingsLoader from "./components/SettingsLoader";
 
 //window.api gets available at runtime so we can ignore that error
 // @ts-ignore
@@ -26,6 +27,7 @@ export function MainComponent() {
     { setting: "startingGold", value: 5000 },
     { setting: "frostyMageBoost", value: false },
     { setting: "noJudgeTurn", value: false },
+    { setting: "partyRNGEnabled", value: false},
     {
       setting: "partyMember",
       value: [
@@ -164,14 +166,26 @@ export function MainComponent() {
     { setting: "shopitems", value: "default" },
   ]);
 
-  api.receive("FileName-Change", function (msg: any) {
+  api.receive("FileName-Change", (msg: any) => {
     changeSetting({ setting: "romLoaded", value: true });
   });
 
-  api.receive("get-seed", function(msg :any) {
-    changeSetting({ setting: "randomizerSeed", value: msg.seed })
-  })
-  
+  api.receive("get-seed", (msg: any) => {
+    changeSetting({ setting: "randomizerSeed", value: msg.seed });
+  });
+
+  api.receive("get-settings", ({ newConfig }: any) => {
+    //delete config thats only for GUI state
+    delete newConfig["romLoaded"];
+    delete newConfig["currentPage"];
+    delete newConfig["isRandomized"];
+
+    console.log(newConfig)
+    for (var key of Object.keys(newConfig)) {
+      changeSetting({ setting: key, value: newConfig[key] });
+    }
+  });
+
   const changeSetting = (nconfig: Config) => {
     let newConfig = Array.from(config);
     newConfig.find((element) => element.setting === nconfig.setting)!.value =
@@ -185,8 +199,10 @@ export function MainComponent() {
       <br />
       <div className="div-fileButtons">
         <div className="centering-wrapper">
-          <FileOpener />
-          <FileSaver globalState={config} />
+          <RomLoader />
+          <RomSaver globalState={config} />
+          <SettingsLoader />
+          <SettingsSaver globalState={config} />
         </div>
       </div>
 

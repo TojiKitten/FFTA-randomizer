@@ -3,10 +3,9 @@ import * as React from "react";
 // @ts-ignore
 const { api } = window;
 
-export const FileOpener = () => {
+export const RomLoader = () => {
   return (
     <button
-      className="file-button"
       onClick={() => {
         api.send("open-file-dialog", "null");
       }}
@@ -16,4 +15,4 @@ export const FileOpener = () => {
   );
 };
 
-export default FileOpener;
+export default RomLoader;

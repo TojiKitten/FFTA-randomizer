@@ -14,12 +14,12 @@ import * as ItemHacks from "./enginehacks/itemHacks";
 import * as ForcedHacks from "./enginehacks/forcedHacks";
 import NoiseGenerator from "./utils/NoiseGenerator";
 
-export enum RACES{
-  Human= "human",
+export enum RACES {
+  Human = "human",
   Bangaa = "bangaa",
   NuMou = "nuMou",
   Viera = "viera",
-  Moogle = "moogle"
+  Moogle = "moogle",
 }
 
 type MemorySpace = {
@@ -186,9 +186,9 @@ export class FFTAData {
   animations: Array<Array<number>>;
   formations: Array<FFTAFormation>;
   missions: Array<FFTAMission>;
-  raceAbilities: Map<string,Array<FFTARaceAbility>>;
+  raceAbilities: Map<string, Array<FFTARaceAbility>>;
   abilities: Array<FFTAAbility>;
-  jobs: Map<string,Array<FFTAJob>>;
+  jobs: Map<string, Array<FFTAJob>>;
 
   lawSets: Array<FFTALawSet>;
   rewardItemSets: Array<FFTARewardItemSet>;
@@ -209,22 +209,21 @@ export class FFTAData {
     this.lawSets = this.initializeLawSets();
     this.rewardItemSets = this.initializeRewardItemSets();
     this.rng = new NoiseGenerator();
-    
   }
 
   /**
    * The current seed
    * @returns RNG Seed
    */
-  getSeed(): number{
-    return this.rng.seed
+  getSeed(): number {
+    return this.rng.seed;
   }
 
   /**
    * Sets the seed to a new value and resets position
    * @param seed - New seed
    */
-  setSeed(seed: number): void{
+  setSeed(seed: number): void {
     this.rng.setSeed(seed);
   }
 
@@ -248,9 +247,9 @@ export class FFTAData {
     });
 
     for (let raceAbilitiesElement of this.raceAbilities.values()) {
-     raceAbilitiesElement.forEach( (raceAbility) => {
-      this.rom.set(raceAbility.properties, raceAbility.memory);
-     });
+      raceAbilitiesElement.forEach((raceAbility) => {
+        this.rom.set(raceAbility.properties, raceAbility.memory);
+      });
     }
 
     this.abilities.forEach((ability) => {
@@ -258,10 +257,10 @@ export class FFTAData {
     });
 
     for (let jobsElement of this.jobs.values()) {
-      jobsElement.forEach( (job) => {
-       this.rom.set(job.properties, job.memory);
+      jobsElement.forEach((job) => {
+        this.rom.set(job.properties, job.memory);
       });
-     }
+    }
 
     this.lawSets.forEach((lawSet) => {
       this.rom.set(lawSet.properties, lawSet.memory);
@@ -499,7 +498,7 @@ export class FFTAData {
         );
         raceAbilities.push(newAbility);
       }
-      outAbilities.set(race,raceAbilities);
+      outAbilities.set(race, raceAbilities);
     }
     return outAbilities;
   }
@@ -528,8 +527,8 @@ export class FFTAData {
    * Loads jobs, by race
    * @returns A map of Jobs, by race
    */
-  initializeJobs(): Map<string, Array<FFTAJob>>{
-    let outJobs:Map<string, Array<FFTAJob>> = new Map();
+  initializeJobs(): Map<string, Array<FFTAJob>> {
+    let outJobs: Map<string, Array<FFTAJob>> = new Map();
     let dataType = FFTAMap.RaceJobs;
     let races: Map<string, MemorySpace> = new Map();
     races.set(RACES.Human, dataType.Human);
@@ -538,13 +537,12 @@ export class FFTAData {
     races.set(RACES.Viera, dataType.Viera);
     races.set(RACES.Moogle, dataType.Moogle);
 
-
     let abilityLimits = [0x8c, 0x4c, 0x5e, 0x54, 0x57];
     let allJobs: Array<Array<FFTAJob>> = [];
     let jobID = 2; // ID of Soldier
 
     let abilityLimitIter = 0;
-    for (let [race, raceData] of races){
+    for (let [race, raceData] of races) {
       let raceJobs: Array<FFTAJob> = [];
       for (var i = 0; i < raceData.length; i++) {
         let memory = raceData.offset + raceData.byteSize * i;
@@ -733,7 +731,7 @@ export class FFTAData {
 
   /**
    * Skips some cutscenes in the game, optionally skip first two missions
-   * @param option - State of cut scene 
+   * @param option - State of cut scene
    */
   handleCutScene(option: string) {
     switch (option) {
@@ -754,12 +752,14 @@ export class FFTAData {
    * Removes jobs from randomization pool
    * @param jobMapOption - All jobs and state of removal
    */
-  handleDisableJobs(jobMapOption: Map<string,Array<{name: string, enabled: boolean}>>) {
-    for(let [race,raceJobs] of this.jobs){
-      if(raceJobs.length !== jobMapOption.get(race)!.length){
-        throw new Error("Mismatch of "+race+ " jobs unhandled!");
+  handleDisableJobs(
+    jobMapOption: Map<string, Array<{ name: string; enabled: boolean }>>
+  ) {
+    for (let [race, raceJobs] of this.jobs) {
+      if (raceJobs.length !== jobMapOption.get(race)!.length) {
+        throw new Error("Mismatch of " + race + " jobs unhandled!");
       }
-      jobMapOption.get(race)!.forEach((job, i) =>{
+      jobMapOption.get(race)!.forEach((job, i) => {
         raceJobs[i].setAllowed(job.enabled);
       });
     }
@@ -796,6 +796,7 @@ export class FFTAData {
    * @param options - Randomizer UI selected options
    */
   handlePartyMembers(
+    partyRNGEnabled: boolean,
     options: Array<{
       name: string;
       raceChangeable: boolean;
@@ -806,16 +807,18 @@ export class FFTAData {
       masteredAbilities: number;
     }>
   ) {
-    this.rng.setPosition(2000);
-    options.forEach((unit, i) => {
-      StartingPartyHacks.setUnitData(
-        this.formations[0].units[i],
-        this.jobs,
-        this.items,
-        unit,
-        this.rng
-      );
-    });
+    if (partyRNGEnabled) {
+      this.rng.setPosition(2000);
+      options.forEach((unit, i) => {
+        StartingPartyHacks.setUnitData(
+          this.formations[0].units[i],
+          this.jobs,
+          this.items,
+          unit,
+          this.rng
+        );
+      });
+    }
   }
 
   /**

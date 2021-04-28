@@ -6,7 +6,10 @@ export type iRandomizerOptions = Record<string, any>;
 export function randomizeFFTA(fftaData: FFTAData, options: iRandomizerOptions) {
   fftaData.setSeed(options["randomizerSeed"]);
   fftaData.runForcedHacks();
-  fftaData.handleMissionScaling(options["missionScaling"], options["missionScalingValue"]);
+  fftaData.handleMissionScaling(
+    options["missionScaling"],
+    options["missionScalingValue"]
+  );
   fftaData.handleCutScene(options["cutscenes"]);
   fftaData.handleAPBoost(options["apBoost"]);
   fftaData.handleStartingGold(options["startingGold"]);
@@ -18,7 +21,10 @@ export function randomizeFFTA(fftaData: FFTAData, options: iRandomizerOptions) {
   fftaData.handleRewardOptions(options["missionRewards"]);
   fftaData.handleUnitAbilities(options["abilities"]);
   fftaData.handleDisableJobs(options["jobMap"]);
-  fftaData.handlePartyMembers(options["partyMember"]);
+  fftaData.handlePartyMembers(
+    options["partyRNGEnabled"],
+    options["partyMember"]
+  );
   fftaData.handleShopItems(options["shopitems"]);
 }
 
