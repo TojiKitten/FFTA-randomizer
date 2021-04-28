@@ -109,6 +109,11 @@ function openfile(files: any) {
   if (files) {
     let filepath = files[0];
     let filecontent = fs.readFileSync(filepath);
+    //check if Rom is Valid
+    if (filecontent.subarray(0xac, 0xb0).toString() !== "AFXE") {
+      dialog.showErrorBox("error Loading","Rom is not supported!");
+      return
+    }
     fftaData = new FFTAData(filecontent);
     mainWindow!.webContents.send("FileName-Change", { filepath: filepath });
     mainWindow!.webContents.send("get-seed", { seed: fftaData.getSeed() });
@@ -192,7 +197,7 @@ function openSettings(files: any) {
   //look if actually selected a file
   if (files) {
     let filepath = files[0];
-    let settings = JSON.parse(fs.readFileSync(filepath, "utf-8"),MapReviver);
+    let settings = JSON.parse(fs.readFileSync(filepath, "utf-8"), MapReviver);
     mainWindow!.webContents.send("get-settings", { newConfig: settings });
   }
 }
