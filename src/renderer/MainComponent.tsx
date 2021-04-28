@@ -27,6 +27,7 @@ export function MainComponent() {
     { setting: "startingGold", value: 5000 },
     { setting: "frostyMageBoost", value: false },
     { setting: "noJudgeTurn", value: false },
+    { setting: "partyRNGEnabled", value: false},
     {
       setting: "partyMember",
       value: [
