@@ -780,6 +780,7 @@ export class FFTAData {
           this.rng,
           true
         );
+        ForcedHacks.animationFixRaw(this.rom);
         break;
       case "random":
         this.raceAbilities = JobHacks.changeRaceAbilities(
@@ -787,6 +788,7 @@ export class FFTAData {
           this.rng,
           false
         );
+        ForcedHacks.animationFixRaw(this.rom);
         break;
     }
   }
@@ -851,7 +853,7 @@ export class FFTAData {
    * Runs a set of hacks that cannot be skipped
    */
   runForcedHacks() {
-    ForcedHacks.animationFixRaw(this.rom);
+    
   }
 }
 
