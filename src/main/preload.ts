@@ -1,14 +1,20 @@
 import { ipcRenderer, contextBridge } from "electron";
 
 contextBridge.exposeInMainWorld("api", {
-  send: (channel :string, ...data: any) => {
+  send: (channel: string, ...data: any) => {
     //allowed channels to send from Renderer
-    const allowedChannels: string[] = ["open-file-dialog", "save-file-dialog","set-settings", "save-settings", "load-settings"];
+    const allowedChannels: string[] = [
+      "open-file-dialog",
+      "save-file-dialog",
+      "set-settings",
+      "save-settings",
+      "load-settings"
+    ];
     if (allowedChannels.includes(channel)) {
       ipcRenderer.send(channel, ...data);
     }
   },
-  
+
   receive: (channel: string, cb: any) => {
     const allowedChannels: string[] = ["FileName-Change", "get-seed", "get-settings"];
     if (allowedChannels.includes(channel)) {
@@ -16,5 +22,5 @@ contextBridge.exposeInMainWorld("api", {
     }
     /*cb refers to the callback function that will be
     invoked on the arguments when it is returned on the renderer*/
-  },
+  }
 });

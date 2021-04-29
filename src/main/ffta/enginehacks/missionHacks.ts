@@ -11,10 +11,7 @@ import FFTAItem, { FFTARewardItemSet } from "../DataWrapper/FFTAItem";
  * @param formations - An array of all formations
  * @param liGrimLevel - The desired ending level of the final boss
  */
-export function lerpStoryMissionLevels(
-  formations: Array<FFTAFormation>,
-  liGrimLevel: number
-) {
+export function lerpStoryMissionLevels(formations: Array<FFTAFormation>, liGrimLevel: number) {
   // Create lerp function
   let lerp = (min: number, max: number, value: number) => {
     return min * (1 - value) + max * value;
@@ -106,10 +103,7 @@ export function noJudgeTurn(rom: Uint8Array) {
  * @param lawSets - An array of all law sets
  * @param noiseGenerator - The {@link NoiseGenerator} for the randomizer.
  */
-export function shuffleLaws(
-  lawSets: Array<FFTALawSet>,
-  noiseGenerator: NoiseGenerator
-) {
+export function shuffleLaws(lawSets: Array<FFTALawSet>, noiseGenerator: NoiseGenerator) {
   const numberLaws = 20;
   const lawSize = 2;
   let allLaws: Array<number> = [];
@@ -118,12 +112,7 @@ export function shuffleLaws(
   lawSets.forEach((set) => {
     for (var i = 0; i < numberLaws; i++) {
       let offset = lawSize * i;
-      allLaws.push(
-        FFTAUtils.convertShortUint8Array(
-          set.properties.slice(offset, offset + 2),
-          true
-        )
-      );
+      allLaws.push(FFTAUtils.convertShortUint8Array(set.properties.slice(offset, offset + 2), true));
     }
   });
 
@@ -135,10 +124,7 @@ export function shuffleLaws(
   // For every law, write it back to the correct space
   allLaws.forEach((law, i) => {
     let newLaw = FFTAUtils.getShortUint8Array(allLaws[i], true);
-    lawSets[Math.floor(i / numberLaws)].properties.set(
-      newLaw,
-      (i * lawSize) % (numberLaws * lawSize)
-    );
+    lawSets[Math.floor(i / numberLaws)].properties.set(newLaw, (i * lawSize) % (numberLaws * lawSize));
   });
 }
 
@@ -147,10 +133,7 @@ export function shuffleLaws(
  * @param rewardSets - An array of all reward sets
  * @param noiseGenerator - The {@link NoiseGenerator} for the randomizer
  */
-export function shuffleRewards(
-  rewardSets: Array<FFTARewardItemSet>,
-  noiseGenerator: NoiseGenerator
-) {
+export function shuffleRewards(rewardSets: Array<FFTARewardItemSet>, noiseGenerator: NoiseGenerator) {
   const numberRewards = 20;
   const rewardSize = 2;
   let allRewards: Array<number> = [];
@@ -159,12 +142,7 @@ export function shuffleRewards(
   rewardSets.forEach((set) => {
     for (var i = 0; i < numberRewards; i++) {
       let offset = rewardSize * i;
-      allRewards.push(
-        FFTAUtils.convertShortUint8Array(
-          set.properties.slice(offset, offset + 2),
-          true
-        )
-      );
+      allRewards.push(FFTAUtils.convertShortUint8Array(set.properties.slice(offset, offset + 2), true));
     }
   });
 
@@ -176,10 +154,7 @@ export function shuffleRewards(
   // For every reward item, write it back to the correct space
   allRewards.forEach((reward, i) => {
     let newLaw = FFTAUtils.getShortUint8Array(allRewards[i], true);
-    rewardSets[Math.floor(i / numberRewards)].properties.set(
-      newLaw,
-      (i * rewardSize) % (numberRewards * rewardSize)
-    );
+    rewardSets[Math.floor(i / numberRewards)].properties.set(newLaw, (i * rewardSize) % (numberRewards * rewardSize));
   });
 }
 
@@ -188,11 +163,7 @@ export function shuffleRewards(
  * @param rewardSets - An array of all reward sets
  * @param noiseGenerator - The {@link NoiseGenerator} for the randomizer
  */
-export function randomRewards(
-  rewardSets: Array<FFTARewardItemSet>,
-  items: Array<FFTAItem>,
-  rng: NoiseGenerator
-) {
+export function randomRewards(rewardSets: Array<FFTARewardItemSet>, items: Array<FFTAItem>, rng: NoiseGenerator) {
   const numberRewards = 20;
   const rewardSize = 2;
   // Get all reward items into one array

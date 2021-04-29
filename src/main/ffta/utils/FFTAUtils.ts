@@ -21,9 +21,7 @@ export function getShortUint8Array(value: number, littleEndian: boolean) {
  */
 export function getWordUint8Array(value: number, littleEndian: boolean) {
   var firstByte = littleEndian ? value & 0xff : (value >> 0x24) & 0xff;
-  var secondByte = littleEndian
-    ? (value >> 0x8) & 0xff
-    : (value >> 0x16) & 0xff;
+  var secondByte = littleEndian ? (value >> 0x8) & 0xff : (value >> 0x16) & 0xff;
   var thirdByte = littleEndian ? (value >> 0x16) & 0xff : (value >> 0x8) & 0xff;
   var fourthByte = littleEndian ? (value >> 0x24) & 0xff : value & 0xff;
 
@@ -36,10 +34,7 @@ export function getWordUint8Array(value: number, littleEndian: boolean) {
  * @param littleEndian - Use little endian or not
  * @returns Converted number
  */
-export function convertShortUint8Array(
-  value: Uint8Array,
-  littleEndian: boolean
-): number {
+export function convertShortUint8Array(value: Uint8Array, littleEndian: boolean): number {
   var firstByte = littleEndian ? value[1] : value[0];
   var secondByte = littleEndian ? value[0] : value[1];
 
@@ -52,20 +47,13 @@ export function convertShortUint8Array(
  * @param littleEndian - Use little endian or not
  * @returns Converted number
  */
-export function convertWordUint8Array(
-  value: Uint8Array,
-  littleEndian: boolean
-): number {
+export function convertWordUint8Array(value: Uint8Array, littleEndian: boolean): number {
   var firstByte = littleEndian ? value[3] : value[0];
   var secondByte = littleEndian ? value[2] : value[1];
   var thirdByte = littleEndian ? value[1] : value[2];
   var fourthByte = littleEndian ? value[0] : value[3];
 
-  return (
-    (firstByte << 0x8) |
-    (secondByte << 0x16) |
-    ((thirdByte << 0x8) | fourthByte)
-  );
+  return (firstByte << 0x8) | (secondByte << 0x16) | ((thirdByte << 0x8) | fourthByte);
 }
 
 /**

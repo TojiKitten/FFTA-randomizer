@@ -24,10 +24,7 @@ export function toggleAllShopItems(items: Array<FFTAItem>, allowed: boolean) {
  * @param rng - The {@link NoiseGenerator} for the randomizer
  * @returns A new array of items with updated information
  */
-export function toggleRandomShopItems(
-  items: Array<FFTAItem>,
-  rng: NoiseGenerator
-) {
+export function toggleRandomShopItems(items: Array<FFTAItem>, rng: NoiseGenerator) {
   // Randomly set all items to be available in shop, or not
   let newItems: Array<FFTAItem> = createNewItemArray(items);
   newItems.forEach((item) => {
@@ -47,17 +44,14 @@ export function toggleRandomShopItems(
  * @param rng - The {@link NoiseGenerator} for the randomizer
  * @returns A new array of items with updated information
  */
-export function toggleLimitedShopItems(
-  items: Array<FFTAItem>,
-  rng: NoiseGenerator
-) {
+export function toggleLimitedShopItems(items: Array<FFTAItem>, rng: NoiseGenerator) {
   let newItems: Array<FFTAItem> = createNewItemArray(items);
 
   // For every item type that isn't consumables
   for (var iter = ITEMTYPES.Sword; iter <= ITEMTYPES.Accessory; iter++) {
     // Filter by type
     let itemsForType: Array<FFTAItem> = newItems.filter((item) => item.getType() === iter);
-    
+
     // Declare min for cases where items in the type is small
     let numberPerType = Math.min(4, itemsForType.length);
 
@@ -67,9 +61,7 @@ export function toggleLimitedShopItems(
       let possibleItems = itemsForType.filter((item) => {
         return !randomizedItems.has(item.memory);
       });
-      randomizedItems.add(
-        possibleItems[rng.randomIntMax(possibleItems.length - 1)].memory
-      );
+      randomizedItems.add(possibleItems[rng.randomIntMax(possibleItems.length - 1)].memory);
     }
 
     // For every item, enable the randomly selected items, and disable all other items
@@ -91,9 +83,7 @@ function createNewItemArray(items: Array<FFTAItem>) {
 
   // Create new items to return
   items.forEach((item) => {
-    newItems.push(
-      new FFTAItem(item.memory, item.displayName!, item.properties)
-    );
+    newItems.push(new FFTAItem(item.memory, item.displayName!, item.properties));
   });
 
   return newItems;

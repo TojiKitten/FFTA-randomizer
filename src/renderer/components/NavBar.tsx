@@ -8,22 +8,22 @@ type prop = {
 
 export const NavBar = ({ active, callback }: prop) => {
   let btnGeneral = (
-    <button className="navBar-button" onClick={() => callback({setting:"currentPage", value: "general"})}>
+    <button className="navBar-button" onClick={() => callback({ setting: "currentPage", value: "general" })}>
       General
     </button>
   );
   let btnParty = (
-    <button className="navBar-button" onClick={() => callback({setting:"currentPage", value: "party"})}>
+    <button className="navBar-button" onClick={() => callback({ setting: "currentPage", value: "party" })}>
       Party
     </button>
   );
   let btnJobs = (
-    <button className="navBar-button" onClick={() => callback({setting:"currentPage", value: "jobs"})}>
+    <button className="navBar-button" onClick={() => callback({ setting: "currentPage", value: "jobs" })}>
       Jobs
     </button>
   );
   let btnItems = (
-    <button className="navBar-button" onClick={() => callback({setting:"currentPage", value: "items"})}>
+    <button className="navBar-button" onClick={() => callback({ setting: "currentPage", value: "items" })}>
       Items
     </button>
   );

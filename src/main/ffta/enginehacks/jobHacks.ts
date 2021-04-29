@@ -48,7 +48,7 @@ export function percentageMPRegen(rom: Uint8Array) {
     0x02,
     0xd9,
     0x05,
-    0x1c,
+    0x1c
   ];
 
   rom.set([0x16], 0x9308c);
@@ -113,11 +113,9 @@ export function changeRaceAbilities(
 /**
  * Condenses a map Race Abilities keyed by race into a single array
  * @param raceAbilities - A map of Race Abilities
- * @returns 
+ * @returns
  */
-function flattenRaceMapAbilities(
-  raceAbilities: Map<string, Array<FFTARaceAbility>>
-) {
+function flattenRaceMapAbilities(raceAbilities: Map<string, Array<FFTARaceAbility>>) {
   let abilityRecord: Array<FFTARaceAbility> = [];
 
   // Add every race ability to a single array
@@ -132,7 +130,7 @@ function flattenRaceMapAbilities(
 /**
  * Changes an array of Race Abilities to have new information
  * @param raceAbilities - The race abilities to change
- * @param sortedAbilities - An array of race abilities to use as a source 
+ * @param sortedAbilities - An array of race abilities to use as a source
  * @param rng - The {@link NoiseGenerator} for the randomizer
  * @param shuffle - The value of shuffling or randomizing
  * @returns Returns an object holding an array of new abilities with updated information, and the list of remaining abilities to use as a source.
@@ -152,9 +150,7 @@ function abilityReplace(
     // Removes duplicates
     // Shuffled case, sortedAbilities gets smaller and smaller
     let type = sortedAbilities.filter(
-      (iter, i) =>
-        iter.getAbilityType() === ability.getAbilityType() &&
-        sortedAbilities.indexOf(iter) === i
+      (iter, i) => iter.getAbilityType() === ability.getAbilityType() && sortedAbilities.indexOf(iter) === i
     );
 
     // Get a random valid ability and its information
@@ -162,9 +158,7 @@ function abilityReplace(
     let selectedAbility = type[abilityIndex];
     let name = selectedAbility.displayName ? selectedAbility.displayName : "";
     // Create a new ability and add it to the new list
-    newRaceAbilities.push(
-      new FFTARaceAbility(ability.memory, name, selectedAbility.properties)
-    );
+    newRaceAbilities.push(new FFTARaceAbility(ability.memory, name, selectedAbility.properties));
 
     // If shuffling abilities, remove the selected ability from the list
     // Uses memory address for duplicate case
@@ -179,6 +173,6 @@ function abilityReplace(
 
   return {
     randomizedAbilities: newRaceAbilities,
-    newSortedAbilities: sortedAbilities,
+    newSortedAbilities: sortedAbilities
   };
 }

@@ -27,10 +27,10 @@ const enum OFFSET {
   EFFECT2 = 0x1b,
   EFFECT3 = 0x1c,
   // ID of the ability set
-  ABILITYSET = 0x1d,
+  ABILITYSET = 0x1d
 }
 
-export const enum ITEMTYPES{
+export const enum ITEMTYPES {
   Null = 0,
   Sword = 1,
   Blade = 2,
@@ -61,7 +61,7 @@ export const enum ITEMTYPES{
   Shoes,
   Armlet,
   Accessory,
-  Consumable,
+  Consumable
 }
 const enum ITEMFLAG {
   DOUBLESWORD = 0x0,
@@ -71,15 +71,14 @@ const enum ITEMFLAG {
   TIER1 = 0x4,
   TIER2 = 0x5,
   TIER3 = 0x6,
-  MYTHRILORCONSUMABLE = 0x7,
+  MYTHRILORCONSUMABLE = 0x7
 }
 
 /**
  * An {@link FFTAObject} representing an item that is able to appear in the shop.
  */
 export class FFTAItem extends FFTAObject {
-
-  readonly ITEMIDOFFSET: number = 1; 
+  readonly ITEMIDOFFSET: number = 1;
 
   /**
    * Constructor for an Item
@@ -87,11 +86,7 @@ export class FFTAItem extends FFTAObject {
    * @param itemName - The name of the ability
    * @param properties - A buffer starting from the address in the ROM
    */
-  constructor(
-    memory: number,
-    itemName: string,
-    properties: Uint8Array
-  ) {
+  constructor(memory: number, itemName: string, properties: Uint8Array) {
     super(memory, properties, itemName);
   }
 
@@ -114,7 +109,7 @@ export class FFTAItem extends FFTAObject {
   /**
    * Sets the BYTE holding the item type.
    * @see ITEMTYPES
-   * @param value - The item type for an item 
+   * @param value - The item type for an item
    */
   setType(value: ITEMTYPES) {
     this.setProperty(OFFSET.TYPE, 1, value);
@@ -235,9 +230,7 @@ export class FFTAItem extends FFTAObject {
    */
   private setFlag(flag: ITEMFLAG, value: 0 | 1): void {
     let mask = 0x1 << flag;
-    let newFlags = new Uint8Array([
-      (this.properties[OFFSET.FLAGS] & ~mask) | (value << flag),
-    ]);
+    let newFlags = new Uint8Array([(this.properties[OFFSET.FLAGS] & ~mask) | (value << flag)]);
     this.properties.set(newFlags, OFFSET.FLAGS);
   }
 

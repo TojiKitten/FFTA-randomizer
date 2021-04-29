@@ -8,43 +8,31 @@ interface props {
 }
 
 export const PartySettings = ({ globalState, callback }: props) => {
-  let partyRngEnabled = globalState.find(
-    (element) => element.setting === "partyRNGEnabled"
-  );
+  let partyRngEnabled = globalState.find((element) => element.setting === "partyRNGEnabled");
 
-  let partyMember = globalState.find(
-    (element) => element.setting === "partyMember"
-  )! as {
+  let partyMember = globalState.find((element) => element.setting === "partyMember")! as {
     setting: string;
     value: Array<Unit>;
   };
 
   // @ts-ignore
-  let jobMap: Map<string, Array<Job>> = globalState.find(
-    (element) => element.setting === "jobMap"
-  )!.value;
+  let jobMap: Map<string, Array<Job>> = globalState.find((element) => element.setting === "jobMap")!.value;
 
   console.log(jobMap);
   let partyMemberList = Array<JSX.Element>();
 
   const changeProperty = (event: any, setting: string, unit: Unit) => {
     if (setting === "rngEquip") {
-      partyMember.value.find((element: Unit) => element.name === unit.name)![
-        setting
-      ] = !partyMember.value.find(
+      partyMember.value.find((element: Unit) => element.name === unit.name)![setting] = !partyMember.value.find(
         (element: Unit) => element.name === unit.name
       )![setting];
     } else {
       if (setting === "race") {
-        partyMember.value.find((element: Unit) => element.name === unit.name)![
-          "job"
-        ] = "random";
+        partyMember.value.find((element: Unit) => element.name === unit.name)!["job"] = "random";
       }
       //line breakes because index stuff i have no idea <.< TODO!!!!
       // @ts-ignore
-      partyMember.value.find((element: Unit) => element.name === unit.name)![
-        setting
-      ] = event.target.value;
+      partyMember.value.find((element: Unit) => element.name === unit.name)![setting] = event.target.value;
     }
     callback(partyMember);
   };
@@ -69,17 +57,19 @@ export const PartySettings = ({ globalState, callback }: props) => {
         break;
     }
     if (Boolean(partyRngEnabled!.value)) {
-      partyMemberList.push(
-        <PartyMember unit={element} jobList={jobs} callback={changeProperty} />
-      );
+      partyMemberList.push(<PartyMember unit={element} jobList={jobs} callback={changeProperty} />);
     }
   });
 
   return (
     <div>
-      <input type="checkbox" checked={Boolean(partyRngEnabled!.value)} onChange={(event) =>{
-        callback({setting: partyRngEnabled!.setting, value: !partyRngEnabled!.value});
-      }} />
+      <input
+        type="checkbox"
+        checked={Boolean(partyRngEnabled!.value)}
+        onChange={(event) => {
+          callback({ setting: partyRngEnabled!.setting, value: !partyRngEnabled!.value });
+        }}
+      />
       <label>Enable Party randomization</label>
       <div>{partyMemberList}</div>
     </div>

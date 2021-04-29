@@ -12,15 +12,14 @@ export const JobSettings = ({ globalState, callback }: props) => {
   let mpRegen = globalState.find((element) => element.setting === "mpRegen")!;
 
   // @ts-ignore
-  let jobMap: Map<string,Array<Job>> = globalState.find((element) => element.setting === "jobMap")!.value;
-
+  let jobMap: Map<string, Array<Job>> = globalState.find((element) => element.setting === "jobMap")!.value;
 
   const jobChange = (event: any, race: string, jobs: Array<Job>) => {
-    jobMap.get(race)!.find((element: any) => element.name == event.target.id)!.enabled = !jobMap.get(race)!.find(
-      (element: any) => element.name == event.target.id
-    )!.enabled;
+    jobMap.get(race)!.find((element: any) => element.name == event.target.id)!.enabled = !jobMap
+      .get(race)!
+      .find((element: any) => element.name == event.target.id)!.enabled;
 
-    callback({setting: "jobMap", value: jobMap});
+    callback({ setting: "jobMap", value: jobMap });
   };
 
   const setJobList = (jobs: Array<Job>, race: string): Array<JSX.Element> => {
@@ -31,9 +30,9 @@ export const JobSettings = ({ globalState, callback }: props) => {
           <input
             type="checkbox"
             id={element.name}
-            key={element.name+race}
+            key={element.name + race}
             checked={element.enabled}
-            onChange={(event) => jobChange(event,race, jobs)}
+            onChange={(event) => jobChange(event, race, jobs)}
           />
           <label>{element.name}</label>
           <br />
@@ -58,8 +57,7 @@ export const JobSettings = ({ globalState, callback }: props) => {
           value={String(jobRequirements.value)}
           onChange={(element) => {
             callback({ setting: jobRequirements.setting, value: element.target.value });
-          }}
-        >
+          }}>
           <option value="normal">Normal</option>
           <option value="unlocked">All Unlocked</option>
           <option value="locked">All Locked</option>
@@ -70,8 +68,7 @@ export const JobSettings = ({ globalState, callback }: props) => {
           value={String(abilities.value)}
           onChange={(element) => {
             callback({ setting: abilities.setting, value: element.target.value });
-          }}
-        >
+          }}>
           <option value="normal">Normal</option>
           <option value="random">Random</option>
           <option value="shuffled">Shuffled</option>
@@ -82,8 +79,7 @@ export const JobSettings = ({ globalState, callback }: props) => {
           value={String(mpRegen.value)}
           onChange={(element) => {
             callback({ setting: mpRegen.setting, value: element.target.value });
-          }}
-        >
+          }}>
           <option value="normal">Normal</option>
           <option value="precentage">Percentage</option>
         </select>

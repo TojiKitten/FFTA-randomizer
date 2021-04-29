@@ -6,7 +6,7 @@ const enum OFFSET {
   ANIMATIONTYPE = 0x06, // ?? Might have to do with offsets available
   ANIMATIONS = 0x07,
   ALLOWEDWEAPONS = 0x2d,
-  REQUIREMENTS = 0x30,
+  REQUIREMENTS = 0x30
 }
 
 /**
@@ -19,7 +19,7 @@ export class FFTAJob extends FFTAObject {
   jobId: number;
   allowedWeapons: Uint8Array;
   abilityLimit: number;
-  
+
   /**
    * Constructor of a Job
    * @param memory - The address of the ROM
@@ -27,12 +27,7 @@ export class FFTAJob extends FFTAObject {
    * @param name - The name of the job
    * @param properties - A buffer starting from the address in the ROM
    */
-  constructor(
-    memory: number,
-    id: number,
-    name: string,
-    properties: Uint8Array
-  ) {
+  constructor(memory: number, id: number, name: string, properties: Uint8Array) {
     super(memory, properties, name);
     this.jobId = id;
   }

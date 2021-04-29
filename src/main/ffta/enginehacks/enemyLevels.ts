@@ -8,10 +8,7 @@ import { FFTAFormation } from "../DataWrapper/FFTAFormation";
  * @param formations - An array of all formations
  * @param liGrimLevel - The desired ending level of the final boss
  */
-export function lerpStoryMissionLevels(
-  formations: Array<FFTAFormation>,
-  liGrimLevel: number
-) {
+export function lerpStoryMissionLevels(formations: Array<FFTAFormation>, liGrimLevel: number) {
   // Create lerp function
   let lerp = (min: number, max: number, value: number) => {
     return min * (1 - value) + max * value;

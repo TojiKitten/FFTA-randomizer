@@ -27,23 +27,23 @@ function createWindow(): void {
     minHeight: 400,
     minWidth: 400,
     backgroundColor: "#FFFFFF",
-    //resizable: false,
+    resizable: false,
     webPreferences: {
       nodeIntegration: false,
       enableRemoteModule: false,
       contextIsolation: true,
-      preload: path.join(__dirname, "preload.bundle.js"),
-    },
+      preload: path.join(__dirname, "preload.bundle.js")
+    }
   });
 
-  //mainWindow.removeMenu();
+  mainWindow.removeMenu();
   // and load the index.html of the app.
   mainWindow
     .loadURL(
       url.format({
         pathname: path.join(__dirname, "./index.html"),
         protocol: "file:",
-        slashes: true,
+        slashes: true
       })
     )
     .finally(() => {
@@ -98,8 +98,8 @@ ipc.on("open-file-dialog", function (event, options: any) {
     properties: ["openFile"],
     filters: [
       { name: "GBA ROM", extensions: ["gba"] },
-      { name: "All Files", extensions: ["*"] },
-    ],
+      { name: "All Files", extensions: ["*"] }
+    ]
   });
   openfile(choosenfiles);
 });
@@ -111,8 +111,8 @@ function openfile(files: any) {
     let filecontent = fs.readFileSync(filepath);
     //check if Rom is Valid
     if (filecontent.subarray(0xac, 0xb0).toString() !== "AFXE") {
-      dialog.showErrorBox("error Loading","Rom is not supported!");
-      return
+      dialog.showErrorBox("error Loading", "Rom is not supported!");
+      return;
     }
     fftaData = new FFTAData(filecontent);
     mainWindow!.webContents.send("FileName-Change", { filepath: filepath });
@@ -129,8 +129,8 @@ ipc.on("save-file-dialog", function (event, options: any) {
     title: "Save Rom",
     filters: [
       { name: "GBA ROM", extensions: ["gba"] },
-      { name: "All Files", extensions: ["*"] },
-    ],
+      { name: "All Files", extensions: ["*"] }
+    ]
   });
   savefile(choosenfiles);
 });
@@ -152,8 +152,8 @@ ipc.on("save-settings", function (event, options: any) {
     title: "Save Config",
     filters: [
       { name: "json", extensions: ["json"] },
-      { name: "All Files", extensions: ["*"] },
-    ],
+      { name: "All Files", extensions: ["*"] }
+    ]
   });
   SaveSettings(choosenfiles);
 });
@@ -172,7 +172,7 @@ function MapReplacer(key: any, value: any) {
     return {
       Setting: "jobMap",
       dataType: "Map",
-      value: Array.from(value.entries()), // or with spread: value: [...value]
+      value: Array.from(value.entries()) // or with spread: value: [...value]
     };
   } else {
     return value;
@@ -187,8 +187,8 @@ ipc.on("load-settings", function (event, options: any) {
     properties: ["openFile"],
     filters: [
       { name: "json", extensions: ["json"] },
-      { name: "All Files", extensions: ["*"] },
-    ],
+      { name: "All Files", extensions: ["*"] }
+    ]
   });
   openSettings(choosenfiles);
 });
@@ -216,11 +216,8 @@ function MapReviver(key: any, value: any) {
 // get and set settings from frontend
 //
 
-ipc.on(
-  "set-settings",
-  function (event, options: Array<{ setting: string; value: any }>) {
-    options.forEach((element) => {
-      randomizerOptions[element.setting] = element.value;
-    });
-  }
-);
+ipc.on("set-settings", function (event, options: Array<{ setting: string; value: any }>) {
+  options.forEach((element) => {
+    randomizerOptions[element.setting] = element.value;
+  });
+});

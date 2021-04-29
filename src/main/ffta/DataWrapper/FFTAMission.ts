@@ -2,7 +2,7 @@ import { FFTAObject } from "./FFTAObject";
 
 const enum OFFSET {
   NAME = 0x00,
-  AP = 0x34,
+  AP = 0x34
 }
 
 /**

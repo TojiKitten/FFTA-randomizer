@@ -3,7 +3,7 @@ import { FFTAObject } from "./FFTAObject";
 const enum OFFSET {}
 
 /**
- * An {@link FFTAObject} representing a law. 
+ * An {@link FFTAObject} representing a law.
  */
 export class FFTALaw extends FFTAObject {
   /**

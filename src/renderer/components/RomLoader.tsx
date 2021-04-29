@@ -8,8 +8,7 @@ export const RomLoader = () => {
     <button
       onClick={() => {
         api.send("open-file-dialog", "null");
-      }}
-    >
+      }}>
       Open Rom
     </button>
   );

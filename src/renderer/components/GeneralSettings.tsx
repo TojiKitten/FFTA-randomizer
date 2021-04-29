@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Config, Job} from "../utils/types"
+import { Config, Job } from "../utils/types";
 //window.api gets available at runtime so we can ignore that error
 // @ts-ignore
 const { api } = window;
@@ -25,9 +25,8 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
       <select
         value={String(enemyLevel.value)}
         onChange={(event) => {
-          callback({setting: "missionScaling", value: event.target.value});
-        }}
-      >
+          callback({ setting: "missionScaling", value: event.target.value });
+        }}>
         <option value="normal">Normal</option>
         <option value="lerp">Modified</option>
         <option value="average">Scaled - Average</option>
@@ -39,7 +38,7 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
         max="50"
         value={Number(enemyLevelRange.value)}
         onChange={(event) => {
-          callback({setting: "missionScalingValue", value: event.target.value});
+          callback({ setting: "missionScalingValue", value: event.target.value });
         }}
       />
       {enemyLevelRange.value}
@@ -48,9 +47,8 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
       <select
         value={String(cutscenes.value)}
         onChange={(event) => {
-          callback({setting: "cutscenes", value: event.target.value});
-        }}
-      >
+          callback({ setting: "cutscenes", value: event.target.value });
+        }}>
         <option value="all">All</option>
         <option value="none">None</option>
         <option value="noTutorial">None + No Tutorial</option>
@@ -60,9 +58,8 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
       <select
         value={String(missionRewards.value)}
         onChange={(event) => {
-          callback({setting: "missionRewards", value:event.target.value});
-        }}
-      >
+          callback({ setting: "missionRewards", value: event.target.value });
+        }}>
         <option value="normal">Normal</option>
         <option value="random">Random</option>
         <option value="shuffled">Shuffled</option>
@@ -76,7 +73,7 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
         step="10"
         value={Number(apBoost.value)}
         onChange={(event) => {
-          callback({setting:"apBoost", value:event.target.value});
+          callback({ setting: "apBoost", value: event.target.value });
         }}
       />
       {apBoost.value}
@@ -85,9 +82,8 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
       <select
         value={String(laws.value)}
         onChange={(event) => {
-          callback({setting:"laws", value:event.target.value});
-        }}
-      >
+          callback({ setting: "laws", value: event.target.value });
+        }}>
         <option value="normal">Normal</option>
         <option value="shuffled">Shuffled</option>
       </select>
@@ -97,7 +93,7 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
         type="number"
         value={Number(startingGold.value)}
         onChange={(event) => {
-          callback({setting: "startingGold", value: event.target.value});
+          callback({ setting: "startingGold", value: event.target.value });
         }}
       />
       <br />
@@ -105,7 +101,7 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
         type="checkbox"
         checked={Boolean(frostyMageBoost.value)}
         onChange={(event) => {
-          callback({setting:"frostyMageBoost", value: !frostyMageBoost.value});
+          callback({ setting: "frostyMageBoost", value: !frostyMageBoost.value });
         }}
       />
       <label>Frosty Mage Boost</label>
@@ -114,7 +110,7 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
         type="checkbox"
         checked={Boolean(noJudgeTurn.value)}
         onChange={(event) => {
-          callback({setting: "noJudgeTurn", value:!noJudgeTurn.value});
+          callback({ setting: "noJudgeTurn", value: !noJudgeTurn.value });
         }}
       />
       <label>no Judge Turn</label>

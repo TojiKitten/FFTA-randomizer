@@ -4,8 +4,7 @@ import { Config, Job, Unit } from "../utils/types";
 type props = {
   unit: Unit;
   jobList: Array<Job>;
-  callback: (event: any,setting: string, unit: Unit) => void;
-  
+  callback: (event: any, setting: string, unit: Unit) => void;
 };
 
 export const PartyMember = ({ unit, callback, jobList }: props) => {
@@ -48,10 +47,19 @@ export const PartyMember = ({ unit, callback, jobList }: props) => {
       <label>randomize Equipment</label>
       <br />
       Level:
-      <input type="number" min="1" max="50" value={unit.level} onChange={(event) => callback(event, "level", unit)}></input>
+      <input
+        type="number"
+        min="1"
+        max="50"
+        value={unit.level}
+        onChange={(event) => callback(event, "level", unit)}></input>
       <br />
       Mastered Abilities:
-      <input type="number" min="0" value={unit.masteredAbilities} onChange={(event) => callback(event, "masteredAbilities", unit)}></input>
+      <input
+        type="number"
+        min="0"
+        value={unit.masteredAbilities}
+        onChange={(event) => callback(event, "masteredAbilities", unit)}></input>
     </div>
   );
 };

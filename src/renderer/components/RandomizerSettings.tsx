@@ -10,15 +10,13 @@ interface props {
 }
 
 export const RandomizerSettings = ({ globalState, callback }: props) => {
-  let seed = globalState.find(
-    (element) => element.setting === "randomizerSeed"
-  )!.value;
+  let seed = globalState.find((element) => element.setting === "randomizerSeed")!.value;
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
     callback({
       setting: "randomizerSeed",
-      value: String(event.target.elements.seed.value),
+      value: String(event.target.elements.seed.value)
     });
     event.target.reset();
   };
@@ -26,9 +24,12 @@ export const RandomizerSettings = ({ globalState, callback }: props) => {
   return (
     <div className="div-RandoSettings">
       <form onSubmit={handleSubmit}>
-        <input name="seed" type="number" value={Number(seed)} onChange={(event) =>
-          callback({setting:"randomizerSeed", value: event.target.value})
-        }/>
+        <input
+          name="seed"
+          type="number"
+          value={Number(seed)}
+          onChange={(event) => callback({ setting: "randomizerSeed", value: event.target.value })}
+        />
         <input type="submit" value="set Seed" />
       </form>
     </div>

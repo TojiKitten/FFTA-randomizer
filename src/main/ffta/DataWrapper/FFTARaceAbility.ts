@@ -5,7 +5,7 @@ const enum OFFSET {
   DESCRIPTION = 0x02,
   ABILITYID = 0x04,
   TYPE = 0x06,
-  APCOST = 0x07, //Multiply by 10
+  APCOST = 0x07 //Multiply by 10
 }
 
 /**

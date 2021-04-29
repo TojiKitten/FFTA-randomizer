@@ -10,7 +10,7 @@ const enum OFFSET {
   DEFAULTFACING = 0x1c,
   SPAWNLENGTH = 0x20,
   SPAWNFACING = 0x23,
-  SPAWNADDRESS = 0x24,
+  SPAWNADDRESS = 0x24
 }
 
 const UNITSIZE = 0x30;
@@ -38,8 +38,7 @@ export class FFTAFormation extends FFTAObject {
     this.unitStart = FFTAUtils.getLittleEndianAddress(
       properties.slice(OFFSET.MEMBERSADDRESS, OFFSET.MEMBERSADDRESS + 4)
     );
-    this.unitEnd =
-      this.unitStart + UNITSIZE * properties[OFFSET.MEMBERSSIZE] - 1;
+    this.unitEnd = this.unitStart + UNITSIZE * properties[OFFSET.MEMBERSSIZE] - 1;
   }
 
   /**
@@ -53,10 +52,7 @@ export class FFTAFormation extends FFTAObject {
     );
 
     for (var i = 0; i < this.properties[OFFSET.MEMBERSSIZE]; i++) {
-      let newUnit = new FFTAUnit(
-        unitAddress + UNITSIZE * i,
-        unitBuffer.slice(UNITSIZE * i, UNITSIZE * (i + 1))
-      );
+      let newUnit = new FFTAUnit(unitAddress + UNITSIZE * i, unitBuffer.slice(UNITSIZE * i, UNITSIZE * (i + 1)));
       this.units.push(newUnit);
     }
   }

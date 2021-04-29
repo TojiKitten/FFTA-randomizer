@@ -8,8 +8,7 @@ export const SeetingsLoader = () => {
     <button
       onClick={() => {
         api.send("load-settings", "null");
-      }}
-    >
+      }}>
       Load Config
     </button>
   );

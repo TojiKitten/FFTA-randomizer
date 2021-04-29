@@ -27,7 +27,7 @@ export function MainComponent() {
     { setting: "startingGold", value: 5000 },
     { setting: "frostyMageBoost", value: false },
     { setting: "noJudgeTurn", value: false },
-    { setting: "partyRNGEnabled", value: false},
+    { setting: "partyRNGEnabled", value: false },
     {
       setting: "partyMember",
       value: [
@@ -39,7 +39,7 @@ export function MainComponent() {
           job: "random",
           rngEquip: false,
           level: 3,
-          masteredAbilities: 0,
+          masteredAbilities: 0
         },
         {
           name: "montblanc",
@@ -48,7 +48,7 @@ export function MainComponent() {
           job: "blackMage",
           rngEquip: false,
           level: 3,
-          masteredAbilities: 0,
+          masteredAbilities: 0
         },
         {
           name: "unit 3",
@@ -57,7 +57,7 @@ export function MainComponent() {
           job: "random",
           rngEquip: false,
           level: 3,
-          masteredAbilities: 0,
+          masteredAbilities: 0
         },
         {
           name: "unit 4",
@@ -66,7 +66,7 @@ export function MainComponent() {
           job: "random",
           rngEquip: false,
           level: 3,
-          masteredAbilities: 0,
+          masteredAbilities: 0
         },
         {
           name: "unit 5",
@@ -75,7 +75,7 @@ export function MainComponent() {
           job: "random",
           rngEquip: false,
           level: 3,
-          masteredAbilities: 0,
+          masteredAbilities: 0
         },
         {
           name: "unit 6",
@@ -84,9 +84,9 @@ export function MainComponent() {
           job: "random",
           rngEquip: false,
           level: 3,
-          masteredAbilities: 0,
-        },
-      ],
+          masteredAbilities: 0
+        }
+      ]
     },
     { setting: "jobRequirements", value: "normal" },
     { setting: "abilities", value: "normal" },
@@ -107,8 +107,8 @@ export function MainComponent() {
             { name: "illusionist", enabled: true },
             { name: "blueMage", enabled: true },
             { name: "archer", enabled: true },
-            { name: "hunter", enabled: true },
-          ],
+            { name: "hunter", enabled: true }
+          ]
         ],
         [
           "bangaa",
@@ -119,8 +119,8 @@ export function MainComponent() {
             { name: "gladiator", enabled: true },
             { name: "whiteMonk", enabled: true },
             { name: "bishop", enabled: true },
-            { name: "templar", enabled: true },
-          ],
+            { name: "templar", enabled: true }
+          ]
         ],
         [
           "nuMou",
@@ -132,8 +132,8 @@ export function MainComponent() {
             { name: "alchemist", enabled: true },
             { name: "beastmaster", enabled: true },
             { name: "morpher", enabled: true },
-            { name: "sage", enabled: true },
-          ],
+            { name: "sage", enabled: true }
+          ]
         ],
         [
           "viera",
@@ -145,8 +145,8 @@ export function MainComponent() {
             { name: "summoner", enabled: true },
             { name: "archer", enabled: true },
             { name: "assassin", enabled: true },
-            { name: "sniper", enabled: true },
-          ],
+            { name: "sniper", enabled: true }
+          ]
         ],
         [
           "moogle",
@@ -158,12 +158,12 @@ export function MainComponent() {
             { name: "juggler", enabled: true },
             { name: "gadgeteer", enabled: true },
             { name: "blackMage", enabled: true },
-            { name: "timeMage", enabled: true },
-          ],
-        ],
-      ]),
+            { name: "timeMage", enabled: true }
+          ]
+        ]
+      ])
     },
-    { setting: "shopitems", value: "default" },
+    { setting: "shopitems", value: "default" }
   ]);
 
   api.receive("FileName-Change", (msg: any) => {
@@ -180,7 +180,7 @@ export function MainComponent() {
     delete newConfig["currentPage"];
     delete newConfig["isRandomized"];
 
-    console.log(newConfig)
+    console.log(newConfig);
     for (var key of Object.keys(newConfig)) {
       changeSetting({ setting: key, value: newConfig[key] });
     }
@@ -188,8 +188,7 @@ export function MainComponent() {
 
   const changeSetting = (nconfig: Config) => {
     let newConfig = Array.from(config);
-    newConfig.find((element) => element.setting === nconfig.setting)!.value =
-      nconfig.value;
+    newConfig.find((element) => element.setting === nconfig.setting)!.value = nconfig.value;
     setConfig(newConfig);
   };
 

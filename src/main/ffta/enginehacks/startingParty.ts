@@ -41,22 +41,12 @@ export function setUnitData(
   let newJob = getNewJob(options.race, options.job, raceJobs, rng);
   unit.setJob(newJob.jobId);
   // Change Equipment (Make sure it's valid)
-  let newLoadout: Array<number> = getValidLoadOut(
-    newJob,
-    items,
-    options.rngEquip,
-    rng
-  );
+  let newLoadout: Array<number> = getValidLoadOut(newJob, items, options.rngEquip, rng);
   newLoadout.forEach((item, i) => {
     unit.setItem(item, i);
   });
   // get set of random abilities and master them
-  let mastered: Array<number> = getRandomAbilityIDs(
-    newJob,
-    unit,
-    options.masteredAbilities,
-    rng
-  );
+  let mastered: Array<number> = getRandomAbilityIDs(newJob, unit, options.masteredAbilities, rng);
   mastered.forEach((ability) => {
     unit.setMasterAbility(ability, true);
   });
@@ -83,9 +73,7 @@ function getNewJob(
     return randomJob;
   }
   let selectedJob = allowedJobs.find(
-    (job) =>
-      job.displayName?.replaceAll(" ", "").toLowerCase() ===
-      jobString.toLowerCase()
+    (job) => job.displayName?.replaceAll(" ", "").toLowerCase() === jobString.toLowerCase()
   );
   if (!selectedJob) throw new Error(jobString + " not found");
   return selectedJob;
@@ -99,11 +87,11 @@ function getNewJob(
  */
 function getAvailableJobs(race: string, raceJobs: Map<string, Array<FFTAJob>>) {
   let allowedJobs: Array<FFTAJob> = [];
-  if (raceJobs.has(race)){
+  if (raceJobs.has(race)) {
     allowedJobs = raceJobs.get(race)!.filter((job) => job.allowed === true);
-  }else{
-    for(let jobs of raceJobs.values()){
-      allowedJobs = allowedJobs.concat(jobs.filter((job) => job.allowed === true))
+  } else {
+    for (let jobs of raceJobs.values()) {
+      allowedJobs = allowedJobs.concat(jobs.filter((job) => job.allowed === true));
     }
   }
   return allowedJobs;
@@ -161,9 +149,7 @@ function getValidLoadOut(
 
   //find valid weapon from validweapons array and find the correct index for full item array
   let subWeaponID = rng.randomIntMax(validWeapons.length - 1);
-  let weaponID = items.findIndex(
-    (element) => element === validWeapons[subWeaponID]
-  );
+  let weaponID = items.findIndex((element) => element === validWeapons[subWeaponID]);
   loadout.push(weaponID + 1); //+1 because item ids start at 1 not 0 NotLikeThis
 
   enum FEMALEONLY {
@@ -171,7 +157,7 @@ function getValidLoadOut(
     BARETTE = "Barette",
     RIBBON = "Ribbon",
     MINERVAPLATE = "Minerva Plate",
-    RUBBERSUIT = "Rubber Suit",
+    RUBBERSUIT = "Rubber Suit"
   }
 
   //find valid armor from validArmors array and find the correct index for full item array
@@ -181,18 +167,11 @@ function getValidLoadOut(
     subArmorID = rng.randomIntMax(validArmor.length - 1);
   } while (validArmor[subArmorID].displayName! in FEMALEONLY);
 
-  let armorID = items.findIndex(
-    (element) => element === validArmor[subWeaponID]
-  );
+  let armorID = items.findIndex((element) => element === validArmor[subWeaponID]);
   loadout.push(armorID + items[0].ITEMIDOFFSET); //+1 because item ids start at 1 not 0 NotLikeThis
 
-  if (
-    validWeapons[subWeaponID].getWorn() == 1 &&
-    job.isTypeAllowed(ITEMTYPES.Shield)
-  ) {
-    let shieldID = items.findIndex(
-      (item) => item.getType() === ITEMTYPES.Shield
-    );
+  if (validWeapons[subWeaponID].getWorn() == 1 && job.isTypeAllowed(ITEMTYPES.Shield)) {
+    let shieldID = items.findIndex((item) => item.getType() === ITEMTYPES.Shield);
     loadout.push(shieldID + items[0].ITEMIDOFFSET); //+1 because item ids start at 1 not 0 NotLikeThis
   }
 
@@ -211,12 +190,7 @@ function getValidLoadOut(
  * @param rng - The {@link NoiseGenerator} for the randomizer
  * @returns An array of abilities to master
  */
-function getRandomAbilityIDs(
-  job: FFTAJob,
-  unit: FFTAUnit,
-  count: number,
-  rng: NoiseGenerator
-): Array<number> {
+function getRandomAbilityIDs(job: FFTAJob, unit: FFTAUnit, count: number, rng: NoiseGenerator): Array<number> {
   let abilityIndicies: Array<number> = [];
   count = count <= job.abilityLimit ? count : job.abilityLimit; //check for ability limit on per job bases
   //get "count" amount of random abilities no doubles

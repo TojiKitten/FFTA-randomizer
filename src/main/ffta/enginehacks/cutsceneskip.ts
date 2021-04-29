@@ -28,9 +28,9 @@ const skipTutorial: Codeinject[] = [
       0x1d,
       0x03,
       0x17,
-      0x05,
-    ],
-  }, //skip lizard men
+      0x05
+    ]
+  } //skip lizard men
 ];
 
 const NoSkipTutorial: Codeinject[] = [
@@ -57,9 +57,9 @@ const NoSkipTutorial: Codeinject[] = [
       0x1d,
       0x03,
       0x17,
-      0x05,
-    ],
-  }, // Skip End of Lizard Men
+      0x05
+    ]
+  } // Skip End of Lizard Men
 ];
 
 const skipEverythingElse: Codeinject[] = [
@@ -117,20 +117,7 @@ const skipEverythingElse: Codeinject[] = [
 
   {
     offset: 0x9afe8d,
-    data: [
-      0x1a,
-      0x10,
-      0x02,
-      0x01,
-      0x1d,
-      0x13,
-      0x0d,
-      0x1c,
-      0x38,
-      0x00,
-      0x17,
-      0x02,
-    ],
+    data: [0x1a, 0x10, 0x02, 0x01, 0x1d, 0x13, 0x0d, 0x1c, 0x38, 0x00, 0x17, 0x02]
   },
 
   { offset: 0x9b07e4, data: [0x1e, 0x03, 0x17, 0x05] },
@@ -167,7 +154,7 @@ const skipEverythingElse: Codeinject[] = [
   { offset: 0x9b5835, data: [0x1a, 0x1a, 0x02, 0x01, 0x1d, 0x1d, 0x17, 0x05] },
 
   // Over the Hill Skip
-  { offset: 0x9b5eef, data: [0x1a, 0x1b, 0x02, 0x01, 0x1d, 0x1e, 0x17, 0x05] },
+  { offset: 0x9b5eef, data: [0x1a, 0x1b, 0x02, 0x01, 0x1d, 0x1e, 0x17, 0x05] }
 ];
 
 /**
@@ -176,10 +163,7 @@ const skipEverythingElse: Codeinject[] = [
  * @param skipIntro - Flag to skip or keep tutorial
  * @returns - A new buffer with updated values
  */
-export function skipCutscenes(
-  romData: Uint8Array,
-  skipIntro: boolean
-): Uint8Array {
+export function skipCutscenes(romData: Uint8Array, skipIntro: boolean): Uint8Array {
   let newRomData = romData;
   // Depending on if we skip the tutorial or not, set place to warp
   if (skipIntro) {

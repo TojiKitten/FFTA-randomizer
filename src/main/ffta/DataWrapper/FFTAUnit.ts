@@ -13,7 +13,7 @@ const enum OFFSET {
   UNITITEM5 = 0x10,
   UNITABILITIES = 0x14,
   UNITREACTION = 0x28,
-  UNITSUPPORT = 0x29,
+  UNITSUPPORT = 0x29
 }
 
 /**
@@ -68,9 +68,7 @@ export class FFTAUnit extends FFTAObject {
     let abilityBit = offset % 8;
     let mask = 0x1 << abilityBit;
 
-    let newFlags = new Uint8Array([
-      (this.properties[abilityByte] & ~mask) | (masteredBit << abilityBit),
-    ]);
+    let newFlags = new Uint8Array([(this.properties[abilityByte] & ~mask) | (masteredBit << abilityBit)]);
     this.properties.set(newFlags, abilityByte);
   }
 }
