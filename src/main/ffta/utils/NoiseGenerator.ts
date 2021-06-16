@@ -17,7 +17,7 @@ export class NoiseGenerator {
    */
   setSeed(seed: number) {
     this.position = 0;
-    this.seed = seed;
+    this.seed = +seed;
   }
 
  /**
@@ -95,11 +95,11 @@ export class NoiseGenerator {
 
   /**
    * Get a random number between 0 and a maximum
-   * @param range - Maximum value
+   * @param maxRange - Maximum value
    * @returns A random number in range (inclusive)
    */
-  randomIntMax(range: number): number {
-    var range = range;
+  randomIntMax(maxRange: number): number {
+    var range = maxRange;
     if (range <= 0) return 0;
     var bits = Math.floor(Math.log2(range)) + 1;
     var number = 0;
