@@ -4,8 +4,7 @@ import { Config, Job, Unit } from "../utils/types";
 type props = {
   unit: Unit;
   jobList: Array<Job>;
-  callback: (event: any,setting: string, unit: Unit) => void;
-  
+  callback: (event: any, setting: string, unit: Unit) => void;
 };
 
 export const PartyMember = ({ unit, callback, jobList }: props) => {
@@ -14,7 +13,11 @@ export const PartyMember = ({ unit, callback, jobList }: props) => {
     raceChanger = (
       <>
         Race:
-        <select value={unit.race} onChange={(event) => callback(event, "race", unit)}>
+        <select
+          value={unit.race}
+          onChange={(event) => callback(event, "race", unit)}
+        >
+          <option value="random">Random</option>
           <option value="human">Human</option>
           <option value="moogle">Moogle</option>
           <option value="viera">Viera</option>
@@ -40,18 +43,36 @@ export const PartyMember = ({ unit, callback, jobList }: props) => {
       <br />
       {raceChanger}
       Job:
-      <select value={unit.job} onChange={(event) => callback(event, "job", unit)}>
+      <select
+        value={unit.job}
+        onChange={(event) => callback(event, "job", unit)}
+      >
         {jobOptions}
       </select>
       <br />
-      <input type="checkbox" checked={unit.rngEquip} onChange={(event) => callback(event, "rngEquip", unit)} />
+      <input
+        type="checkbox"
+        checked={unit.rngEquip}
+        onChange={(event) => callback(event, "rngEquip", unit)}
+      />
       <label>randomize Equipment</label>
       <br />
       Level:
-      <input type="number" min="1" max="50" value={unit.level} onChange={(event) => callback(event, "level", unit)}></input>
+      <input
+        type="number"
+        min="1"
+        max="50"
+        value={unit.level}
+        onChange={(event) => callback(event, "level", unit)}
+      ></input>
       <br />
       Mastered Abilities:
-      <input type="number" min="0" value={unit.masteredAbilities} onChange={(event) => callback(event, "masteredAbilities", unit)}></input>
+      <input
+        type="number"
+        min="0"
+        value={unit.masteredAbilities}
+        onChange={(event) => callback(event, "masteredAbilities", unit)}
+      ></input>
     </div>
   );
 };

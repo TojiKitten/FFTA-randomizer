@@ -27,7 +27,7 @@ export function MainComponent() {
     { setting: "startingGold", value: 5000 },
     { setting: "frostyMageBoost", value: false },
     { setting: "noJudgeTurn", value: false },
-    { setting: "partyRNGEnabled", value: false},
+    { setting: "partyRNGEnabled", value: false },
     {
       setting: "partyMember",
       value: [
@@ -35,7 +35,6 @@ export function MainComponent() {
           name: "march",
           raceChangeable: false,
           race: "human",
-          class: "fighter",
           job: "random",
           rngEquip: false,
           level: 3,
@@ -45,7 +44,7 @@ export function MainComponent() {
           name: "montblanc",
           raceChangeable: false,
           race: "moogle",
-          job: "blackMage",
+          job: "random",
           rngEquip: false,
           level: 3,
           masteredAbilities: 0,
@@ -53,7 +52,7 @@ export function MainComponent() {
         {
           name: "unit 3",
           raceChangeable: true,
-          race: "human",
+          race: "random",
           job: "random",
           rngEquip: false,
           level: 3,
@@ -62,7 +61,7 @@ export function MainComponent() {
         {
           name: "unit 4",
           raceChangeable: true,
-          race: "human",
+          race: "random",
           job: "random",
           rngEquip: false,
           level: 3,
@@ -71,7 +70,7 @@ export function MainComponent() {
         {
           name: "unit 5",
           raceChangeable: true,
-          race: "human",
+          race: "random",
           job: "random",
           rngEquip: false,
           level: 3,
@@ -80,7 +79,7 @@ export function MainComponent() {
         {
           name: "unit 6",
           raceChangeable: true,
-          race: "human",
+          race: "random",
           job: "random",
           rngEquip: false,
           level: 3,
@@ -180,7 +179,7 @@ export function MainComponent() {
     delete newConfig["currentPage"];
     delete newConfig["isRandomized"];
 
-    console.log(newConfig)
+    console.log(newConfig);
     for (var key of Object.keys(newConfig)) {
       changeSetting({ setting: key, value: newConfig[key] });
     }
