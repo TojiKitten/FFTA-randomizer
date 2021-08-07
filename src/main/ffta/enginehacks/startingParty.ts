@@ -76,7 +76,17 @@ function getNewJob(
   raceJobs: Map<string, Array<FFTAJob>>,
   rng: NoiseGenerator
 ): FFTAJob {
-  let allowedJobs = getAvailableJobs(raceString, raceJobs);
+  const raceStrings = ["human", "bangaa", "nuMou", "viera", "moogle"];
+  // If the race is included in the list, get the available jobs
+  // If race is not included in the list, get a random race and then the jobs
+
+  let allowedJobs = raceStrings.includes(raceString)
+    ? getAvailableJobs(raceString, raceJobs)
+    : getAvailableJobs(
+        raceStrings[rng.randomIntMax(rng.randomIntMax(raceStrings.length - 1))],
+        raceJobs
+      );
+
   if (allowedJobs.length === 0) throw new Error("No allowed jobs");
   if (jobString === "random") {
     let randomJob = allowedJobs[rng.randomIntMax(allowedJobs.length - 1)];
@@ -99,11 +109,13 @@ function getNewJob(
  */
 function getAvailableJobs(race: string, raceJobs: Map<string, Array<FFTAJob>>) {
   let allowedJobs: Array<FFTAJob> = [];
-  if (raceJobs.has(race)){
+  if (raceJobs.has(race)) {
     allowedJobs = raceJobs.get(race)!.filter((job) => job.allowed === true);
-  }else{
-    for(let jobs of raceJobs.values()){
-      allowedJobs = allowedJobs.concat(jobs.filter((job) => job.allowed === true))
+  } else {
+    for (let jobs of raceJobs.values()) {
+      allowedJobs = allowedJobs.concat(
+        jobs.filter((job) => job.allowed === true)
+      );
     }
   }
   return allowedJobs;

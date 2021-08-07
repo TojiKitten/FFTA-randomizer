@@ -62,7 +62,7 @@ export const PartySettings = ({ globalState, callback }: props) => {
         jobs = jobMap.get("nuMou")!;
         break;
       case "viera":
-        jobs = jobMap.get("nuMou")!;
+        jobs = jobMap.get("viera")!;
         break;
       case "moogle":
         jobs = jobMap.get("moogle")!;
@@ -77,9 +77,16 @@ export const PartySettings = ({ globalState, callback }: props) => {
 
   return (
     <div>
-      <input type="checkbox" checked={Boolean(partyRngEnabled!.value)} onChange={(event) =>{
-        callback({setting: partyRngEnabled!.setting, value: !partyRngEnabled!.value});
-      }} />
+      <input
+        type="checkbox"
+        checked={Boolean(partyRngEnabled!.value)}
+        onChange={(event) => {
+          callback({
+            setting: partyRngEnabled!.setting,
+            value: !partyRngEnabled!.value,
+          });
+        }}
+      />
       <label>Enable Party randomization</label>
       <div>{partyMemberList}</div>
     </div>

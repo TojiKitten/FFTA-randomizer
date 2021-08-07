@@ -15,14 +15,10 @@ export function lerpStoryMissionLevels(
   formations: Array<FFTAFormation>,
   liGrimLevel: number
 ) {
-  // Create lerp function
-  let lerp = (min: number, max: number, value: number) => {
-    return min * (1 - value) + max * value;
-  };
   // Interpolate the max level for all Story Missions
   for (var i = 3; i < 33; i++) {
     formations[i].units.forEach((unit) => {
-      unit.setLevel(Math.ceil(lerp(1, liGrimLevel, i)));
+      unit.setLevel(Math.ceil(liGrimLevel * (i / 33)));
     });
   }
   // Set remaining missions to scale
@@ -200,7 +196,10 @@ export function randomRewards(
     for (var i = 0; i < numberRewards; i++) {
       let offset = rewardSize * i;
       let randomItemID = rng.randomIntRange(1, items.length);
-      let randomItemUint8Array = FFTAUtils.getShortUint8Array(randomItemID, true);
+      let randomItemUint8Array = FFTAUtils.getShortUint8Array(
+        randomItemID,
+        true
+      );
       set.properties.set(randomItemUint8Array, offset);
     }
   });
