@@ -111,8 +111,8 @@ function openfile(files: any) {
     let filecontent = fs.readFileSync(filepath);
     //check if Rom is Valid
     if (filecontent.subarray(0xac, 0xb0).toString() !== "AFXE") {
-      dialog.showErrorBox("error Loading","Rom is not supported!");
-      return
+      dialog.showErrorBox("error Loading", "Rom is not supported!");
+      return;
     }
     fftaData = new FFTAData(filecontent);
     mainWindow!.webContents.send("FileName-Change", { filepath: filepath });
@@ -133,6 +133,14 @@ ipc.on("save-file-dialog", function (event, options: any) {
     ],
   });
   savefile(choosenfiles);
+});
+
+ipc.on("get-ability", (event, parms: any) => {
+  if (fftaData) {
+    mainWindow!.webContents.send("get-fftaData", {
+      abilities: fftaData.raceAbilities,
+    });
+  }
 });
 
 function savefile(filepath: any) {

@@ -4,33 +4,30 @@ import { GeneralSettings } from "./GeneralSettings";
 import { PartySettings } from "./PartySettings";
 import { JobSettings } from "./JobSettings";
 import { ItemSettings } from "./ItemSettings";
+import { Logbook } from "./Logbook";
 import { Config } from "../utils/types";
-
-
 
 interface props {
   globalState: Array<Config>;
   callback: (nconf: Config) => void;
 }
 
-export const RomSettings = ({globalState, callback}: props) => {
-  let isRom = globalState.find(element => element.setting === "romLoaded")!.value;
-  let state = globalState.find(element => element.setting === "currentPage")
+export const RomSettings = ({ globalState, callback }: props) => {
+  let isRom = globalState.find(
+    (element) => element.setting === "romLoaded"
+  )!.value;
+  let state = globalState.find((element) => element.setting === "currentPage");
 
-  if (!isRom){
-    return (
-      <div className="div-RomSettings">
-        No Rom Loaded!
-      </div>
-    );
+  if (!isRom) {
+    return <div className="div-RomSettings">No Rom Loaded!</div>;
   }
-  
+
   switch (state!.value) {
     case "general": {
       return (
         <div className="div-RomSettings">
           <NavBar active="general" callback={callback} />
-          <GeneralSettings globalState={globalState} callback={callback}/>
+          <GeneralSettings globalState={globalState} callback={callback} />
         </div>
       );
     }
@@ -38,7 +35,7 @@ export const RomSettings = ({globalState, callback}: props) => {
       return (
         <div className="div-RomSettings">
           <NavBar active="party" callback={callback} />
-          <PartySettings globalState={globalState} callback={callback}/>
+          <PartySettings globalState={globalState} callback={callback} />
         </div>
       );
     }
@@ -46,7 +43,7 @@ export const RomSettings = ({globalState, callback}: props) => {
       return (
         <div className="div-RomSettings">
           <NavBar active="jobs" callback={callback} />
-          <JobSettings globalState={globalState} callback={callback}/>
+          <JobSettings globalState={globalState} callback={callback} />
         </div>
       );
     }
@@ -54,7 +51,15 @@ export const RomSettings = ({globalState, callback}: props) => {
       return (
         <div className="div-RomSettings">
           <NavBar active="items" callback={callback} />
-          <ItemSettings globalState={globalState} callback={callback}/>
+          <ItemSettings globalState={globalState} callback={callback} />
+        </div>
+      );
+    }
+    case "logbook": {
+      return (
+        <div className="div-RomSettings">
+          <NavBar active="logbook" callback={callback} />
+          <Logbook globalState={globalState} callback={callback} />
         </div>
       );
     }
