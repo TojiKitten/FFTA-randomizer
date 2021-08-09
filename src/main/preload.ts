@@ -29,4 +29,8 @@ contextBridge.exposeInMainWorld("api", {
     /*cb refers to the callback function that will be
     invoked on the arguments when it is returned on the renderer*/
   },
+
+  remove: (channel: string, cb: any) => {
+    ipcRenderer.removeAllListeners(channel);
+  },
 });

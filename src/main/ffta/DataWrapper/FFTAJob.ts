@@ -3,8 +3,11 @@ import { FFTAObject } from "./FFTAObject";
 
 const enum OFFSET {
   NAME = 0x00,
+  RACEID = 0x04,
   ANIMATIONTYPE = 0x06, // ?? Might have to do with offsets available
   ANIMATIONS = 0x07,
+  FIRSTABILITY = 0x1f,
+  LASTABILITY = 0x20,
   ALLOWEDWEAPONS = 0x2d,
   REQUIREMENTS = 0x30,
 }
@@ -19,7 +22,7 @@ export class FFTAJob extends FFTAObject {
   jobId: number;
   allowedWeapons: Uint8Array;
   abilityLimit: number;
-  
+
   /**
    * Constructor of a Job
    * @param memory - The address of the ROM

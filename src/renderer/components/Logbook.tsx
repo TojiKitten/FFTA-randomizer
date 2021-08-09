@@ -2,6 +2,7 @@ import { concat } from "lodash";
 import * as React from "react";
 import { FFTARaceAbility } from "_/main/ffta/DataWrapper/FFTARaceAbility";
 import { Config } from "../utils/types";
+import RaceAbilityView from "./RaceAbilityView";
 
 interface props {
   globalState: Array<Config>;
@@ -13,21 +14,44 @@ interface props {
 const { api } = window;
 
 export const Logbook = ({ globalState, callback }: props) => {
-  const [raceAbilities, setRaceAbilities] = React.useState([]);
-  const searchAbility = () => {
-    api.send("get-ability", { abilityNumber: 0 });
+  const [raceAbilities, setRaceAbilities] = React.useState(
+    new Map<string, Array<FFTARaceAbility>>()
+  );
+  const [abilityIndex, setAbilityIndex] = React.useState(0);
+  const [raceString, setRaceString] = React.useState("human");
+
+  const raceStrings = ["human", "bangaa", "nuMou", "viera", "moogle"];
+
+  const handleClick = () => {
+    console.log(raceAbilities);
   };
 
-  api.receive("get-fftaData", (parms: any) => {
-    let humanAbilities = parms.abilities.get("human");
-    setRaceAbilities(humanAbilities);
-    console.log(raceAbilities);
-  });
+  React.useEffect(() => {
+    api.receive("get-fftaData", (parms: any) => {
+      setRaceAbilities(parms.abilities);
+      setAbilityIndex(1);
+    });
+    api.send("get-ability", { abilityNumber: 0 });
+    return () => api.remove("get-fftaData");
+  }, []);
 
   return (
     <div>
-      <input type="number"></input>
-      <button onClick={searchAbility}>Search</button>
+      <input
+        type="number"
+        value={abilityIndex}
+        onChange={(event) => setAbilityIndex(parseInt(event.target.value))}
+      ></input>
+      <select onChange={(event) => setRaceString(event.target.value)}>
+        {raceStrings.map((item) => {
+          return <option value={item}>{item}</option>;
+        })}
+      </select>
+      <button onClick={handleClick}>Search</button>
+      {abilityIndex > 0 &&
+        raceAbilities
+          .get(raceString)!
+          .map((ability, index) => <RaceAbilityView ability={ability} />)}
     </div>
   );
 };

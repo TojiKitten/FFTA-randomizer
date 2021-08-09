@@ -484,9 +484,10 @@ export class FFTAData {
       let raceAbilities: Array<FFTARaceAbility> = [];
       for (var iter = 0; iter < raceData.length; iter++) {
         let memoryOffset = raceData.offset + raceData.byteSize * iter;
-        let abilityName = this.abilityNames[
-          (this.rom[memoryOffset + 1] << 8) | this.rom[memoryOffset]
-        ];
+        let abilityName =
+          this.abilityNames[
+            (this.rom[memoryOffset + 1] << 8) | this.rom[memoryOffset]
+          ];
         let abilityProperties = this.rom.slice(
           memoryOffset,
           memoryOffset + raceData.byteSize
@@ -852,9 +853,7 @@ export class FFTAData {
   /**
    * Runs a set of hacks that cannot be skipped
    */
-  runForcedHacks() {
-    
-  }
+  runForcedHacks() {}
 }
 
 export default FFTAData;

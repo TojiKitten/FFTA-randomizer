@@ -10,7 +10,10 @@ export const NavBar = ({ active, callback }: prop) => {
   let btnGeneral = (
     <button
       className="navBar-button"
-      onClick={() => callback({ setting: "currentPage", value: "general" })}
+      onClick={(e) => {
+        e.preventDefault();
+        callback({ setting: "currentPage", value: "general" });
+      }}
     >
       General
     </button>
@@ -42,7 +45,10 @@ export const NavBar = ({ active, callback }: prop) => {
   let btnLogbook = (
     <button
       className="navBar-button"
-      onClick={() => callback({ setting: "currentPage", value: "logbook" })}
+      onClick={(e) => {
+        e.preventDefault();
+        callback({ setting: "currentPage", value: "logbook" });
+      }}
     >
       Logbook
     </button>
