@@ -12,6 +12,12 @@ const enum OFFSET {
   REQUIREMENTS = 0x30,
 }
 
+export interface JobLite {
+  displayName: string;
+  id: number;
+  race: string;
+}
+
 /**
  * An {@link FFTAObject} representing a job for a race.
  * @see jobId - The number used to reference the job
@@ -22,6 +28,7 @@ export class FFTAJob extends FFTAObject {
   jobId: number;
   allowedWeapons: Uint8Array;
   abilityLimit: number;
+  race: string;
 
   /**
    * Constructor of a Job
@@ -34,10 +41,23 @@ export class FFTAJob extends FFTAObject {
     memory: number,
     id: number,
     name: string,
+    race: string,
     properties: Uint8Array
   ) {
     super(memory, properties, name);
     this.jobId = id;
+    this.race = race;
+  }
+
+  /**
+   * Returns lightweight information for the job
+   */
+  getJobInfo(): JobLite {
+    return {
+      displayName: this.displayName!,
+      id: this.jobId,
+      race: this.race,
+    };
   }
 
   /**
@@ -54,6 +74,14 @@ export class FFTAJob extends FFTAObject {
    */
   getAllowedWeapons() {
     return this.properties[OFFSET.ALLOWEDWEAPONS];
+  }
+
+  /**
+   *
+   * @returns The race string of the job
+   */
+  getRace() {
+    return this.race;
   }
 
   /**

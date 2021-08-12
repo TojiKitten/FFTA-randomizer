@@ -41,6 +41,22 @@ export class FFTAObject {
   }
 
   /**
+   * Gets the value of a given size in byte at the given offset of the properties buffer.
+   * @param offset - The offset to set in properties
+   * @param bytes - The size, in bytes, of the value to set
+   */
+  protected getProperty(offset: number, bytes: 1 | 2 | 4): number {
+    if (bytes === 2) {
+      return FFTAUtils.convertShortUint8Array(
+        this.properties.slice(offset, offset + 2),
+        true
+      );
+    } else {
+      return this.properties[offset];
+    }
+  }
+
+  /**
    * Sets the allowed flag to the given value
    * @param allowed - The value to set
    */

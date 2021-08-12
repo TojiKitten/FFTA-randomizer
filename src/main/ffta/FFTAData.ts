@@ -420,6 +420,19 @@ export class FFTAData {
         this.rom.slice(memory, memory + dataType.byteSize)
       );
       items.push(newItem);
+
+      /*
+      0x520080 is the memory address of item abilities
+      0x14 is the size of each item abilities
+      0x00 is the offset for number of item abilities, and 0x01 is an alignment
+      0x02 - 0x14 are pairs of Job ID, Ability ID 
+      */
+      let itemAbilitiesSize = 0x14;
+      let abilityOffset =
+        0x520080 + newItem.getAbilitySet() * itemAbilitiesSize;
+      newItem.updateItemAbilities(
+        this.rom.slice(abilityOffset, abilityOffset + itemAbilitiesSize)
+      );
     }
     return items;
   }
@@ -551,6 +564,7 @@ export class FFTAData {
           memory,
           jobID,
           this.itemJobNames[(this.rom[memory + 1] << 8) | this.rom[memory]],
+          race,
           this.rom.slice(memory, memory + raceData.byteSize)
         );
 

@@ -8,6 +8,10 @@ const enum OFFSET {
   APCOST = 0x07, //Multiply by 10
 }
 
+export interface RaceAbilityLite {
+  displayName: string;
+}
+
 /**
  * An {@link FFTAObject} representing an ability learned by a race.
  */
@@ -20,6 +24,15 @@ export class FFTARaceAbility extends FFTAObject {
    */
   constructor(memory: number, name: string, properties: Uint8Array) {
     super(memory, properties, name);
+  }
+
+  /**
+   * Returns lightweight information for the item
+   */
+  getRaceAbilityInfo(): RaceAbilityLite {
+    return {
+      displayName: this.displayName!,
+    };
   }
 
   /**

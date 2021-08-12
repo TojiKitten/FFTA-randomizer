@@ -10,6 +10,7 @@ contextBridge.exposeInMainWorld("api", {
       "save-settings",
       "load-settings",
       "get-ability",
+      "request-fftaData",
     ];
     if (allowedChannels.includes(channel)) {
       ipcRenderer.send(channel, ...data);
