@@ -10,6 +10,9 @@ import "../../public/favicon-96x96.png";
 import { FFTAData } from "./ffta/FFTAData";
 import * as RandomizerOptions from "./Randomizer";
 import { PathLike } from "original-fs";
+import ItemSettings from "_/renderer/components/ItemSettings";
+import JobSettings from "_/renderer/components/JobSettings";
+import { JobLite } from "./ffta/DataWrapper/FFTAJob";
 
 const ipc = require("electron").ipcMain;
 
@@ -111,8 +114,8 @@ function openfile(files: any) {
     let filecontent = fs.readFileSync(filepath);
     //check if Rom is Valid
     if (filecontent.subarray(0xac, 0xb0).toString() !== "AFXE") {
-      dialog.showErrorBox("error Loading","Rom is not supported!");
-      return
+      dialog.showErrorBox("error Loading", "Rom is not supported!");
+      return;
     }
     fftaData = new FFTAData(filecontent);
     mainWindow!.webContents.send("FileName-Change", { filepath: filepath });
@@ -133,6 +136,32 @@ ipc.on("save-file-dialog", function (event, options: any) {
     ],
   });
   savefile(choosenfiles);
+});
+
+ipc.on("request-fftaData", (event, parms: any) => {
+  if (fftaData) {
+    mainWindow!.webContents.send("get-fftaData", {
+      items: parms.items
+        ? fftaData.items.map((item) => item.getItemInfo())
+        : {},
+      jobs: parms.jobs
+        ? Array.from(fftaData.jobs.values())
+            .map((raceJobs) => raceJobs.map((job) => job.getJobInfo()))
+            .flat()
+        : {},
+      raceAbilities: parms.raceAbilities
+        ? Array.from(fftaData.raceAbilities.entries())
+            .map((entry) =>
+              entry[1].map((raceAbility, num) => ({
+                race: entry[0],
+                ...raceAbility.getRaceAbilityInfo(),
+                id: num,
+              }))
+            )
+            .flat()
+        : {},
+    });
+  }
 });
 
 function savefile(filepath: any) {

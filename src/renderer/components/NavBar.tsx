@@ -8,25 +8,52 @@ type prop = {
 
 export const NavBar = ({ active, callback }: prop) => {
   let btnGeneral = (
-    <button className="navBar-button" onClick={() => callback({setting:"currentPage", value: "general"})}>
+    <button
+      className="navBar-button"
+      onClick={(e) => {
+        e.preventDefault();
+        callback({ setting: "currentPage", value: "general" });
+      }}
+    >
       General
     </button>
   );
   let btnParty = (
-    <button className="navBar-button" onClick={() => callback({setting:"currentPage", value: "party"})}>
+    <button
+      className="navBar-button"
+      onClick={() => callback({ setting: "currentPage", value: "party" })}
+    >
       Party
     </button>
   );
   let btnJobs = (
-    <button className="navBar-button" onClick={() => callback({setting:"currentPage", value: "jobs"})}>
+    <button
+      className="navBar-button"
+      onClick={() => callback({ setting: "currentPage", value: "jobs" })}
+    >
       Jobs
     </button>
   );
   let btnItems = (
-    <button className="navBar-button" onClick={() => callback({setting:"currentPage", value: "items"})}>
+    <button
+      className="navBar-button"
+      onClick={() => callback({ setting: "currentPage", value: "items" })}
+    >
       Items
     </button>
   );
+  let btnLogbook = (
+    <button
+      className="navBar-button"
+      onClick={(e) => {
+        e.preventDefault();
+        callback({ setting: "currentPage", value: "logbook" });
+      }}
+    >
+      Logbook
+    </button>
+  );
+
   switch (active) {
     case "general": {
       btnGeneral = <button className="navBar-button-active">General</button>;
@@ -44,6 +71,10 @@ export const NavBar = ({ active, callback }: prop) => {
       btnItems = <button className="navBar-button-active">Items</button>;
       break;
     }
+    case "logbook": {
+      btnLogbook = <button className="navBar-button-active">Log Book</button>;
+      break;
+    }
   }
 
   return (
@@ -52,6 +83,7 @@ export const NavBar = ({ active, callback }: prop) => {
       {btnParty}
       {btnJobs}
       {btnItems}
+      {btnLogbook}
     </div>
   );
 };

@@ -7,6 +7,8 @@ import RomSettings from "./components/RomSettings";
 import { Config, Job } from "./utils/types";
 import SettingsSaver from "./components/SettingsSaver";
 import SettingsLoader from "./components/SettingsLoader";
+//import { ExtendedAPIPlugin } from "webpack";
+import FFTAData from "_/main/ffta/FFTAData";
 
 //window.api gets available at runtime so we can ignore that error
 // @ts-ignore
@@ -204,7 +206,6 @@ export function MainComponent() {
           <SettingsSaver globalState={config} />
         </div>
       </div>
-
       <RandomizerSettings globalState={config} callback={changeSetting} />
       <RomSettings globalState={config} callback={changeSetting} />
     </div>

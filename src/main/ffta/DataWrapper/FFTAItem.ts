@@ -1,3 +1,4 @@
+import { Item } from "electron/main";
 import { FFTAObject } from "./FFTAObject";
 
 const enum OFFSET {
@@ -30,7 +31,7 @@ const enum OFFSET {
   ABILITYSET = 0x1d,
 }
 
-export const enum ITEMTYPES{
+export const enum ITEMTYPES {
   Null = 0,
   Sword = 1,
   Blade = 2,
@@ -74,12 +75,24 @@ const enum ITEMFLAG {
   MYTHRILORCONSUMABLE = 0x7,
 }
 
+export interface ItemLite {
+  displayName: string;
+  buyPrice: number;
+  sellPrice: number;
+  itemAbilities: Array<ItemAbility>;
+}
+
+interface ItemAbility {
+  jobID: number;
+  abilityID: number;
+}
+
 /**
  * An {@link FFTAObject} representing an item that is able to appear in the shop.
  */
 export class FFTAItem extends FFTAObject {
-
-  readonly ITEMIDOFFSET: number = 1; 
+  readonly ITEMIDOFFSET: number = 1;
+  itemAbilities: Array<ItemAbility>;
 
   /**
    * Constructor for an Item
@@ -87,12 +100,20 @@ export class FFTAItem extends FFTAObject {
    * @param itemName - The name of the ability
    * @param properties - A buffer starting from the address in the ROM
    */
-  constructor(
-    memory: number,
-    itemName: string,
-    properties: Uint8Array
-  ) {
+  constructor(memory: number, itemName: string, properties: Uint8Array) {
     super(memory, properties, itemName);
+  }
+
+  /**
+   * Returns lightweight information for the item
+   */
+  getItemInfo(): ItemLite {
+    return {
+      displayName: this.displayName!,
+      buyPrice: this.getBuyPrice(),
+      sellPrice: this.getSellPrice(),
+      itemAbilities: this.getItemAbilities(),
+    };
   }
 
   /**
@@ -104,6 +125,13 @@ export class FFTAItem extends FFTAObject {
   }
 
   /**
+   * Gets the SHORT holding the purchase price of an item.
+   */
+  getBuyPrice() {
+    return this.getProperty(OFFSET.BUY, 2);
+  }
+
+  /**
    * Sets the SHORT holding the selling price of an item.
    * @param value - The selling price (base 10) of an item
    */
@@ -112,9 +140,16 @@ export class FFTAItem extends FFTAObject {
   }
 
   /**
+   * Gets the SHORT holding the selling price of an item.
+   */
+  getSellPrice() {
+    return this.getProperty(OFFSET.SELL, 2);
+  }
+
+  /**
    * Sets the BYTE holding the item type.
    * @see ITEMTYPES
-   * @param value - The item type for an item 
+   * @param value - The item type for an item
    */
   setType(value: ITEMTYPES) {
     this.setProperty(OFFSET.TYPE, 1, value);
@@ -225,7 +260,37 @@ export class FFTAItem extends FFTAObject {
   }
 
   setAbilitySet(value: number) {
-    this.setProperty(OFFSET.ABILITYSET, 1, value);
+    this.setProperty(OFFSET.ABILITYSET, 2, value);
+  }
+
+  /**
+   * Gets the SHORT holding the selling price of an item.
+   */
+  getAbilitySet() {
+    return this.getProperty(OFFSET.ABILITYSET, 2);
+  }
+
+  /**
+   * Creates a new array of {@link ItemAbility} for an item.
+   * @param abilitySetData The Uint8Array holding the memory block where the item abilities are stored
+   */
+  updateItemAbilities(abilitySetData: Uint8Array) {
+    let abilitySet = new Array<ItemAbility>();
+    for (var i = 0; i < abilitySetData[0]; i++) {
+      abilitySet.push({
+        jobID: abilitySetData[i * 2 + 2],
+        abilityID: abilitySetData[i * 2 + 3],
+      });
+    }
+
+    this.itemAbilities = abilitySet;
+  }
+
+  /**
+   * Returns the array of {@link ItemAbility} for an item.
+   */
+  getItemAbilities() {
+    return this.itemAbilities;
   }
 
   /**

@@ -24,7 +24,6 @@ export const PartySettings = ({ globalState, callback }: props) => {
     (element) => element.setting === "jobMap"
   )!.value;
 
-  console.log(jobMap);
   let partyMemberList = Array<JSX.Element>();
 
   const changeProperty = (event: any, setting: string, unit: Unit) => {
