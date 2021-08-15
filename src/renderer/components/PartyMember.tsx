@@ -8,12 +8,13 @@ type props = {
 };
 
 export const PartyMember = ({ unit, callback, jobList }: props) => {
-  let raceChanger = <br />;
+  let raceChanger = <></>;
   if (unit.raceChangeable) {
     raceChanger = (
-      <>
-        Race:
+      <div className="partyMemberOption">
+        <label htmlFor={`Race_Selector${unit.name}`}>Race</label>
         <select
+          id={`Race_Selector${unit.name}`}
           value={unit.race}
           onChange={(event) => callback(event, "race", unit)}
         >
@@ -24,8 +25,7 @@ export const PartyMember = ({ unit, callback, jobList }: props) => {
           <option value="bangaa">Bangaa</option>
           <option value="nuMou">Nu Mou</option>
         </select>
-        <br />
-      </>
+      </div>
     );
   }
 
@@ -38,41 +38,49 @@ export const PartyMember = ({ unit, callback, jobList }: props) => {
   });
 
   return (
-    <div className="partyMember">
-      {unit.name}
-      <br />
+    <div key={unit.name} className="partyMember">
+      <h3 className="partyMemberOption">{unit.name}</h3>
       {raceChanger}
-      Job:
-      <select
-        value={unit.job}
-        onChange={(event) => callback(event, "job", unit)}
-      >
-        {jobOptions}
-      </select>
-      <br />
-      <input
-        type="checkbox"
-        checked={unit.rngEquip}
-        onChange={(event) => callback(event, "rngEquip", unit)}
-      />
-      <label>randomize Equipment</label>
-      <br />
-      Level:
-      <input
-        type="number"
-        min="1"
-        max="50"
-        value={unit.level}
-        onChange={(event) => callback(event, "level", unit)}
-      ></input>
-      <br />
-      Mastered Abilities:
-      <input
-        type="number"
-        min="0"
-        value={unit.masteredAbilities}
-        onChange={(event) => callback(event, "masteredAbilities", unit)}
-      ></input>
+      <div className="partyMemberOption">
+        <label htmlFor={`Job_Selector${unit.name}`}>Job</label>
+        <select
+          id={`Job_Selector${unit.name}`}
+          value={unit.job}
+          onChange={(event) => callback(event, "job", unit)}
+        >
+          {jobOptions}
+        </select>
+      </div>
+      <div className="partyMemberOption">
+        <label htmlFor={`Random_Equip${unit.name}`}>Randomize Equipment</label>
+        <input
+          id={`Random_Equip${unit.name}`}
+          type="checkbox"
+          checked={unit.rngEquip}
+          onChange={(event) => callback(event, "rngEquip", unit)}
+        />
+      </div>
+      <div className="partyMemberOption">
+        <label htmlFor={`Level${unit.name}`}>Level</label>
+        <input
+          id={`Level${unit.name}`}
+          type="number"
+          min="1"
+          max="50"
+          value={unit.level}
+          onChange={(event) => callback(event, "level", unit)}
+        ></input>
+      </div>
+      <div className="partyMemberOption">
+        <label htmlFor={`Abilities${unit.name}`}>Mastered Abilities</label>
+        <input
+          id={`Abilities${unit.name}`}
+          type="number"
+          min="0"
+          value={unit.masteredAbilities}
+          onChange={(event) => callback(event, "masteredAbilities", unit)}
+        ></input>
+      </div>
     </div>
   );
 };

@@ -6,6 +6,7 @@ const { api } = window;
 export const SeetingsLoader = () => {
   return (
     <button
+      className="fileButton"
       onClick={() => {
         api.send("load-settings", "null");
       }}

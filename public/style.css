@@ -1,56 +1,39 @@
 body {
+  height: 98%;
+  width: 98%;
   background: #151515;
   color: #b4a5a5;
 }
 
-/* .file-button {
-  background: #3c415f;
-  color: #b4a5a5;
-  text-transform: uppercase;
-  text-decoration: none;
-  padding: 10px;
-  border-radius: 20px;
-  display: inline-block;
-  border: none;
-  transition: all 0.4s ease 0s;
-  border: 1px solid gray;
-  margin: 1px;
+.appGrid {
+  display: grid;
+  grid-template-rows: auto-fill;
+  grid-template-columns: repeat(12, 12fr);
+  grid-gap: 0.25em;
+  justify-content: center;
 }
 
-.file-button:hover {
-  text-shadow: 0px 0px 6px rgba(255, 255, 255, 1);
-  transition: all 0.4s ease 0s;
+.appGrid > h1 {
+  grid-column: span 12;
 }
-*/
-.div-fileButtons {
-  width: 100px;
-  height: 100px;
-  float: left;
 
+.fileButton {
+  grid-column: span 6;
+}
+
+.div-RandoSettings {
+  grid-column: span 12;
+}
+
+.div-RomSettings {
+  grid-column: span 12;
+  margin-top: 5px;
   border: 2px solid gray;
-
-  display: flex;
-  flex-wrap: nowrap;
 }
 
 .centering-wrapper {
   text-align: center;
   margin: auto;
-}
-
-.div-RandoSettings {
-  width: 763px;
-  height: 100px;
-  margin-left: 115px;
-  border: 2px solid gray;
-}
-
-.div-RomSettings {
-  width: 100%;
-  height: 400px;
-  clear: left;
-  margin-top: 5px;
-  border: 2px solid gray;
 }
 
 .navBar {
@@ -61,18 +44,110 @@ body {
   color: red;
 }
 
-.partyMember {
-  border: 1px solid gray;
-  width: 30%;
-  float: left;
-  margin: 1%;
-  padding: 2px;
+.jobMenu {
+  display: grid;
+  grid-template-rows: auto-fill;
+  grid-template-columns: repeat(12, 12fr);
+  grid-gap: 0.25em;
+  justify-content: center;
+}
+
+.jobOptions {
+  grid-gap: 0.1em;
+  grid-column: span 12;
+  display: grid;
+  grid-template-rows: auto-fill;
+  grid-template-columns: repeat(12, 12fr);
+  justify-items: left;
+}
+
+.jobOption {
+  grid-column: span 12;
+}
+
+.jobOption > label,
+.partyMemberOption > label,
+.generalSettingsOption > label {
+  margin: 0.2em;
 }
 
 .jobList {
-  border: 1px solid gray;
-  width: 15.5%;
-  float: left;
-  margin: 1px;
-  padding: 2px;
+  grid-column: span 6;
+}
+
+.partyList {
+  display: grid;
+  grid-gap: 0.5em;
+  grid-template-rows: auto-fill;
+  grid-template-columns: repeat(12, 12fr);
+  justify-items: left;
+}
+
+.partyMember,
+.generalSettings {
+  grid-column: span 12;
+  display: grid;
+  grid-template-rows: auto-fill;
+  grid-template-columns: repeat(12, 12fr);
+  justify-items: left;
+}
+
+.partyMemberOption,
+.generalSettingsOption {
+  grid-column: span 12;
+}
+
+.logbook {
+  margin: 1em;
+  display: grid;
+  grid: auto-flow max-content / repeat(12, 1fr);
+  grid-gap: 1em;
+  justify-content: space-around;
+}
+
+.item-view {
+  border-radius: 20px;
+  padding: 0.1em;
+  background-color: rgb(255, 255, 255, 0.8);
+  box-shadow: 0 2px 4px 0 rgb(255, 255, 255, 0.3);
+  color: black;
+  grid-column: span 12;
+}
+
+@media screen and (min-width: 480px) {
+  .item-view {
+    grid-column: span 6;
+  }
+  .fileButton {
+    grid-column: span 6;
+  }
+  .partyMember {
+    grid-column: span 6;
+  }
+  .jobList {
+    grid-column: span 4;
+  }
+}
+
+@media screen and (min-width: 720px) {
+  .item-view {
+    grid-column: span 4;
+  }
+  .fileButton {
+    grid-column: span 3;
+  }
+  .partyMember {
+    grid-column: span 4;
+  }
+  .jobList {
+    grid-column: span 2;
+  }
+}
+
+.item-view > h3 {
+  text-align: center;
+}
+
+.clearFix {
+  overflow: auto;
 }

@@ -16,21 +16,17 @@ const { api } = window;
 
 export const Logbook = ({ globalState, callback }: props) => {
   const [itemsLite, setItemNames] = React.useState(new Array<ItemLite>());
-  const [abilityIndex, setAbilityIndex] = React.useState(0);
   const [jobsLite, setJobsLite] = React.useState(new Array<JobLite>());
   const [raceAbilitiesLite, setRaceAbilitiesLite] = React.useState(
     new Array<RaceAbilityLite>()
   );
   const [searchName, setSearchName] = React.useState("");
 
-  const handleClick = () => {};
-
   React.useEffect(() => {
     api.receive("get-fftaData", (parms: any) => {
       setItemNames(parms.items);
       setJobsLite(parms.jobs);
       setRaceAbilitiesLite(parms.raceAbilities);
-      setAbilityIndex(1);
     });
     api.send("request-fftaData", {
       items: true,
@@ -42,27 +38,33 @@ export const Logbook = ({ globalState, callback }: props) => {
 
   return (
     <div>
-      <input
-        type="text"
-        value={searchName}
-        onChange={(event) => setSearchName(event.target.value)}
-      ></input>
-      <button onClick={handleClick}>Search</button>
-      {raceAbilitiesLite.length > 0 &&
-        itemsLite
-          .filter((item) =>
-            item.displayName.toLowerCase().includes(searchName.toLowerCase())
-          )
-          .map((iter, id) => {
-            return (
-              <ItemView
-                key={id}
-                itemLite={iter}
-                jobsLite={jobsLite}
-                raceAbilitiesLite={raceAbilitiesLite}
-              />
-            );
-          })}
+      <form>
+        <label>
+          Search
+          <input
+            type="text"
+            value={searchName}
+            onChange={(event) => setSearchName(event.target.value)}
+          ></input>
+        </label>
+      </form>
+      <div className="logbook">
+        {raceAbilitiesLite.length > 0 &&
+          itemsLite
+            .filter((item) =>
+              item.displayName.toLowerCase().includes(searchName.toLowerCase())
+            )
+            .map((iter, id) => {
+              return (
+                <ItemView
+                  key={id}
+                  itemLite={iter}
+                  jobsLite={jobsLite}
+                  raceAbilitiesLite={raceAbilitiesLite}
+                />
+              );
+            })}
+      </div>
     </div>
   );
 };

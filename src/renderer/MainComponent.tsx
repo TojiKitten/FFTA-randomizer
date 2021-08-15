@@ -167,25 +167,33 @@ export function MainComponent() {
     { setting: "shopitems", value: "default" },
   ]);
 
-  api.receive("FileName-Change", (msg: any) => {
-    changeSetting({ setting: "romLoaded", value: true });
-  });
+  React.useEffect(() => {
+    api.receive("FileName-Change", (msg: any) => {
+      changeSetting({ setting: "romLoaded", value: true });
+    });
 
-  api.receive("get-seed", (msg: any) => {
-    changeSetting({ setting: "randomizerSeed", value: msg.seed });
-  });
+    api.receive("get-seed", (msg: any) => {
+      changeSetting({ setting: "randomizerSeed", value: msg.seed });
+    });
 
-  api.receive("get-settings", ({ newConfig }: any) => {
-    //delete config thats only for GUI state
-    delete newConfig["romLoaded"];
-    delete newConfig["currentPage"];
-    delete newConfig["isRandomized"];
+    api.receive("get-settings", ({ newConfig }: any) => {
+      //delete config thats only for GUI state
+      delete newConfig["romLoaded"];
+      delete newConfig["currentPage"];
+      delete newConfig["isRandomized"];
 
-    console.log(newConfig);
-    for (var key of Object.keys(newConfig)) {
-      changeSetting({ setting: key, value: newConfig[key] });
-    }
-  });
+      console.log(newConfig);
+      for (var key of Object.keys(newConfig)) {
+        changeSetting({ setting: key, value: newConfig[key] });
+      }
+    });
+
+    return () => {
+      api.remove("FileName-Change");
+      api.remove("get-seed");
+      api.remove("get-settings");
+    };
+  }, []);
 
   const changeSetting = (nconfig: Config) => {
     let newConfig = Array.from(config);
@@ -195,17 +203,12 @@ export function MainComponent() {
   };
 
   return (
-    <div className="app">
+    <div className="appGrid">
       <h1>FFTA Randomizer</h1>
-      <br />
-      <div className="div-fileButtons">
-        <div className="centering-wrapper">
-          <RomLoader />
-          <RomSaver globalState={config} />
-          <SettingsLoader />
-          <SettingsSaver globalState={config} />
-        </div>
-      </div>
+      <RomLoader />
+      <RomSaver globalState={config} />
+      <SettingsLoader />
+      <SettingsSaver globalState={config} />
       <RandomizerSettings globalState={config} callback={changeSetting} />
       <RomSettings globalState={config} callback={changeSetting} />
     </div>

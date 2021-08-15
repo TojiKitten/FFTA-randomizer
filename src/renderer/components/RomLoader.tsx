@@ -6,6 +6,7 @@ const { api } = window;
 export const RomLoader = () => {
   return (
     <button
+      className="fileButton"
       onClick={() => {
         api.send("open-file-dialog", "null");
       }}
