@@ -87,7 +87,7 @@ export const PartySettings = ({ globalState, callback }: props) => {
         }}
       />
       <label>Enable Party randomization</label>
-      <div>{partyMemberList}</div>
+      <div className="partyList">{partyMemberList}</div>
     </div>
   );
 };
