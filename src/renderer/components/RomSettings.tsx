@@ -6,31 +6,33 @@ import { JobSettings } from "./JobSettings";
 import { ItemSettings } from "./ItemSettings";
 import { Logbook } from "./Logbook";
 import { Config } from "../utils/types";
+import { useRandomizer } from "./RandomizerProvider";
 
-interface props {
-  globalState: Array<Config>;
-  callback: (nconf: Config) => void;
-}
+export const RomSettings = () => {
+  const state = useRandomizer();
 
-export const RomSettings = ({ globalState, callback }: props) => {
-  let isRom = globalState.find(
-    (element) => element.setting === "romLoaded"
-  )!.value;
-  let state = globalState.find((element) => element.setting === "currentPage");
+  let { romLoaded, currentPage } = state.generalSettings;
+  //let state = globalState.find((element) => element.setting === "currentPage");
 
-  if (!isRom) {
-    return <div className="div-RomSettings">No Rom Loaded!</div>;
-  }
-
-  switch (state!.value) {
-    case "general": {
-      return (
+  return (
+    <>
+      {!romLoaded && <div className="div-RomSettings">No Rom Loaded!</div>}
+      {romLoaded && currentPage == "general" && (
         <div className="div-RomSettings">
           <NavBar />
           <GeneralSettings />
         </div>
-      );
-    }
+      )}
+      {romLoaded && currentPage == "logbook" && (
+        <div className="div-RomSettings">
+          <NavBar />
+          <Logbook />
+        </div>
+      )}
+    </>
+  );
+
+  /*
     case "party": {
       return (
         <div className="div-RomSettings">
@@ -62,16 +64,7 @@ export const RomSettings = ({ globalState, callback }: props) => {
           <Logbook globalState={globalState} callback={callback} />
         </div>
       );
-    }
-    default: {
-      return (
-        <div className="div-RomSettings">
-          <NavBar />
-          ERROR!
-        </div>
-      );
-    }
-  }
+    }*/
 };
 
 export default RomSettings;

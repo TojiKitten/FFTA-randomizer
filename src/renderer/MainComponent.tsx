@@ -169,10 +169,6 @@ export function MainComponent() {
   ]);
 
   React.useEffect(() => {
-    api.receive("FileName-Change", (msg: any) => {
-      changeSetting({ setting: "romLoaded", value: true });
-    });
-
     api.receive("get-seed", (msg: any) => {
       changeSetting({ setting: "randomizerSeed", value: msg.seed });
     });
@@ -190,7 +186,6 @@ export function MainComponent() {
     });
 
     return () => {
-      api.remove("FileName-Change");
       api.remove("get-seed");
       api.remove("get-settings");
     };
@@ -208,11 +203,11 @@ export function MainComponent() {
       <RandomizerProvider>
         <h1>FFTA Randomizer</h1>
         <RomLoader />
-        <RomSaver globalState={config} />
+        <RomSaver />
         <SettingsLoader />
-        <SettingsSaver globalState={config} />
+        <SettingsSaver />
         <RandomizerSettings globalState={config} callback={changeSetting} />
-        <RomSettings globalState={config} callback={changeSetting} />
+        <RomSettings />
       </RandomizerProvider>
     </div>
   );

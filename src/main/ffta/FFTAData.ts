@@ -740,8 +740,8 @@ export class FFTAData {
    * Sets MP to recover 10% per turn instead of flat 5 MP
    * @param option - Enable the option
    */
-  handlePercentageMP(option: boolean) {
-    if (option) JobHacks.percentageMPRegen(this.rom);
+  handlePercentageMP(option: string) {
+    if (option != "normal") JobHacks.percentageMPRegen(this.rom);
   }
 
   /**

@@ -14,7 +14,7 @@ interface props {
 // @ts-ignore
 const { api } = window;
 
-export const Logbook = ({ globalState, callback }: props) => {
+export const Logbook = () => {
   const [itemsLite, setItemNames] = React.useState(new Array<ItemLite>());
   const [jobsLite, setJobsLite] = React.useState(new Array<JobLite>());
   const [raceAbilitiesLite, setRaceAbilitiesLite] = React.useState(

@@ -135,7 +135,7 @@ ipc.on("save-file-dialog", function (event, options: any) {
       { name: "All Files", extensions: ["*"] },
     ],
   });
-  savefile(choosenfiles);
+  savefile(choosenfiles, options);
 });
 
 ipc.on("request-fftaData", (event, parms: any) => {
@@ -164,10 +164,10 @@ ipc.on("request-fftaData", (event, parms: any) => {
   }
 });
 
-function savefile(filepath: any) {
+function savefile(filepath: any, payload: any) {
   //check if dialog got cancelled
   if (filepath) {
-    RandomizerOptions.randomizeFFTA(fftaData, randomizerOptions);
+    RandomizerOptions.randomizeFFTA(fftaData, payload);
     fftaData.writeData();
     fs.writeFileSync(filepath, fftaData.rom, null);
   }
@@ -184,13 +184,14 @@ ipc.on("save-settings", function (event, options: any) {
       { name: "All Files", extensions: ["*"] },
     ],
   });
-  SaveSettings(choosenfiles);
+  SaveSettings(choosenfiles, options);
 });
 
-function SaveSettings(filepath: any) {
+function SaveSettings(filepath: any, payload: any) {
   //check if dialog got cancelled
   if (filepath) {
-    let data: String = JSON.stringify(randomizerOptions, MapReplacer, 2);
+    //let data: String = JSON.stringify(randomizerOptions, MapReplacer, 2);
+    let data: String = JSON.stringify(payload);
     fs.writeFileSync(filepath, data, null);
   }
 }

@@ -1,4 +1,3 @@
-import { random } from "lodash";
 import * as React from "react";
 import { useContext, useReducer } from "react";
 
@@ -140,6 +139,7 @@ const initialRandomizerOptions = {
 };
 
 type RandomizerOption = keyof typeof initialRandomizerOptions;
+export type RandomizerState = typeof initialRandomizerOptions;
 
 function randomizerReducer(
   state: typeof initialRandomizerOptions,
