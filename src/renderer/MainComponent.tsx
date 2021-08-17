@@ -9,6 +9,7 @@ import SettingsSaver from "./components/SettingsSaver";
 import SettingsLoader from "./components/SettingsLoader";
 //import { ExtendedAPIPlugin } from "webpack";
 import FFTAData from "_/main/ffta/FFTAData";
+import { RandomizerProvider } from "./components/RandomizerProvider";
 
 //window.api gets available at runtime so we can ignore that error
 // @ts-ignore
@@ -204,13 +205,15 @@ export function MainComponent() {
 
   return (
     <div className="appGrid">
-      <h1>FFTA Randomizer</h1>
-      <RomLoader />
-      <RomSaver globalState={config} />
-      <SettingsLoader />
-      <SettingsSaver globalState={config} />
-      <RandomizerSettings globalState={config} callback={changeSetting} />
-      <RomSettings globalState={config} callback={changeSetting} />
+      <RandomizerProvider>
+        <h1>FFTA Randomizer</h1>
+        <RomLoader />
+        <RomSaver globalState={config} />
+        <SettingsLoader />
+        <SettingsSaver globalState={config} />
+        <RandomizerSettings globalState={config} callback={changeSetting} />
+        <RomSettings globalState={config} callback={changeSetting} />
+      </RandomizerProvider>
     </div>
   );
 }

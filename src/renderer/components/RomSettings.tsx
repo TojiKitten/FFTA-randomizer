@@ -27,7 +27,7 @@ export const RomSettings = ({ globalState, callback }: props) => {
       return (
         <div className="div-RomSettings">
           <NavBar active="general" callback={callback} />
-          <GeneralSettings globalState={globalState} callback={callback} />
+          <GeneralSettings />
         </div>
       );
     }
