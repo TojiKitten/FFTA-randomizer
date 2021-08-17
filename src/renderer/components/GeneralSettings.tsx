@@ -5,11 +5,6 @@ import { useRandomizer, useRandomizerUpdate } from "./RandomizerProvider";
 // @ts-ignore
 const { api } = window;
 
-interface props {
-  globalState: Array<Config>;
-  callback: (nconf: Config) => void;
-}
-
 export const GeneralSettings = () => {
   const dispatch = useRandomizerUpdate();
   const state = useRandomizer();
