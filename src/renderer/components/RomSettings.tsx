@@ -14,57 +14,37 @@ export const RomSettings = () => {
   let { romLoaded, currentPage } = state.generalSettings;
   //let state = globalState.find((element) => element.setting === "currentPage");
 
+  let loadedPage = <> </>;
+
+  switch (currentPage) {
+    case "general":
+      loadedPage = <GeneralSettings />;
+      break;
+    case "party":
+      loadedPage = <PartySettings />;
+      break;
+    case "jobs":
+      loadedPage = <JobSettings />;
+      break;
+    case "items":
+      loadedPage = <ItemSettings />;
+      break;
+    case "logbook":
+      loadedPage = <Logbook />;
+      break;
+  }
+
   return (
     <>
       {!romLoaded && <div className="div-RomSettings">No Rom Loaded!</div>}
-      {romLoaded && currentPage == "general" && (
+      {romLoaded && (
         <div className="div-RomSettings">
           <NavBar />
-          <GeneralSettings />
-        </div>
-      )}
-      {romLoaded && currentPage == "logbook" && (
-        <div className="div-RomSettings">
-          <NavBar />
-          <Logbook />
+          {loadedPage}
         </div>
       )}
     </>
   );
-
-  /*
-    case "party": {
-      return (
-        <div className="div-RomSettings">
-          <NavBar />
-          <PartySettings globalState={globalState} callback={callback} />
-        </div>
-      );
-    }
-    case "jobs": {
-      return (
-        <div className="div-RomSettings">
-          <NavBar />
-          <JobSettings globalState={globalState} callback={callback} />
-        </div>
-      );
-    }
-    case "items": {
-      return (
-        <div className="div-RomSettings">
-          <NavBar />
-          <ItemSettings globalState={globalState} callback={callback} />
-        </div>
-      );
-    }
-    case "logbook": {
-      return (
-        <div className="div-RomSettings">
-          <NavBar />
-          <Logbook globalState={globalState} callback={callback} />
-        </div>
-      );
-    }*/
 };
 
 export default RomSettings;

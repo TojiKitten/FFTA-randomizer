@@ -6,7 +6,11 @@ const initialRandomizerOptions = {
     romLoaded: false,
     currentPage: "general",
     isRandomized: false,
-    randomizerSeed: 0,
+    randomizerSeed: parseInt(
+      new Date().getFullYear().toString() +
+        new Date().getMonth().toString().padStart(2, "0") +
+        new Date().getDay().toString().padStart(2, "0")
+    ),
     missionScaling: "normal",
     missionScalingValue: 1,
     cutscenes: "all",
@@ -75,66 +79,66 @@ const initialRandomizerOptions = {
         masteredAbilities: 0,
       },
     ],
+  },
+  jobSettings: {
     jobRequirements: "normal",
     abilities: "normal",
     mpRegen: "normal",
-  },
-  jobSettings: {
-    human: {
-      soldier: true,
-      paladin: true,
-      fighter: true,
-      thief: true,
-      ninja: true,
-      whiteMage: true,
-      blackMage: true,
-      illusionist: true,
-      blueMage: true,
-      archer: true,
-      hunter: true,
-    },
-    bangaa: {
-      warrior: true,
-      dragoon: true,
-      defender: true,
-      gladiator: true,
-      whiteMonk: true,
-      bishop: true,
-      templar: true,
-    },
-    nuMou: {
-      whiteMage: true,
-      blackMage: true,
-      timeMage: true,
-      illusionist: true,
-      alchemist: true,
-      beastmaster: true,
-      morpher: true,
-      sage: true,
-    },
-    viera: {
-      fencer: true,
-      elementalist: true,
-      regMage: true,
-      whiteMage: true,
-      summoner: true,
-      archer: true,
-      assassin: true,
-      sniper: true,
-    },
-    moogle: {
-      animist: true,
-      mogKnight: true,
-      gunner: true,
-      thief: true,
-      juggler: true,
-      gadgeteer: true,
-      blackMage: true,
-      timeMage: true,
-    },
+    human: [
+      { jobName: "Soldier", enabled: true },
+      { jobName: "Paladin", enabled: true },
+      { jobName: "Fighter", enabled: true },
+      { jobName: "Thief", enabled: true },
+      { jobName: "Ninja", enabled: true },
+      { jobName: "White Mage", enabled: true },
+      { jobName: "Black Mage", enabled: true },
+      { jobName: "Illusionist", enabled: true },
+      { jobName: "Blue Mage", enabled: true },
+      { jobName: "Archer", enabled: true },
+      { jobName: "Hunter", enabled: true },
+    ],
+    bangaa: [
+      { jobName: "Warrior", enabled: true },
+      { jobName: "Dragoon", enabled: true },
+      { jobName: "Defender", enabled: true },
+      { jobName: "Gladiator", enabled: true },
+      { jobName: "White Monk", enabled: true },
+      { jobName: "Bishop", enabled: true },
+      { jobName: "Templar", enabled: true },
+    ],
+    nuMou: [
+      { jobName: "White Mage", enabled: true },
+      { jobName: "Black Mage", enabled: true },
+      { jobName: "Time Mage", enabled: true },
+      { jobName: "Illusionist", enabled: true },
+      { jobName: "Alchemist", enabled: true },
+      { jobName: "Beastmaster", enabled: true },
+      { jobName: "Morpher", enabled: true },
+      { jobName: "Sage", enabled: true },
+    ],
+    viera: [
+      { jobName: "Fencer", enabled: true },
+      { jobName: "Elementalist", enabled: true },
+      { jobName: "Red Mage", enabled: true },
+      { jobName: "White Mage", enabled: true },
+      { jobName: "Summoner", enabled: true },
+      { jobName: "Archer", enabled: true },
+      { jobName: "Assassin", enabled: true },
+      { jobName: "Sniper", enabled: true },
+    ],
+    moogle: [
+      { jobName: "Animist", enabled: true },
+      { jobName: "Mog Knight", enabled: true },
+      { jobName: "Gunner", enabled: true },
+      { jobName: "Thief", enabled: true },
+      { jobName: "Juggler", enabled: true },
+      { jobName: "Gadeteer", enabled: true },
+      { jobName: "Black Mage", enabled: true },
+      { jobName: "Time Mage", enabled: true },
+    ],
   },
   shopSettings: {
-    shopitems: "default",
+    shopItems: "default",
   },
 };
 
@@ -142,20 +146,16 @@ type RandomizerOption = keyof typeof initialRandomizerOptions;
 export type RandomizerState = typeof initialRandomizerOptions;
 
 function randomizerReducer(
-  state: typeof initialRandomizerOptions,
-  action: any
+  state: RandomizerState,
+  action: { type: RandomizerOption; option: any }
 ) {
-  switch (action.type) {
-    case "generalSettings":
-      const newGeneralSettings = {
-        ...state.generalSettings,
-        ...action.option,
-      };
-      console.log(newGeneralSettings);
-      return { ...state, generalSettings: newGeneralSettings };
-    default:
-      return { ...state };
-  }
+  return {
+    ...state,
+    [action.type]: {
+      ...state[action.type],
+      ...action.option,
+    },
+  };
 }
 
 const RandomizerContext = React.createContext(initialRandomizerOptions);

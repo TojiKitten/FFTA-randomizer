@@ -1,36 +1,24 @@
 import * as React from "react";
-import { Config } from "../utils/types";
-//window.api gets available at runtime so we can ignore that error
-// @ts-ignore
-const { api } = window;
+import { useRandomizer, useRandomizerUpdate } from "./RandomizerProvider";
 
-interface props {
-  globalState: Array<Config>;
-  callback: (nconf: Config) => void;
-}
-
-export const RandomizerSettings = ({ globalState, callback }: props) => {
-  let seed = globalState.find(
-    (element) => element.setting === "randomizerSeed"
-  )!.value;
-
-  const handleSubmit = (event: any) => {
-    event.preventDefault();
-    callback({
-      setting: "randomizerSeed",
-      value: String(event.target.elements.seed.value),
-    });
-    event.target.reset();
-  };
+export const RandomizerSettings = () => {
+  const dispatch = useRandomizerUpdate();
+  const state = useRandomizer();
 
   return (
     <div className="div-RandoSettings">
-      <form onSubmit={handleSubmit}>
-        <input name="seed" type="number" value={Number(seed)} onChange={(event) =>
-          callback({setting:"randomizerSeed", value: event.target.value})
-        }/>
-        <input type="submit" value="set Seed" />
-      </form>
+      <label htmlFor="seed">Seed</label>
+      <input
+        id="seed"
+        type="number"
+        value={state.generalSettings.randomizerSeed}
+        onChange={(event) =>
+          dispatch({
+            type: "generalSettings",
+            option: { randomizerSeed: event.target.value },
+          })
+        }
+      />
     </div>
   );
 };

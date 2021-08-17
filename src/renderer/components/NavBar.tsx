@@ -12,6 +12,7 @@ export const NavBar = () => {
       {menus.map((value) => {
         return (
           <button
+            key={value}
             className={
               state.generalSettings.currentPage == value
                 ? "navBar-button-active"

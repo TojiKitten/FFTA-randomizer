@@ -15,7 +15,6 @@ export const SettingsSaver = () => {
     <button
       className="fileButton"
       onClick={() => {
-        //api.send("set-settings", state);
         api.send("save-settings", state);
       }}
     >

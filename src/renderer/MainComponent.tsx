@@ -206,7 +206,7 @@ export function MainComponent() {
         <RomSaver />
         <SettingsLoader />
         <SettingsSaver />
-        <RandomizerSettings globalState={config} callback={changeSetting} />
+        <RandomizerSettings />
         <RomSettings />
       </RandomizerProvider>
     </div>

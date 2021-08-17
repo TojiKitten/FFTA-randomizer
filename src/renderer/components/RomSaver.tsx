@@ -15,7 +15,6 @@ export const RomSaver = () => {
     <button
       className="fileButton"
       onClick={() => {
-        // api.send("set-settings", state);
         api.send("save-file-dialog", state);
       }}
     >
