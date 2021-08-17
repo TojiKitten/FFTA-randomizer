@@ -26,7 +26,7 @@ export const RomSettings = ({ globalState, callback }: props) => {
     case "general": {
       return (
         <div className="div-RomSettings">
-          <NavBar active="general" callback={callback} />
+          <NavBar />
           <GeneralSettings />
         </div>
       );
@@ -34,7 +34,7 @@ export const RomSettings = ({ globalState, callback }: props) => {
     case "party": {
       return (
         <div className="div-RomSettings">
-          <NavBar active="party" callback={callback} />
+          <NavBar />
           <PartySettings globalState={globalState} callback={callback} />
         </div>
       );
@@ -42,7 +42,7 @@ export const RomSettings = ({ globalState, callback }: props) => {
     case "jobs": {
       return (
         <div className="div-RomSettings">
-          <NavBar active="jobs" callback={callback} />
+          <NavBar />
           <JobSettings globalState={globalState} callback={callback} />
         </div>
       );
@@ -50,7 +50,7 @@ export const RomSettings = ({ globalState, callback }: props) => {
     case "items": {
       return (
         <div className="div-RomSettings">
-          <NavBar active="items" callback={callback} />
+          <NavBar />
           <ItemSettings globalState={globalState} callback={callback} />
         </div>
       );
@@ -58,7 +58,7 @@ export const RomSettings = ({ globalState, callback }: props) => {
     case "logbook": {
       return (
         <div className="div-RomSettings">
-          <NavBar active="logbook" callback={callback} />
+          <NavBar />
           <Logbook globalState={globalState} callback={callback} />
         </div>
       );
@@ -66,7 +66,7 @@ export const RomSettings = ({ globalState, callback }: props) => {
     default: {
       return (
         <div className="div-RomSettings">
-          <NavBar active="" callback={callback} />
+          <NavBar />
           ERROR!
         </div>
       );

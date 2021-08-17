@@ -2,12 +2,7 @@ import * as React from "react";
 import { Config } from "../utils/types";
 import { useRandomizerUpdate, useRandomizer } from "./RandomizerProvider";
 
-type prop = {
-  active: string;
-  callback: (nconf: Config) => void;
-};
-
-export const NavBar = ({ active, callback }: prop) => {
+export const NavBar = () => {
   const dispatch = useRandomizerUpdate();
   const state = useRandomizer();
   const menus = ["general", "party", "jobs", "items", "logbook"];
