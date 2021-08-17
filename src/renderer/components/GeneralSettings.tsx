@@ -1,9 +1,6 @@
 import * as React from "react";
 import { Config, Job } from "../utils/types";
 import { useRandomizer, useRandomizerUpdate } from "./RandomizerProvider";
-//window.api gets available at runtime so we can ignore that error
-// @ts-ignore
-const { api } = window;
 
 export const GeneralSettings = () => {
   const dispatch = useRandomizerUpdate();

@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Config, Job, Unit } from "../utils/types";
 import { useRandomizer, useRandomizerUpdate } from "./RandomizerProvider";
 
 type unitProp = {
@@ -24,13 +23,6 @@ export const PartyMember = (unit: unitProp) => {
       if (job.enabled) jobList.push(job.jobName);
     });
   }
-  // let jobOptions = [];
-  // jobOptions.push(<option value="random">Random</option>);
-  // jobList.forEach((element) => {
-  //   if (element.enabled) {
-  //     jobOptions.push(<option value={element.name}>{element.name}</option>);
-  //   }
-  // });
 
   return (
     <div key={unit.name} className="partyMember">

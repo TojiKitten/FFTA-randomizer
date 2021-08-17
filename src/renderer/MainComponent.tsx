@@ -178,11 +178,6 @@ export function MainComponent() {
       delete newConfig["romLoaded"];
       delete newConfig["currentPage"];
       delete newConfig["isRandomized"];
-
-      console.log(newConfig);
-      for (var key of Object.keys(newConfig)) {
-        changeSetting({ setting: key, value: newConfig[key] });
-      }
     });
 
     return () => {

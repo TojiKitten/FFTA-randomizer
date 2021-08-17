@@ -5,17 +5,14 @@ import { PartySettings } from "./PartySettings";
 import { JobSettings } from "./JobSettings";
 import { ItemSettings } from "./ItemSettings";
 import { Logbook } from "./Logbook";
-import { Config } from "../utils/types";
 import { useRandomizer } from "./RandomizerProvider";
 
 export const RomSettings = () => {
   const state = useRandomizer();
 
   let { romLoaded, currentPage } = state.generalSettings;
-  //let state = globalState.find((element) => element.setting === "currentPage");
 
   let loadedPage = <> </>;
-
   switch (currentPage) {
     case "general":
       loadedPage = <GeneralSettings />;

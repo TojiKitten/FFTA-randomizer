@@ -1,11 +1,5 @@
 import * as React from "react";
-import { Config, Job } from "../utils/types";
 import { useRandomizer, useRandomizerUpdate } from "./RandomizerProvider";
-
-interface props {
-  globalState: Array<Config>;
-  callback: (nconf: Config) => void;
-}
 
 export const JobSettings = () => {
   const dispatch = useRandomizerUpdate();

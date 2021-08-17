@@ -227,7 +227,7 @@ function openSettings(files: any) {
   //look if actually selected a file
   if (files) {
     let filepath = files[0];
-    let settings = JSON.parse(fs.readFileSync(filepath, "utf-8"), MapReviver);
+    let settings = JSON.parse(fs.readFileSync(filepath, "utf-8")); //, MapReviver);
     mainWindow!.webContents.send("get-settings", { newConfig: settings });
   }
 }
