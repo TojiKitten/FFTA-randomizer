@@ -36,9 +36,8 @@ body {
   margin: auto;
 }
 
-.navBar {
-}
-.navBar-button {
+label {
+  margin: 0 0.2em 0 0;
 }
 .navBar-button-active {
   color: red;
@@ -65,14 +64,21 @@ body {
   grid-column: span 12;
 }
 
-.jobOption > label,
-.partyMemberOption > label,
-.generalSettingsOption > label {
-  margin: 0.2em;
+.jobList {
+  grid-gap: 0.1em;
+  grid-column: span 12;
+  display: grid;
+  grid-template-rows: auto-fill;
+  grid-template-columns: repeat(12, 12fr);
+  justify-items: left;
 }
 
-.jobList {
-  grid-column: span 6;
+.jobList > h3 {
+  grid-column: span 12;
+}
+
+.jobListJob {
+  grid-column: span 12;
 }
 
 .partyList {

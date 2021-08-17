@@ -56,8 +56,10 @@ export function toggleLimitedShopItems(
   // For every item type that isn't consumables
   for (var iter = ITEMTYPES.Sword; iter <= ITEMTYPES.Accessory; iter++) {
     // Filter by type
-    let itemsForType: Array<FFTAItem> = newItems.filter((item) => item.getType() === iter);
-    
+    let itemsForType: Array<FFTAItem> = newItems.filter(
+      (item) => item.getType() === iter
+    );
+
     // Declare min for cases where items in the type is small
     let numberPerType = Math.min(4, itemsForType.length);
 
@@ -94,6 +96,7 @@ function createNewItemArray(items: Array<FFTAItem>) {
     newItems.push(
       new FFTAItem(item.memory, item.displayName!, item.properties)
     );
+    newItems[newItems.length - 1].setItemAbilities(item.getItemAbilities());
   });
 
   return newItems;

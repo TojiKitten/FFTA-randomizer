@@ -1,47 +1,22 @@
 import * as React from "react";
 import { Config, Job } from "../utils/types";
-//window.api gets available at runtime so we can ignore that error
-// @ts-ignore
-const { api } = window;
+import { useRandomizer, useRandomizerUpdate } from "./RandomizerProvider";
 
-interface props {
-  globalState: Array<Config>;
-  callback: (nconf: Config) => void;
-}
-
-export const GeneralSettings = ({ globalState, callback }: props) => {
-  let enemyLevel = globalState.find(
-    (element) => element.setting === "missionScaling"
-  )!;
-  let enemyLevelRange = globalState.find(
-    (element) => element.setting === "missionScalingValue"
-  )!;
-  let cutscenes = globalState.find(
-    (element) => element.setting === "cutscenes"
-  )!;
-  let missionRewards = globalState.find(
-    (element) => element.setting === "missionRewards"
-  )!;
-  let apBoost = globalState.find((element) => element.setting === "apBoost")!;
-  let laws = globalState.find((element) => element.setting === "laws")!;
-  let startingGold = globalState.find(
-    (element) => element.setting === "startingGold"
-  )!;
-  let frostyMageBoost = globalState.find(
-    (element) => element.setting === "frostyMageBoost"
-  )!;
-  let noJudgeTurn = globalState.find(
-    (element) => element.setting === "noJudgeTurn"
-  )!;
+export const GeneralSettings = () => {
+  const dispatch = useRandomizerUpdate();
+  const state = useRandomizer();
   return (
     <div className="generalSettings">
       <div className="generalSettingsOption">
         <label htmlFor="missionScaleOption">Story Enemy Levels</label>
         <select
           id="missionScaleOption"
-          value={String(enemyLevel.value)}
+          value={state.generalSettings.missionScaling}
           onChange={(event) => {
-            callback({ setting: "missionScaling", value: event.target.value });
+            dispatch({
+              type: "generalSettings",
+              option: { missionScaling: event.target.value },
+            });
           }}
         >
           <option value="normal">Normal</option>
@@ -57,23 +32,26 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
           type="Range"
           min="1"
           max="50"
-          value={Number(enemyLevelRange.value)}
+          value={state.generalSettings.missionScalingValue}
           onChange={(event) => {
-            callback({
-              setting: "missionScalingValue",
-              value: event.target.value,
+            dispatch({
+              type: "generalSettings",
+              option: { missionScalingValue: parseInt(event.target.value) },
             });
           }}
         />
-        {enemyLevelRange.value}
+        {state.generalSettings.missionScalingValue}
       </div>
       <div className="generalSettingsOption">
         <label htmlFor="cutsceneOption">Cutscenes</label>
         <select
           id="cutsceneOption"
-          value={String(cutscenes.value)}
+          value={state.generalSettings.cutscenes}
           onChange={(event) => {
-            callback({ setting: "cutscenes", value: event.target.value });
+            dispatch({
+              type: "generalSettings",
+              option: { cutscenes: event.target.value },
+            });
           }}
         >
           <option value="all">All</option>
@@ -85,9 +63,12 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
         <label htmlFor="missionRewardOption">Mission Rewards</label>
         <select
           id="missionRewardOption"
-          value={String(missionRewards.value)}
+          value={state.generalSettings.missionRewards}
           onChange={(event) => {
-            callback({ setting: "missionRewards", value: event.target.value });
+            dispatch({
+              type: "generalSettings",
+              option: { missionRewards: event.target.value },
+            });
           }}
         >
           <option value="normal">Normal</option>
@@ -103,20 +84,26 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
           min="0"
           max="1000"
           step="10"
-          value={Number(apBoost.value)}
+          value={state.generalSettings.apBoost}
           onChange={(event) => {
-            callback({ setting: "apBoost", value: event.target.value });
+            dispatch({
+              type: "generalSettings",
+              option: { apBoost: parseInt(event.target.value) },
+            });
           }}
         />
-        {apBoost.value}
+        {state.generalSettings.apBoost}
       </div>
       <div className="generalSettingsOption">
         <label htmlFor="lawOption">Laws</label>
         <select
           id="lawOption"
-          value={String(laws.value)}
+          value={state.generalSettings.laws}
           onChange={(event) => {
-            callback({ setting: "laws", value: event.target.value });
+            dispatch({
+              type: "generalSettings",
+              option: { laws: event.target.value },
+            });
           }}
         >
           <option value="normal">Normal</option>
@@ -128,9 +115,12 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
         <input
           id="goldOption"
           type="number"
-          value={Number(startingGold.value)}
+          value={state.generalSettings.startingGold}
           onChange={(event) => {
-            callback({ setting: "startingGold", value: event.target.value });
+            dispatch({
+              type: "generalSettings",
+              option: { startingGold: parseInt(event.target.value) },
+            });
           }}
         />
       </div>
@@ -139,23 +129,26 @@ export const GeneralSettings = ({ globalState, callback }: props) => {
         <input
           id="frostyOption"
           type="checkbox"
-          checked={Boolean(frostyMageBoost.value)}
+          checked={state.generalSettings.frostyMageBoost}
           onChange={(event) => {
-            callback({
-              setting: "frostyMageBoost",
-              value: !frostyMageBoost.value,
+            dispatch({
+              type: "generalSettings",
+              option: { frostyMageBoost: event.target.checked },
             });
           }}
         />
       </div>
       <div className="generalSettingsOption">
-        <label htmlFor="noJudgeOption">no Judge Turn</label>
+        <label htmlFor="noJudgeOption">No Judge Turn</label>
         <input
           id="noJudgeOption"
           type="checkbox"
-          checked={Boolean(noJudgeTurn.value)}
+          checked={state.generalSettings.noJudgeTurn}
           onChange={(event) => {
-            callback({ setting: "noJudgeTurn", value: !noJudgeTurn.value });
+            dispatch({
+              type: "generalSettings",
+              option: { noJudgeTurn: event.target.checked },
+            });
           }}
         />
       </div>

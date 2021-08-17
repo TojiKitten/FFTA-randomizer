@@ -1,20 +1,23 @@
 import * as React from "react";
-import {Config, Job} from "../utils/types"
+import { useRandomizer, useRandomizerUpdate } from "./RandomizerProvider";
 
-interface props {
-  globalState: Array<Config>;
-  callback: (nconf: Config) => void;
-}
+export const ItemSettings = () => {
+  const dispatch = useRandomizerUpdate();
+  const state = useRandomizer();
 
-export const ItemSettings = ({globalState, callback}:props) => {
-  let shopItems = globalState.find(element => element.setting==="shopitems")!;
   return (
     <div>
-      shop Items:
-      <select value={String(shopItems.value)} onChange={(event) => {
-        callback({setting: shopItems.setting, value: event.target.value});
-      }
-      }>
+      <label htmlFor="shopItemsOption">Shop Items</label>
+      <select
+        id="shopItemsOption"
+        value={state.shopSettings.shopItems}
+        onChange={(event) => {
+          dispatch({
+            type: "shopSettings",
+            option: { shopItems: event.target.value },
+          });
+        }}
+      >
         <option value="default">Default</option>
         <option value="limited">Limited</option>
         <option value="random">Random</option>

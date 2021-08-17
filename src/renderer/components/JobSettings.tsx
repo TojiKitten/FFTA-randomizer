@@ -1,61 +1,18 @@
 import * as React from "react";
-import { Config, Job } from "../utils/types";
+import { useRandomizer, useRandomizerUpdate } from "./RandomizerProvider";
 
-interface props {
-  globalState: Array<Config>;
-  callback: (nconf: Config) => void;
-}
+export const JobSettings = () => {
+  const dispatch = useRandomizerUpdate();
+  const state = useRandomizer();
 
-export const JobSettings = ({ globalState, callback }: props) => {
-  let jobRequirements = globalState.find(
-    (element) => element.setting === "jobRequirements"
-  )!;
-  let abilities = globalState.find(
-    (element) => element.setting === "abilities"
-  )!;
-  let mpRegen = globalState.find((element) => element.setting === "mpRegen")!;
-
-  // @ts-ignore
-  let jobMap: Map<string, Array<Job>> = globalState.find(
-    (element) => element.setting === "jobMap"
-  )!.value;
-
-  const jobChange = (event: any, race: string, jobs: Array<Job>) => {
-    jobMap
-      .get(race)!
-      .find((element: any) => element.name == event.target.id)!.enabled =
-      !jobMap
-        .get(race)!
-        .find((element: any) => element.name == event.target.id)!.enabled;
-
-    callback({ setting: "jobMap", value: jobMap });
-  };
-
-  const setJobList = (jobs: Array<Job>, race: string): Array<JSX.Element> => {
-    let list = Array<JSX.Element>();
-    jobs.forEach((element: Job) => {
-      list.push(
-        <>
-          <input
-            type="checkbox"
-            id={element.name}
-            key={element.name + race}
-            checked={element.enabled}
-            onChange={(event) => jobChange(event, race, jobs)}
-          />
-          <label>{element.name}</label>
-          <br />
-        </>
-      );
-    });
-    return list;
-  };
-
-  let humanJobList = setJobList(jobMap.get("human")!, "human");
-  let bangaaJobList = setJobList(jobMap.get("bangaa")!, "bangaa");
-  let nuMouJobList = setJobList(jobMap.get("nuMou")!, "nuMou");
-  let vieraJobList = setJobList(jobMap.get("viera")!, "viera");
-  let moogleJobList = setJobList(jobMap.get("moogle")!, "moogle");
+  const toggledJobs = [
+    { raceName: "Human", jobs: state.jobSettings.human },
+    { raceName: "Bangaa", jobs: state.jobSettings.bangaa },
+    { raceName: "Nu Mou", jobs: state.jobSettings.nuMou },
+    { raceName: "Viera", jobs: state.jobSettings.viera },
+    { raceName: "Moogle", jobs: state.jobSettings.moogle },
+  ];
+  type ToggledJobs = typeof toggledJobs[0];
 
   return (
     <div className="jobMenu">
@@ -64,11 +21,11 @@ export const JobSettings = ({ globalState, callback }: props) => {
           <label htmlFor="jobRequirements">Job Requirements</label>
           <select
             id="jobRequirements"
-            value={String(jobRequirements.value)}
-            onChange={(element) => {
-              callback({
-                setting: jobRequirements.setting,
-                value: element.target.value,
+            value={state.jobSettings.jobRequirements}
+            onChange={(event) => {
+              dispatch({
+                type: "jobSettings",
+                option: { jobRequirements: event.target.value },
               });
             }}
           >
@@ -81,11 +38,11 @@ export const JobSettings = ({ globalState, callback }: props) => {
           <label htmlFor="abilities">Abilities</label>
           <select
             id="abilities"
-            value={String(abilities.value)}
-            onChange={(element) => {
-              callback({
-                setting: abilities.setting,
-                value: element.target.value,
+            value={state.jobSettings.abilities}
+            onChange={(event) => {
+              dispatch({
+                type: "jobSettings",
+                option: { abilities: event.target.value },
               });
             }}
           >
@@ -98,11 +55,11 @@ export const JobSettings = ({ globalState, callback }: props) => {
           <label htmlFor="mpRegen">MP Regen</label>
           <select
             id="mpRegen"
-            value={String(mpRegen.value)}
-            onChange={(element) => {
-              callback({
-                setting: mpRegen.setting,
-                value: element.target.value,
+            value={state.jobSettings.abilities}
+            onChange={(event) => {
+              dispatch({
+                type: "jobSettings",
+                option: { mpRegen: event.target.value },
               });
             }}
           >
@@ -111,31 +68,46 @@ export const JobSettings = ({ globalState, callback }: props) => {
           </select>
         </div>
       </div>
-      <div className="jobList">
-        Human
-        <br />
-        {humanJobList}
-      </div>
-      <div className="jobList">
-        Bangaa
-        <br />
-        {bangaaJobList}
-      </div>
-      <div className="jobList">
-        Nu Mou
-        <br />
-        {nuMouJobList}
-      </div>
-      <div className="jobList">
-        Viera
-        <br />
-        {vieraJobList}
-      </div>
-      <div className="jobList">
-        Moogle
-        <br />
-        {moogleJobList}
-      </div>
+      {toggledJobs.map((raceJobs: ToggledJobs) => {
+        return (
+          <div key={raceJobs.raceName} className="jobList">
+            <h3>{raceJobs.raceName}</h3>
+            {raceJobs.jobs.map(
+              (value: { jobName: string; enabled: boolean }) => (
+                <div
+                  key={value.jobName + raceJobs.raceName}
+                  className="jobListJob"
+                >
+                  <label htmlFor={value.jobName + raceJobs.raceName}>
+                    {value.jobName}
+                  </label>
+                  <input
+                    type="checkbox"
+                    id={value.jobName + raceJobs.raceName}
+                    key={value.jobName + raceJobs.raceName}
+                    checked={value.enabled}
+                    onChange={(event) =>
+                      dispatch({
+                        type: "jobSettings",
+                        option: {
+                          [raceJobs.raceName[0].toLowerCase() +
+                          raceJobs.raceName.substr(1).replaceAll(" ", "")]:
+                            raceJobs.jobs.map(
+                              (job: { jobName: string; enabled: boolean }) =>
+                                job.jobName == value.jobName
+                                  ? { ...job, enabled: event.target.checked }
+                                  : { ...job }
+                            ),
+                        },
+                      })
+                    }
+                  />
+                </div>
+              )
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 };

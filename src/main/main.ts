@@ -135,7 +135,7 @@ ipc.on("save-file-dialog", function (event, options: any) {
       { name: "All Files", extensions: ["*"] },
     ],
   });
-  savefile(choosenfiles);
+  savefile(choosenfiles, options);
 });
 
 ipc.on("request-fftaData", (event, parms: any) => {
@@ -164,10 +164,10 @@ ipc.on("request-fftaData", (event, parms: any) => {
   }
 });
 
-function savefile(filepath: any) {
+function savefile(filepath: any, payload: any) {
   //check if dialog got cancelled
   if (filepath) {
-    RandomizerOptions.randomizeFFTA(fftaData, randomizerOptions);
+    RandomizerOptions.randomizeFFTA(fftaData, payload);
     fftaData.writeData();
     fs.writeFileSync(filepath, fftaData.rom, null);
   }
@@ -184,29 +184,17 @@ ipc.on("save-settings", function (event, options: any) {
       { name: "All Files", extensions: ["*"] },
     ],
   });
-  SaveSettings(choosenfiles);
+  SaveSettings(choosenfiles, options);
 });
 
-function SaveSettings(filepath: any) {
+function SaveSettings(filepath: any, payload: any) {
   //check if dialog got cancelled
   if (filepath) {
-    let data: String = JSON.stringify(randomizerOptions, MapReplacer, 2);
+    let data: String = JSON.stringify(payload);
     fs.writeFileSync(filepath, data, null);
   }
 }
 
-//deconstruct Map
-function MapReplacer(key: any, value: any) {
-  if (value instanceof Map) {
-    return {
-      Setting: "jobMap",
-      dataType: "Map",
-      value: Array.from(value.entries()), // or with spread: value: [...value]
-    };
-  } else {
-    return value;
-  }
-}
 //
 //load settings
 //
@@ -226,30 +214,7 @@ function openSettings(files: any) {
   //look if actually selected a file
   if (files) {
     let filepath = files[0];
-    let settings = JSON.parse(fs.readFileSync(filepath, "utf-8"), MapReviver);
+    let settings = JSON.parse(fs.readFileSync(filepath, "utf-8"));
     mainWindow!.webContents.send("get-settings", { newConfig: settings });
   }
 }
-
-//reconstruct Map
-function MapReviver(key: any, value: any) {
-  if (typeof value === "object" && value !== null) {
-    if (value.dataType === "Map") {
-      return new Map(value.value);
-    }
-  }
-  return value;
-}
-
-//
-// get and set settings from frontend
-//
-
-ipc.on(
-  "set-settings",
-  function (event, options: Array<{ setting: string; value: any }>) {
-    options.forEach((element) => {
-      randomizerOptions[element.setting] = element.value;
-    });
-  }
-);
