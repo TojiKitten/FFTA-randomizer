@@ -39,7 +39,7 @@ export const PartyMember = (unit: unitProp) => {
                 option: {
                   partyMembers: state.partySettings.partyMembers.map((member) =>
                     member.name == unit.name
-                      ? { ...member, race: event.target.value }
+                      ? { ...member, race: event.target.value, job: "random" }
                       : { ...member }
                   ),
                 },

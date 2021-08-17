@@ -287,6 +287,13 @@ export class FFTAItem extends FFTAObject {
   }
 
   /**
+   * Sets the Item Abilities for an item.
+   * @param itemAbilities The array of ItemAbility to set
+   */
+  setItemAbilities(itemAbilities: Array<ItemAbility>) {
+    this.itemAbilities = itemAbilities;
+  }
+  /**
    * Returns the array of {@link ItemAbility} for an item.
    */
   getItemAbilities() {

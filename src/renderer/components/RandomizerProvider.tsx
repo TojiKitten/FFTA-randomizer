@@ -144,6 +144,7 @@ const initialRandomizerOptions = {
 
 type RandomizerOption = keyof typeof initialRandomizerOptions;
 export type RandomizerState = typeof initialRandomizerOptions;
+export type JobSettingsState = typeof initialRandomizerOptions.jobSettings;
 
 function randomizerReducer(
   state: RandomizerState,

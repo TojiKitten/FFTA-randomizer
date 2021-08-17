@@ -19,15 +19,15 @@ export function randomizeFFTA(fftaData: FFTAData, options: RandomizerState) {
   fftaData.handleNoJudgeTurn(generalSettings.noJudgeTurn);
   fftaData.handleLawOptions(generalSettings.laws);
   fftaData.handleRewardOptions(generalSettings.missionRewards);
-  // fftaData.handlePercentageMP(partySettings.mpRegen);
-  // fftaData.handleJobRequirements(partySettings.jobRequirements);
-  // fftaData.handleUnitAbilities(partySettings.abilities);
-  // fftaData.handleDisableJobs(jobSettings);
-  // fftaData.handlePartyMembers(
-  //   partySettings.partyRNGEnabled,
-  //   partySettings.partyMembers
-  // );
-  //fftaData.handleShopItems(shopSettings.shopItems);
+  fftaData.handlePercentageMP(jobSettings.mpRegen);
+  fftaData.handleJobRequirements(jobSettings.jobRequirements);
+  fftaData.handleUnitAbilities(jobSettings.abilities);
+  fftaData.handleDisableJobs(jobSettings);
+  fftaData.handlePartyMembers(
+    partySettings.partyRNGEnabled,
+    partySettings.partyMembers
+  );
+  fftaData.handleShopItems(shopSettings.shopItems);
 }
 
 export default iRandomizerOptions;

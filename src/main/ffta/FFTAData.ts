@@ -13,6 +13,7 @@ import * as JobHacks from "./enginehacks/jobHacks";
 import * as ItemHacks from "./enginehacks/itemHacks";
 import * as ForcedHacks from "./enginehacks/forcedHacks";
 import NoiseGenerator from "./utils/NoiseGenerator";
+import { JobSettingsState } from "_/renderer/components/RandomizerProvider";
 
 export enum RACES {
   Human = "human",
@@ -767,17 +768,16 @@ export class FFTAData {
    * Removes jobs from randomization pool
    * @param jobMapOption - All jobs and state of removal
    */
-  handleDisableJobs(
-    jobMapOption: Map<string, Array<{ name: string; enabled: boolean }>>
-  ) {
-    for (let [race, raceJobs] of this.jobs) {
-      if (raceJobs.length !== jobMapOption.get(race)!.length) {
-        throw new Error("Mismatch of " + race + " jobs unhandled!");
-      }
-      jobMapOption.get(race)!.forEach((job, i) => {
-        raceJobs[i].setAllowed(job.enabled);
+  handleDisableJobs(jobSettings: JobSettingsState) {
+    const raceKeys = ["human", "bangaa", "nuMou", "viera", "moogle"];
+
+    raceKeys.forEach((key) => {
+      let uiJobs = [...jobSettings[key as keyof typeof jobSettings]];
+      let fftaJobs = this.jobs.get(key);
+      uiJobs.forEach((job: { jobName: string; enabled: boolean }, id) => {
+        fftaJobs![id].setAllowed(job.enabled);
       });
-    }
+    });
   }
 
   /**

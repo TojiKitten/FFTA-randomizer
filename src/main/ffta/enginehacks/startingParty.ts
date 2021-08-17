@@ -97,7 +97,9 @@ function getNewJob(
       job.displayName?.replaceAll(" ", "").toLowerCase() ===
       jobString.toLowerCase()
   );
-  if (!selectedJob) throw new Error(jobString + " not found");
+  if (!selectedJob) {
+    throw new Error(jobString + " not found");
+  }
   return selectedJob;
 }
 
