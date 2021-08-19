@@ -14,6 +14,9 @@
   "build": {
     "appId": "com.toji.ffta_randomizer",
     "productName": "FFTA Randomizer",
+    "files": [
+      "!electron-builder.env"
+    ],
     "publish": {
       "provider": "github",
       "owner": "TojiKitten",

@@ -28,3 +28,4 @@ Thumbs.db
 # OS X files
 .DS_Store
 ._*
+electron-builder.env
