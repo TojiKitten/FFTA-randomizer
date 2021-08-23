@@ -1,18 +1,27 @@
 {
   "name": "ffta_randomizer",
-  "version": "0.1.0",
-  "description": "randomizer for the game Final Fantasy Tactics Advance",
+  "version": "3.0.0",
+  "description": "Randomizer for the game Final Fantasy Tactics Advance",
   "main": "./dist/main.bundle.js",
   "scripts": {
     "start": "electron ./dist/main.bundle.js",
     "dev": "rimraf dist && cross-env NODE_ENV=development webpack --watch --progress --color",
     "prod": "rimraf dist && cross-env NODE_ENV=production webpack --progress --color",
     "test": "mocha -r ts-node/register -r tsconfig-paths/register \"test/**/*.ts\"",
-    "build:win": "electron-builder build --win --x64"
+    "build:win": "electron-builder build --win --x64",
+    "release": "npm run prod && electron-builder build --win --x64"
   },
   "build": {
     "appId": "com.toji.ffta_randomizer",
     "productName": "FFTA Randomizer",
+    "files": [
+      "!electron-builder.env"
+    ],
+    "publish": {
+      "provider": "github",
+      "owner": "TojiKitten",
+      "repo": "FFTA-randomizer"
+    },
     "directories": {
       "app": "./dist/",
       "output": "./out/"
@@ -69,13 +78,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TojiKitten/FFTA-Randomizer2"
+    "url": "git+https://github.com/TojiKitten/FFTA-Randomizer"
   },
   "keywords": [
     "randomizer"
   ],
   "bugs": {
-    "url": "https://github.com/TojiKitten/FFTA-Randomizer2/issues"
+    "url": "https://github.com/TojiKitten/FFTA-Randomizer/issues"
   },
-  "homepage": "https://github.com/TojiKitten/FFTA-Randomizer2#readme"
+  "homepage": "https://github.com/TojiKitten/FFTA-Randomizer#readme"
 }
