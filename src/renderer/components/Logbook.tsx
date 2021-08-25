@@ -5,11 +5,6 @@ import { RaceAbilityLite } from "_/main/ffta/DataWrapper/FFTARaceAbility";
 import { Config } from "../utils/types";
 import ItemView from "./ItemView";
 
-interface props {
-  globalState: Array<Config>;
-  callback: (nconf: Config) => void;
-}
-
 //window.api gets available at runtime so we can ignore that error
 // @ts-ignore
 const { api } = window;

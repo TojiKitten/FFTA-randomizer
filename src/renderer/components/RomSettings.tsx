@@ -6,6 +6,7 @@ import { JobSettings } from "./JobSettings";
 import { ItemSettings } from "./ItemSettings";
 import { Logbook } from "./Logbook";
 import { useRandomizer } from "./RandomizerProvider";
+import MissionLog from "./MissionLog";
 
 export const RomSettings = () => {
   const state = useRandomizer();
@@ -28,6 +29,9 @@ export const RomSettings = () => {
       break;
     case "logbook":
       loadedPage = <Logbook />;
+      break;
+    case "missions":
+      loadedPage = <MissionLog />;
       break;
   }
 

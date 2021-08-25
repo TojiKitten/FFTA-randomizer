@@ -43,7 +43,8 @@ label {
   color: red;
 }
 
-.jobMenu {
+.jobMenu,
+.mission-log {
   display: grid;
   grid-template-rows: auto-fill;
   grid-template-columns: repeat(12, 12fr);
@@ -51,7 +52,8 @@ label {
   justify-content: center;
 }
 
-.jobOptions {
+.jobOptions,
+.mission-view {
   grid-gap: 0.1em;
   grid-column: span 12;
   display: grid;
@@ -60,8 +62,13 @@ label {
   justify-items: left;
 }
 
-.jobOption {
+.jobOption,
+.mission-complete {
   grid-column: span 12;
+}
+
+.mission-readOnly {
+  grid-column: span 2;
 }
 
 .jobList {
@@ -73,7 +80,8 @@ label {
   justify-items: left;
 }
 
-.jobList > h3 {
+.jobList > h3,
+.mission-view > h3 {
   grid-column: span 12;
 }
 

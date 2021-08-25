@@ -5,7 +5,7 @@ import { useRandomizerUpdate, useRandomizer } from "./RandomizerProvider";
 export const NavBar = () => {
   const dispatch = useRandomizerUpdate();
   const state = useRandomizer();
-  const menus = ["general", "party", "jobs", "items", "logbook"];
+  const menus = ["general", "party", "jobs", "items", "logbook", "missions"];
 
   return (
     <div className="navBar">
