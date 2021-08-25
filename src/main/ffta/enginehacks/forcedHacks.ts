@@ -8,11 +8,11 @@ export function animationFixRaw(rom: Uint8Array) {
   // Saint Cross
   rom.set([0x0c], 0x5522a0);
   // Tremor
-  rom.set([0x111], 0x552310);
+  rom.set([0x11, 0x01], 0x552310);
   // Mow Down
-  rom.set([0x111], 0x552348);
+  rom.set([0x11, 0x01], 0x552348);
   // Whirlwind
-  rom.set([0x111], 0x5523b8);
+  rom.set([0x11, 0x01], 0x5523b8);
   // Revive
   rom.set([0x06], 0x55240c);
   // Exorcise
@@ -22,7 +22,7 @@ export function animationFixRaw(rom: Uint8Array) {
   // Far Fist
   rom.set([0xb1], 0x55247c);
   // Wild Swing
-  rom.set([0x111], 0x5524ec);
+  rom.set([0x11, 0x01], 0x5524ec);
   // Fire Sword
   rom.set([0xe7], 0x552540);
   // Bolt Sword
@@ -30,19 +30,19 @@ export function animationFixRaw(rom: Uint8Array) {
   // Ice Sword
   rom.set([0xe9], 0x552578);
   // War Cry
-  rom.set([0x111], 0x5525b0);
+  rom.set([0x11, 0x01], 0x5525b0);
   // Lancet
   rom.set([0x12], 0x55263c);
   // Fire Breath
-  rom.set([0x111], 0x552674);
+  rom.set([0x11, 0x01], 0x552674);
   // Bolt Breath
-  rom.set([0x111], 0x552690);
+  rom.set([0x11, 0x01], 0x552690);
   // Ice Breath
-  rom.set([0x111], 0x5526ac);
+  rom.set([0x11, 0x01], 0x5526ac);
   // Bangaa Cry
   rom.set([0x6b], 0x5526e4);
   // Swallowtail
-  rom.set([0x111], 0x552850);
+  rom.set([0x11, 0x01], 0x552850);
   // Throw
   rom.set([0x69], 0x5528c0);
   // Wood Veil
