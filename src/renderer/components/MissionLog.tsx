@@ -51,7 +51,8 @@ export const MissionLog = () => {
       {allMissions.map((mission) => {
         if (
           mission.Completed == 0 ||
-          (mission.Completed > 0 && showCompletedMissions)
+          (mission.Completed > 0 && showCompletedMissions) ||
+          mission.Repeatable
         ) {
           return (
             <MissionView
