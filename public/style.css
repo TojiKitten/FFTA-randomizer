@@ -52,8 +52,7 @@ label {
   justify-content: center;
 }
 
-.jobOptions,
-.mission-view {
+.jobOptions {
   grid-gap: 0.1em;
   grid-column: span 12;
   display: grid;
@@ -62,13 +61,23 @@ label {
   justify-items: left;
 }
 
+.mission-view {
+  grid-gap: 1em;
+  grid-column: span 9;
+  display: grid;
+  grid-template-rows: auto-fill;
+  grid-template-columns: repeat(12, 12fr);
+  justify-items: left;
+}
+
+.grid-full,
 .jobOption,
 .mission-complete {
   grid-column: span 12;
 }
 
 .mission-readOnly {
-  grid-column: span 2;
+  grid-column: span 4;
 }
 
 .jobList {

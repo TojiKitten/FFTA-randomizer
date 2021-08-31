@@ -7,38 +7,33 @@ const { api } = window;
 export const MissionLog = (props: any) => {
   const { mission, updateAllMissions } = props;
 
-  const pickUpKeys = [
-    "Pick Up Location",
-    "Pick Up Month",
-    "Rank",
-    "Price",
-    "Difficulty",
-    "Clear Conditions",
-    "Days Available",
-    "Mission Area",
+  const columnKeys = [
+    ["Pick Up Location", "Pick Up Month", "Mission Area"],
+    [
+      "Required Cutscene",
+      "Required Mission 1",
+      "Required Mission 2",
+      "Required Mission 3",
+    ],
+    [
+      "Required Item 1",
+      "Required Item 2",
+      "Required Job",
+      "Recommended Job",
+      "Forbidden Job",
+    ],
+    ["Item Reward 1", "Item Reward 2"],
+    ["Repeatable", "Days Available", "Clear Conditions", "Difficulty"],
   ];
 
-  const requirementKeys = [
-    "Required Cutscene",
-    "Required Mission 1",
-    "Required Mission 2",
-    "Required Mission 3",
+  const additionalKeys = [
+    "Price",
+    "Rank",
     "Pub Appears",
     "Pub Timeout",
-    "Repeatable",
-    "Required Item 1",
-    "Required Item 2",
-    "Required Job",
-    "Recommended Job",
-    "Forbidden Job",
-  ];
-
-  const rewardKeys = [
     "Gil Reward",
     "AP Reward",
     "CP Reward",
-    "Item Reward 1",
-    "Item Reward 2",
     "Law Card Reward 1",
     "Law Card Reward 2",
   ];
@@ -46,52 +41,45 @@ export const MissionLog = (props: any) => {
   return (
     <div className="mission-view">
       <h3>
-        {mission.Name} (#{mission["Mission Number"].toString().padStart(3, 0)})
+        {mission.Name} (#{mission["Mission Number"].toString().padStart(3, 0)}){" "}
+        {mission.Completed > 0 && "COMPLETED"}{" "}
+        {mission.Completed > 0 &&
+          mission.Repeatable == "Yes" &&
+          `x${mission.Completed}`}
       </h3>
-      <div className="mission-complete">
-        <label htmlFor="completed">Completed</label>
-        <input
-          id="completed"
-          type="checkbox"
-          checked={mission.Completed}
-          onChange={(event) => {
-            updateAllMissions(mission, event.target.checked);
-          }}
-        ></input>
-      </div>
-      <div>
-        {pickUpKeys.map((name) =>
-          mission[name] != "" ? (
-            <article className="mission-readOnly">
-              <p>
+      {(mission.Completed == 0 ||
+        (mission.Completed > 0 && mission.Repeatable == "Yes")) && (
+        <div className="mission-complete">
+          <button
+            onClick={(event) => {
+              updateAllMissions(mission, true);
+            }}
+          >
+            Complete
+          </button>
+        </div>
+      )}
+      {columnKeys.map((column) => (
+        <div className="mission-readOnly">
+          {column.map((name) =>
+            mission[name] != "" ? (
+              <div>
                 {name}: {mission[name]}
-              </p>
-            </article>
+              </div>
+            ) : null
+          )}
+        </div>
+      ))}
+      <details className="mission-readOnly">
+        <summary>Additional Info</summary>
+        {additionalKeys.map((name) =>
+          mission[name] != "" ? (
+            <div>
+              {name}: {mission[name]}
+            </div>
           ) : null
         )}
-      </div>
-      <div>
-        {requirementKeys.map((name) =>
-          mission[name] != "" ? (
-            <article className="mission-readOnly">
-              <p>
-                {name}: {mission[name]}
-              </p>
-            </article>
-          ) : null
-        )}
-      </div>
-      <div>
-        {rewardKeys.map((name) =>
-          mission[name] != "" ? (
-            <article className="mission-readOnly">
-              <p>
-                {name}: {mission[name]}
-              </p>
-            </article>
-          ) : null
-        )}
-      </div>
+      </details>
     </div>
   );
 };
