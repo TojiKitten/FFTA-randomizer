@@ -5,7 +5,7 @@ import * as React from "react";
 const { api } = window;
 
 export const MissionLog = (props: any) => {
-  const { mission, updateAllMissions } = props;
+  const { mission, updateAllMissions, updateMissionItems } = props;
 
   const columnKeys = [
     ["Pick Up Location", "Pick Up Month", "Mission Area"],
@@ -52,7 +52,30 @@ export const MissionLog = (props: any) => {
         <div className="mission-complete">
           <button
             onClick={(event) => {
-              updateAllMissions(mission, true);
+              updateAllMissions(mission, 1);
+              let itemRewards = {} as any;
+
+              const updateItemRewards = (itemName: string, amount: number) => {
+                if (itemName != "")
+                  if (itemRewards[itemName]) {
+                    itemRewards = {
+                      ...itemRewards,
+                      [itemName]: itemRewards[itemName] + amount,
+                    };
+                  } else {
+                    itemRewards = {
+                      ...itemRewards,
+                      [itemName]: amount,
+                    };
+                  }
+              };
+
+              updateItemRewards(mission["Item Reward 1"], 1);
+              updateItemRewards(mission["Item Reward 2"], 1);
+
+              if (Object.entries(itemRewards).length > 0) {
+                updateMissionItems(itemRewards);
+              }
             }}
           >
             Complete

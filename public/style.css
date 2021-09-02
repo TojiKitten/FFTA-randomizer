@@ -61,13 +61,21 @@ label {
   justify-items: left;
 }
 
+.mission-list {
+  grid-column: span 9;
+}
+
 .mission-view {
   grid-gap: 1em;
-  grid-column: span 9;
   display: grid;
   grid-template-rows: auto-fill;
   grid-template-columns: repeat(12, 12fr);
   justify-items: left;
+}
+
+.mission-item-view {
+  grid-column: span 3;
+  justify-self: start;
 }
 
 .grid-full,

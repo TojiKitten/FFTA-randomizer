@@ -7,17 +7,32 @@ const { api } = window;
 
 export const MissionLog = () => {
   const [allMissions, setAllMissions] = React.useState(new Array<any>());
+  const [missionItems, setMissionItems] = React.useState({} as any);
   const [showCompletedMissions, setShowCompleted] = React.useState(false);
-  function updateAllMissions(updatedMission: any, completed: boolean) {
+  function updateAllMissions(updatedMission: any, amount: number) {
     setAllMissions(
       allMissions.map((mission) => {
         if (mission.Name == updatedMission.Name) {
-          return { ...mission, Completed: mission.Completed + 1 };
+          return { ...mission, Completed: mission.Completed + amount };
         } else {
           return mission;
         }
       })
     );
+  }
+
+  function updateMissionItems(itemsArray: any) {
+    let newItems = { ...missionItems };
+    Object.entries(itemsArray).forEach((entry: any) => {
+      const [rewardName, amount] = entry;
+      const newAmount = missionItems[rewardName]
+        ? missionItems[rewardName] + amount
+        : amount;
+      newItems = { ...newItems, [rewardName]: newAmount };
+    });
+    setMissionItems({
+      ...newItems,
+    });
   }
 
   React.useEffect(() => {
@@ -48,20 +63,32 @@ export const MissionLog = () => {
           onChange={(event) => setShowCompleted(event.target.checked)}
         />
       </div>
-      {allMissions.map((mission) => {
-        if (
-          mission.Completed == 0 ||
-          (mission.Completed > 0 && showCompletedMissions) ||
-          mission.Repeatable
-        ) {
+      <div className="mission-list">
+        {allMissions.map((mission) => {
+          if (
+            mission.Completed == 0 ||
+            (mission.Completed > 0 && showCompletedMissions) ||
+            mission.Repeatable == "Yes"
+          ) {
+            return (
+              <MissionView
+                mission={mission}
+                updateAllMissions={updateAllMissions}
+                updateMissionItems={updateMissionItems}
+              />
+            );
+          }
+        })}
+      </div>
+      <aside className="mission-item-view">
+        {Object.entries(missionItems).map((entry) => {
           return (
-            <MissionView
-              mission={mission}
-              updateAllMissions={updateAllMissions}
-            />
+            <div>
+              {entry[0]}: {entry[1]}
+            </div>
           );
-        }
-      })}
+        })}
+      </aside>
     </div>
   ) : (
     <div className="mission-log">{}</div>
