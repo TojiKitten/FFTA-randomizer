@@ -21,7 +21,7 @@ export class FFTAObject {
    */
   constructor(memory: number, properties: Uint8Array, displayName?: string) {
     this.memory = memory;
-    this.properties = properties;
+    this.properties = new Uint8Array(properties);
     this.displayName = displayName;
     this.allowed = true;
   }

@@ -1,4 +1,3 @@
-import { FFTAAbility } from "../DataWrapper/FFTAAbility";
 import { FFTARaceAbility } from "../DataWrapper/FFTARaceAbility";
 import { FFTAJob } from "../DataWrapper/FFTAJob";
 import NoiseGenerator from "../utils/NoiseGenerator";
@@ -9,46 +8,10 @@ import NoiseGenerator from "../utils/NoiseGenerator";
  */
 export function percentageMPRegen(rom: Uint8Array) {
   const codeInject = [
-    0x0a,
-    0x21,
-    0xaf,
-    0xf0,
-    0x10,
-    0xfb,
-    0x04,
-    0x1c,
-    0x46,
-    0x46,
-    0x70,
-    0x68,
-    0x00,
-    0x68,
-    0x15,
-    0x21,
-    0x34,
-    0xf0,
-    0xff,
-    0xfe,
-    0x24,
-    0x18,
-    0x70,
-    0x68,
-    0x00,
-    0x68,
-    0x16,
-    0x21,
-    0x34,
-    0xf0,
-    0xf9,
-    0xfe,
-    0x25,
-    0x1c,
-    0x84,
-    0x42,
-    0x02,
-    0xd9,
-    0x05,
-    0x1c,
+    0x0a, 0x21, 0xaf, 0xf0, 0x10, 0xfb, 0x04, 0x1c, 0x46, 0x46, 0x70, 0x68,
+    0x00, 0x68, 0x15, 0x21, 0x34, 0xf0, 0xff, 0xfe, 0x24, 0x18, 0x70, 0x68,
+    0x00, 0x68, 0x16, 0x21, 0x34, 0xf0, 0xf9, 0xfe, 0x25, 0x1c, 0x84, 0x42,
+    0x02, 0xd9, 0x05, 0x1c,
   ];
 
   rom.set([0x16], 0x9308c);
@@ -97,14 +60,18 @@ export function changeRaceAbilities(
   // For randomized case, abilities that appear multiple times are more likely to appear
   // Examples: Fire, Shield Bearer, Counter, Bow Combo
   let abilityRecord = flattenRaceMapAbilities(raceAbilities);
-
   // Set up a new map with new abilities to return
   let newMap: Map<string, Array<FFTARaceAbility>> = new Map();
 
   for (let [key, value] of raceAbilities) {
-    let abilityState = abilityReplace(value, abilityRecord, rng, shuffled);
-    newMap.set(key, abilityState.randomizedAbilities);
-    abilityRecord = abilityState.newSortedAbilities;
+    let { randomizedAbilities, newSortedAbilities } = abilityReplace(
+      value,
+      abilityRecord,
+      rng,
+      shuffled
+    );
+    newMap.set(key, randomizedAbilities);
+    abilityRecord = newSortedAbilities;
   }
 
   return newMap;
@@ -113,7 +80,7 @@ export function changeRaceAbilities(
 /**
  * Condenses a map Race Abilities keyed by race into a single array
  * @param raceAbilities - A map of Race Abilities
- * @returns 
+ * @returns
  */
 function flattenRaceMapAbilities(
   raceAbilities: Map<string, Array<FFTARaceAbility>>
@@ -132,7 +99,7 @@ function flattenRaceMapAbilities(
 /**
  * Changes an array of Race Abilities to have new information
  * @param raceAbilities - The race abilities to change
- * @param sortedAbilities - An array of race abilities to use as a source 
+ * @param sortedAbilities - An array of race abilities to use as a source
  * @param rng - The {@link NoiseGenerator} for the randomizer
  * @param shuffle - The value of shuffling or randomizing
  * @returns Returns an object holding an array of new abilities with updated information, and the list of remaining abilities to use as a source.
@@ -176,7 +143,6 @@ function abilityReplace(
       sortedAbilities.splice(globalIndex, 1);
     }
   });
-
   return {
     randomizedAbilities: newRaceAbilities,
     newSortedAbilities: sortedAbilities,
