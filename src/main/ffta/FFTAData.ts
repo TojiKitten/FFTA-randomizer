@@ -835,6 +835,11 @@ export class FFTAData {
           this.rng
         );
       });
+
+      // Set Monty to match Guest Monty
+      this.formations[3].units[2].properties = new Uint8Array(
+        this.formations[0].units[1].properties
+      );
     }
   }
 
