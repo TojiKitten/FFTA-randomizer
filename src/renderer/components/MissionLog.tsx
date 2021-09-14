@@ -98,9 +98,12 @@ const requiredMissionItems = [
 export const MissionLog = () => {
   const [allMissions, setAllMissions] = React.useState(new Array<any>());
   const [missionItems, setMissionItems] = React.useState({} as any);
+
+  const [showAllMissions, setShowAll] = React.useState(false);
   const [showCompletedMissions, setShowCompleted] = React.useState(false);
   const [showRepeatableMissions, setShowRepeatable] = React.useState(true);
-  const [showUnavailableMissions, setShowUnavailable] = React.useState(true);
+  const [showMissingMissionItems, setShowMissingItems] = React.useState(true);
+  const [searchString, setSearchString] = React.useState("");
 
   function updateAllMissions(updatedMission: any, amount: number) {
     setAllMissions(
@@ -115,27 +118,35 @@ export const MissionLog = () => {
   }
 
   function getShownMissions() {
-    let filteredMissions = allMissions
-      .filter((mission) => {
-        return missionReqsMet([
-          mission["Required Mission 1"],
-          mission["Required Mission 2"],
-          mission["Required Mission 3"],
-        ]);
-      })
-      .filter((mission) => {
-        return (
-          (mission.Completed == 0 &&
-            (showUnavailableMissions ||
-              missionItemReqsMet(
-                mission["Required Item 1"],
-                mission["Required Item 2"]
-              ))) ||
-          (mission.Completed > 0 && showCompletedMissions) ||
-          (mission.Repeatable == "Yes" && showRepeatableMissions)
-        );
-      });
-    return filteredMissions;
+    return showAllMissions
+      ? allMissions
+      : allMissions
+          .filter((mission) => {
+            return missionReqsMet([
+              mission["Required Mission 1"],
+              mission["Required Mission 2"],
+              mission["Required Mission 3"],
+            ]);
+          })
+          .filter((mission) => {
+            return (
+              (mission.Completed == 0 &&
+                (showMissingMissionItems ||
+                  missionItemReqsMet(
+                    mission["Required Item 1"],
+                    mission["Required Item 2"]
+                  ))) ||
+              (mission.Repeatable == "No" &&
+                mission.Completed > 0 &&
+                showCompletedMissions) ||
+              (mission.Repeatable == "Yes" &&
+                mission.Completed > 0 &&
+                (showRepeatableMissions || showCompletedMissions))
+            );
+          })
+          .filter((mission) => {
+            return mission["Name"].includes(searchString);
+          });
   }
 
   function updateMissionItems(itemsArray: any) {
@@ -221,30 +232,53 @@ export const MissionLog = () => {
   return allMissions.length > 0 ? (
     <div className="mission-log">
       <div className="grid-full">
-        <label htmlFor="showCompleted">Show Completed</label>
+        <label htmlFor="showAll">Include All Missions</label>
         <input
-          id="showCompleted"
+          id="showAll"
+          type="checkbox"
+          checked={showAllMissions}
+          onChange={(event) => setShowAll(event.target.checked)}
+        />
+      </div>
+      <div className="grid-full">
+        <label htmlFor="includeCompleted">Include All Completed</label>
+        <input
+          id="includeCompleted"
           type="checkbox"
           checked={showCompletedMissions}
           onChange={(event) => setShowCompleted(event.target.checked)}
         />
       </div>
       <div className="grid-full">
-        <label htmlFor="showRepeatable">Show Repetable</label>
+        <label htmlFor="includeRepeatable">Include Repetable Completed </label>
         <input
-          id="showRepeatable"
+          id="includeRepeatable"
           type="checkbox"
           checked={showRepeatableMissions}
           onChange={(event) => setShowRepeatable(event.target.checked)}
         />
       </div>
       <div className="grid-full">
-        <label htmlFor="showUnavailable">Show Unavailable</label>
+        <label htmlFor="includeMissingItems">
+          Include Missions Missing Item Requirements
+        </label>
         <input
-          id="showUnavailable"
+          id="includeMissingItems"
           type="checkbox"
-          checked={showUnavailableMissions}
-          onChange={(event) => setShowUnavailable(event.target.checked)}
+          checked={showMissingMissionItems}
+          onChange={(event) => setShowMissingItems(event.target.checked)}
+        />
+      </div>
+      <div className="grid-full">
+        <div>Missions Shown: {getShownMissions().length}</div>
+      </div>
+      <div className="grid-full">
+        <label htmlFor="showUnavailable">Search Mission Name</label>
+        <input
+          id="searchMissions"
+          type="search"
+          value={searchString}
+          onChange={(event) => setSearchString(event.target.value)}
         />
       </div>
       <div className="mission-list">
