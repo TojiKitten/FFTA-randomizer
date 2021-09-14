@@ -99,6 +99,8 @@ export const MissionLog = () => {
   const [allMissions, setAllMissions] = React.useState(new Array<any>());
   const [missionItems, setMissionItems] = React.useState({} as any);
   const [showCompletedMissions, setShowCompleted] = React.useState(false);
+  const [showRepeatableMissions, setShowRepeatable] = React.useState(true);
+  const [showUnavailableMissions, setShowUnavailable] = React.useState(true);
 
   function updateAllMissions(updatedMission: any, amount: number) {
     setAllMissions(
@@ -110,6 +112,30 @@ export const MissionLog = () => {
         }
       })
     );
+  }
+
+  function getShownMissions() {
+    let filteredMissions = allMissions
+      .filter((mission) => {
+        return missionReqsMet([
+          mission["Required Mission 1"],
+          mission["Required Mission 2"],
+          mission["Required Mission 3"],
+        ]);
+      })
+      .filter((mission) => {
+        return (
+          (mission.Completed == 0 &&
+            (showUnavailableMissions ||
+              missionItemReqsMet(
+                mission["Required Item 1"],
+                mission["Required Item 2"]
+              ))) ||
+          (mission.Completed > 0 && showCompletedMissions) ||
+          (mission.Repeatable == "Yes" && showRepeatableMissions)
+        );
+      });
+    return filteredMissions;
   }
 
   function updateMissionItems(itemsArray: any) {
@@ -203,28 +229,35 @@ export const MissionLog = () => {
           onChange={(event) => setShowCompleted(event.target.checked)}
         />
       </div>
+      <div className="grid-full">
+        <label htmlFor="showRepeatable">Show Repetable</label>
+        <input
+          id="showRepeatable"
+          type="checkbox"
+          checked={showRepeatableMissions}
+          onChange={(event) => setShowRepeatable(event.target.checked)}
+        />
+      </div>
+      <div className="grid-full">
+        <label htmlFor="showUnavailable">Show Unavailable</label>
+        <input
+          id="showUnavailable"
+          type="checkbox"
+          checked={showUnavailableMissions}
+          onChange={(event) => setShowUnavailable(event.target.checked)}
+        />
+      </div>
       <div className="mission-list">
-        {allMissions.map((mission) => {
-          if (
-            (mission.Completed == 0 ||
-              (mission.Completed > 0 && showCompletedMissions) ||
-              mission.Repeatable == "Yes") &&
-            missionReqsMet([
-              mission["Required Mission 1"],
-              mission["Required Mission 2"],
-              mission["Required Mission 3"],
-            ])
-          ) {
-            return (
-              <MissionView
-                mission={mission}
-                updateAllMissions={updateAllMissions}
-                updateMissionItems={updateMissionItems}
-                missionItemReqsMet={missionItemReqsMet}
-                missionReqsMet={missionReqsMet}
-              />
-            );
-          }
+        {getShownMissions().map((mission) => {
+          return (
+            <MissionView
+              mission={mission}
+              updateAllMissions={updateAllMissions}
+              updateMissionItems={updateMissionItems}
+              missionItemReqsMet={missionItemReqsMet}
+              missionReqsMet={missionReqsMet}
+            />
+          );
         })}
       </div>
       <aside className="mission-item-view">
