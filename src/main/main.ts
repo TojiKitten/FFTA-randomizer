@@ -13,7 +13,6 @@ import { PathLike } from "original-fs";
 import ItemSettings from "_/renderer/components/ItemSettings";
 import JobSettings from "_/renderer/components/JobSettings";
 import { JobLite } from "./ffta/DataWrapper/FFTAJob";
-import * as AllMissions from "./db/MissionData.json";
 
 const ipc = require("electron").ipcMain;
 

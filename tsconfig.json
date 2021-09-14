@@ -17,8 +17,7 @@
     "noImplicitThis": true,
     "strictNullChecks": true,
     "sourceMap": true,
-    "target": "esnext",
-    "resolveJsonModule": true
+    "target": "esnext"
   },
   "exclude": ["node_modules"]
 }
