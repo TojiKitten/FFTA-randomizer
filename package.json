@@ -17,6 +17,13 @@
     "files": [
       "!electron-builder.env"
     ],
+    "extraResources": [
+      {
+        "from": "./src/main/db",
+        "to": "db",
+        "filter": "**/*"
+      }
+    ],
     "publish": {
       "provider": "github",
       "owner": "TojiKitten",

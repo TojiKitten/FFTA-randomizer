@@ -218,3 +218,24 @@ function openSettings(files: any) {
     mainWindow!.webContents.send("get-settings", { newConfig: settings });
   }
 }
+
+ipc.on("save-mission-log", function (event, options: any) {
+  SaveSettings(
+    path.join(process.resourcesPath, "db", "MissionData.json"),
+    options.payload
+  );
+});
+
+ipc.on("load-mission-log", (event, parms: any) => {
+  if (fftaData) {
+    const fileContents = fs.readFileSync(
+      path.join(process.resourcesPath, "db", "MissionData.json"),
+      "utf-8"
+    );
+
+    mainWindow!.webContents.send("get-missions", {
+      payload: JSON.parse(fileContents),
+      pathway: process.resourcesPath,
+    });
+  }
+});

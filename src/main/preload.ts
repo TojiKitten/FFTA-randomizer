@@ -11,6 +11,8 @@ contextBridge.exposeInMainWorld("api", {
       "load-settings",
       "get-ability",
       "request-fftaData",
+      "save-mission-log",
+      "load-mission-log",
     ];
     if (allowedChannels.includes(channel)) {
       ipcRenderer.send(channel, ...data);
@@ -23,6 +25,7 @@ contextBridge.exposeInMainWorld("api", {
       "get-seed",
       "get-settings",
       "get-fftaData",
+      "get-missions",
     ];
     if (allowedChannels.includes(channel)) {
       ipcRenderer.on(channel, (event, ...args) => cb(...args));
