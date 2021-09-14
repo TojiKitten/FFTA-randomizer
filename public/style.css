@@ -78,6 +78,11 @@ label {
   justify-self: start;
 }
 
+.mission-item-view > div {
+  position: sticky;
+  top: 0;
+}
+
 .grid-full,
 .jobOption,
 .mission-complete {
