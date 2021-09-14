@@ -140,6 +140,13 @@ const initialRandomizerOptions = {
   shopSettings: {
     shopItems: "default",
   },
+  missionSettings: {
+    showAllMissions: false,
+    showCompletedMissions: false,
+    showRepeatableMissions: true,
+    showMissingMissionItems: true,
+    missionItems: {},
+  },
 };
 
 type RandomizerOption = keyof typeof initialRandomizerOptions;
