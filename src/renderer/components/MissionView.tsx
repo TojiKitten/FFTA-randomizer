@@ -58,7 +58,12 @@ export const MissionLog = (props: any) => {
         missionItemReqsMet(
           mission["Required Item 1"],
           mission["Required Item 2"]
-        ) && (
+        ) &&
+        missionReqsMet([
+          mission["Required Mission 1"],
+          mission["Required Mission 2"],
+          mission["Required Mission 3"],
+        ]) && (
           <div className="mission-complete">
             <button
               onClick={(event) => {

@@ -1,5 +1,6 @@
 import * as React from "react";
 import MissionView from "./MissionView";
+import { useRandomizer, useRandomizerUpdate } from "./RandomizerProvider";
 
 //window.api gets available at runtime so we can ignore that error
 // @ts-ignore
@@ -95,12 +96,31 @@ const requiredMissionItems = [
   "Zodiac Ore",
 ];
 
-export const MissionLog = () => {
+export const MissionLog = (props: any) => {
+  const dispatch = useRandomizerUpdate();
+  const missionState = useRandomizer().missionSettings;
+  const missionItems: any = missionState.missionItems;
   const [allMissions, setAllMissions] = React.useState(new Array<any>());
-  const [missionItems, setMissionItems] = React.useState({} as any);
-  const [showCompletedMissions, setShowCompleted] = React.useState(false);
-  const [showRepeatableMissions, setShowRepeatable] = React.useState(true);
-  const [showUnavailableMissions, setShowUnavailable] = React.useState(true);
+  const [searchString, setSearchString] = React.useState("");
+
+  const updateMissionItems = (itemsArray: any) => {
+    let newItems = { ...missionItems };
+    Object.entries(itemsArray).forEach((entry: any) => {
+      const [rewardName, amount] = entry;
+      const newAmount = missionItems[rewardName]
+        ? missionItems[rewardName] + amount
+        : amount;
+      newItems = { ...newItems, [rewardName]: newAmount };
+      if (newAmount <= 0) {
+        delete newItems[rewardName];
+      }
+    });
+
+    dispatch({
+      type: "missionSettings",
+      option: { missionItems: newItems },
+    });
+  };
 
   function updateAllMissions(updatedMission: any, amount: number) {
     setAllMissions(
@@ -115,45 +135,36 @@ export const MissionLog = () => {
   }
 
   function getShownMissions() {
-    let filteredMissions = allMissions
-      .filter((mission) => {
-        return missionReqsMet([
-          mission["Required Mission 1"],
-          mission["Required Mission 2"],
-          mission["Required Mission 3"],
-        ]);
-      })
-      .filter((mission) => {
-        return (
-          (mission.Completed == 0 &&
-            (showUnavailableMissions ||
-              missionItemReqsMet(
-                mission["Required Item 1"],
-                mission["Required Item 2"]
-              ))) ||
-          (mission.Completed > 0 && showCompletedMissions) ||
-          (mission.Repeatable == "Yes" && showRepeatableMissions)
-        );
-      });
-    return filteredMissions;
-  }
-
-  function updateMissionItems(itemsArray: any) {
-    let newItems = { ...missionItems };
-    Object.entries(itemsArray).forEach((entry: any) => {
-      const [rewardName, amount] = entry;
-      const newAmount = missionItems[rewardName]
-        ? missionItems[rewardName] + amount
-        : amount;
-      newItems = { ...newItems, [rewardName]: newAmount };
-      if (newAmount <= 0) {
-        delete newItems[rewardName];
-      }
-    });
-
-    setMissionItems({
-      ...newItems,
-    });
+    return missionState.showAllMissions
+      ? allMissions
+      : allMissions
+          .filter((mission) => {
+            return missionReqsMet([
+              mission["Required Mission 1"],
+              mission["Required Mission 2"],
+              mission["Required Mission 3"],
+            ]);
+          })
+          .filter((mission) => {
+            return (
+              (mission.Completed == 0 &&
+                (missionState.showMissingMissionItems ||
+                  missionItemReqsMet(
+                    mission["Required Item 1"],
+                    mission["Required Item 2"]
+                  ))) ||
+              (mission.Repeatable == "No" &&
+                mission.Completed > 0 &&
+                missionState.showCompletedMissions) ||
+              (mission.Repeatable == "Yes" &&
+                mission.Completed > 0 &&
+                (missionState.showRepeatableMissions ||
+                  missionState.showCompletedMissions))
+            );
+          })
+          .filter((mission) => {
+            return mission["Name"].includes(searchString);
+          });
   }
 
   function missionReqsMet(missionNames: Array<string>): boolean {
@@ -221,30 +232,73 @@ export const MissionLog = () => {
   return allMissions.length > 0 ? (
     <div className="mission-log">
       <div className="grid-full">
-        <label htmlFor="showCompleted">Show Completed</label>
+        <label htmlFor="showAll">Include All Missions</label>
         <input
-          id="showCompleted"
+          id="showAll"
           type="checkbox"
-          checked={showCompletedMissions}
-          onChange={(event) => setShowCompleted(event.target.checked)}
+          checked={missionState.showAllMissions}
+          onChange={(event) => {
+            dispatch({
+              type: "missionSettings",
+              option: { showAllMissions: event.target.checked },
+            });
+          }}
         />
       </div>
       <div className="grid-full">
-        <label htmlFor="showRepeatable">Show Repetable</label>
+        <label htmlFor="includeCompleted">Include All Completed</label>
         <input
-          id="showRepeatable"
+          id="includeCompleted"
           type="checkbox"
-          checked={showRepeatableMissions}
-          onChange={(event) => setShowRepeatable(event.target.checked)}
+          checked={missionState.showCompletedMissions}
+          onChange={(event) => {
+            dispatch({
+              type: "missionSettings",
+              option: { showCompletedMissions: event.target.checked },
+            });
+          }}
         />
       </div>
       <div className="grid-full">
-        <label htmlFor="showUnavailable">Show Unavailable</label>
+        <label htmlFor="includeRepeatable">Include Repetable Completed </label>
         <input
-          id="showUnavailable"
+          id="includeRepeatable"
           type="checkbox"
-          checked={showUnavailableMissions}
-          onChange={(event) => setShowUnavailable(event.target.checked)}
+          checked={missionState.showRepeatableMissions}
+          onChange={(event) => {
+            dispatch({
+              type: "missionSettings",
+              option: { showRepeatableMissions: event.target.checked },
+            });
+          }}
+        />
+      </div>
+      <div className="grid-full">
+        <label htmlFor="includeMissingItems">
+          Include Missions Missing Item Requirements
+        </label>
+        <input
+          id="includeMissingItems"
+          type="checkbox"
+          checked={missionState.showMissingMissionItems}
+          onChange={(event) => {
+            dispatch({
+              type: "missionSettings",
+              option: { showMissingMissionItems: event.target.checked },
+            });
+          }}
+        />
+      </div>
+      <div className="grid-full">
+        <div>Missions Shown: {getShownMissions().length}</div>
+      </div>
+      <div className="grid-full">
+        <label htmlFor="showUnavailable">Search Mission Name</label>
+        <input
+          id="searchMissions"
+          type="search"
+          value={searchString}
+          onChange={(event) => setSearchString(event.target.value)}
         />
       </div>
       <div className="mission-list">
