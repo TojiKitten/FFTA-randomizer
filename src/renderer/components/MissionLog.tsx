@@ -130,11 +130,34 @@ export const MissionLog = () => {
     });
   }
 
+  function missionReqsMet(missionNames: Array<string>): boolean {
+    var reqsMet = 0;
+    const requiredMissionNames = missionNames.filter(
+      (missionName) => missionName != ""
+    );
+
+    requiredMissionNames.forEach((missionName) => {
+      const missionInfo = allMissions.find(
+        (mission) => mission["Name"] === missionName
+      );
+
+      const cleared =
+        missionName === "" ||
+        (missionName != "" && missionInfo["Completed"] >= 1)
+          ? true
+          : false;
+
+      if (cleared) reqsMet++;
+    });
+
+    return reqsMet === requiredMissionNames.length;
+  }
+
   function missionItemReqsMet(
     missionItem1: string,
     missionItem2: string
   ): boolean {
-    if (missionItem1 == "" && missionItem2 == "") {
+    if (missionItem1 === "" && missionItem2 === "") {
       return true;
     } else if (missionItem1 === missionItem2 && missionItem1 != "") {
       return missionItems[missionItem1] - 2 >= 0;
@@ -148,7 +171,7 @@ export const MissionLog = () => {
     } else if (missionItem1 === "" && missionItem2 != "") {
       return missionItems[missionItem2] - 1 >= 0;
     } else {
-      throw new Error("Required item not handled;");
+      throw new Error("Required item not handled.");
     }
   }
 
@@ -183,9 +206,14 @@ export const MissionLog = () => {
       <div className="mission-list">
         {allMissions.map((mission) => {
           if (
-            mission.Completed == 0 ||
-            (mission.Completed > 0 && showCompletedMissions) ||
-            mission.Repeatable == "Yes"
+            (mission.Completed == 0 ||
+              (mission.Completed > 0 && showCompletedMissions) ||
+              mission.Repeatable == "Yes") &&
+            missionReqsMet([
+              mission["Required Mission 1"],
+              mission["Required Mission 2"],
+              mission["Required Mission 3"],
+            ])
           ) {
             return (
               <MissionView
@@ -193,6 +221,7 @@ export const MissionLog = () => {
                 updateAllMissions={updateAllMissions}
                 updateMissionItems={updateMissionItems}
                 missionItemReqsMet={missionItemReqsMet}
+                missionReqsMet={missionReqsMet}
               />
             );
           }

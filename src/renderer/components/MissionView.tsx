@@ -5,8 +5,13 @@ import * as React from "react";
 const { api } = window;
 
 export const MissionLog = (props: any) => {
-  const { mission, updateAllMissions, updateMissionItems, missionItemReqsMet } =
-    props;
+  const {
+    mission,
+    updateAllMissions,
+    updateMissionItems,
+    missionItemReqsMet,
+    missionReqsMet,
+  } = props;
 
   const columnKeys = [
     ["Pick Up Location", "Pick Up Month", "Mission Area"],
