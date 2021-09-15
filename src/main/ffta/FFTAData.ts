@@ -822,6 +822,7 @@ export class FFTAData {
       rngEquip: boolean;
       level: number;
       masteredAbilities: number;
+      masterType: string;
     }>
   ) {
     if (partyRNGEnabled) {

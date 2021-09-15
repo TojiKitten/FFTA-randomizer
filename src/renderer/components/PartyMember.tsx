@@ -9,6 +9,7 @@ type unitProp = {
   rngEquip: boolean;
   level: number;
   masteredAbilities: number;
+  masterType: string;
 };
 
 export const PartyMember = (unit: unitProp) => {
@@ -130,7 +131,31 @@ export const PartyMember = (unit: unitProp) => {
         ></input>
       </div>
       <div className="partyMemberOption">
-        <label htmlFor={`Abilities${unit.name}`}>Mastered Abilities</label>
+        <label htmlFor={`AbilityMasteryType${unit.name}`}>
+          Ability Mastery Type
+        </label>
+        <select
+          id={`Ability_Mastery_Type_Selector${unit.name}`}
+          value={unit.masterType}
+          onChange={(event) => {
+            dispatch({
+              type: "partySettings",
+              option: {
+                partyMembers: state.partySettings.partyMembers.map((member) =>
+                  member.name == unit.name
+                    ? { ...member, masterType: event.target.value }
+                    : { ...member }
+                ),
+              },
+            });
+          }}
+        >
+          <option value="abilities">Number of Abilities</option>
+          <option value="jobs">Number of Jobs</option>
+        </select>
+      </div>
+      <div className="partyMemberOption">
+        <label htmlFor={`Abilities${unit.name}`}>Number Mastered</label>
         <input
           id={`Abilities${unit.name}`}
           type="number"

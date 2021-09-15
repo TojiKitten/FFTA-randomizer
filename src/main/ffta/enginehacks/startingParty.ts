@@ -33,6 +33,7 @@ export function setUnitData(
     rngEquip: boolean;
     level: number;
     masteredAbilities: number;
+    masterType: string;
   },
   rng: NoiseGenerator
 ) {
@@ -50,16 +51,32 @@ export function setUnitData(
   newLoadout.forEach((item, i) => {
     unit.setItem(item, i);
   });
-  // get set of random abilities and master them
-  let mastered: Array<number> = getRandomAbilityIDs(
-    newJob,
-    unit,
-    options.masteredAbilities,
-    rng
-  );
-  mastered.forEach((ability) => {
-    unit.setMasterAbility(ability, true);
-  });
+
+  if (options.masteredAbilities > 0) {
+    // get set of random abilities and master them
+    let mastered: Array<number> = new Array<number>();
+    switch (options.masterType) {
+      case "abilities":
+        mastered = getRandomAbilityIDs(
+          newJob,
+          unit,
+          options.masteredAbilities,
+          rng
+        );
+        break;
+      case "jobs":
+        mastered = getJobMasteryAbilityIDs(
+          unit,
+          raceJobs.get(newJob.race)!,
+          options.masteredAbilities,
+          rng
+        );
+        break;
+    }
+    mastered.forEach((ability) => {
+      unit.setMasterAbility(ability, true);
+    });
+  }
 }
 
 /**
@@ -240,5 +257,47 @@ function getRandomAbilityIDs(
       abilityIndicies.push(abilityIndex);
     }
   }
+  return abilityIndicies;
+}
+
+function getJobMasteryAbilityIDs(
+  unit: FFTAUnit,
+  raceJobs: Array<FFTAJob>,
+  count: number,
+  rng: NoiseGenerator
+): Array<number> {
+  let abilityIndicies: Array<number> = [];
+  let unusedJobs: Array<FFTAJob> = [...raceJobs];
+
+  count = count <= raceJobs.length ? count : raceJobs.length;
+
+  // Master Unit's job
+  const firstJob = raceJobs.find((job) => job.jobId === unit.getJob());
+  if (firstJob != undefined) {
+    abilityIndicies = abilityIndicies.concat(firstJob.getAbilityIDs());
+    unusedJobs = unusedJobs.filter((job) => firstJob.jobId != job.jobId);
+  } else throw new Error("Job Mastery Error: First Job not found");
+
+  if (count >= 2) {
+    const secondJob = unusedJobs[rng.randomIntMax(unusedJobs.length - 1)];
+    if (secondJob != undefined) {
+      abilityIndicies = abilityIndicies.concat(secondJob.getAbilityIDs());
+      unit.setAAbility(secondJob.jobId);
+      unusedJobs = unusedJobs.filter((job) => secondJob.jobId != job.jobId);
+    } else throw new Error("Job Mastery Error: Second Job not found");
+  }
+
+  if (count >= 3) {
+    for (var i = 2; i < count; i++) {
+      const additionalJob = unusedJobs[rng.randomIntMax(unusedJobs.length - 1)];
+      if (additionalJob != undefined) {
+        abilityIndicies = abilityIndicies.concat(additionalJob.getAbilityIDs());
+        unusedJobs = unusedJobs.filter(
+          (job) => additionalJob.jobId != job.jobId
+        );
+      } else throw new Error("Job Mastery Error: Second Job not found");
+    }
+  }
+
   return abilityIndicies;
 }
