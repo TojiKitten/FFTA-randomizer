@@ -131,11 +131,11 @@ export const PartyMember = (unit: unitProp) => {
         ></input>
       </div>
       <div className="partyMemberOption">
-        <label htmlFor={`AbilityMasterType${unit.name}`}>
-          Master Ability Type
+        <label htmlFor={`AbilityMasteryType${unit.name}`}>
+          Ability Mastery Type
         </label>
         <select
-          id={`Master_Type_Selector${unit.name}`}
+          id={`Ability_Mastery_Type_Selector${unit.name}`}
           value={unit.masterType}
           onChange={(event) => {
             dispatch({
