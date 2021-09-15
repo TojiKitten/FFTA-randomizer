@@ -6,9 +6,9 @@ const enum OFFSET {
   RACEID = 0x04,
   ANIMATIONTYPE = 0x06, // ?? Might have to do with offsets available
   ANIMATIONS = 0x07,
-  FIRSTABILITY = 0x1f,
-  LASTABILITY = 0x20,
   ALLOWEDWEAPONS = 0x2d,
+  FIRSTABILITY = 0x2e,
+  LASTABILITY = 0x2f,
   REQUIREMENTS = 0x30,
 }
 
@@ -82,6 +82,21 @@ export class FFTAJob extends FFTAObject {
    */
   getRace() {
     return this.race;
+  }
+
+  /**
+   *
+   * @returns An array containing the ability ID's for the job.
+   */
+  getAbilityIDs() {
+    const firstAbility = this.getProperty(OFFSET.FIRSTABILITY, 1);
+    const lastAbility = this.getProperty(OFFSET.LASTABILITY, 1);
+    return Array.from(
+      {
+        length: lastAbility + 1 - firstAbility,
+      },
+      (_, iter) => firstAbility - 1 + iter
+    );
   }
 
   /**

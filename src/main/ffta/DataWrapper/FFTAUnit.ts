@@ -30,19 +30,34 @@ export class FFTAUnit extends FFTAObject {
   }
 
   /**
-   * Sets the level of a unit.
-   * @param level - The level to set
-   */
-  setLevel(level: number) {
-    this.setProperty(OFFSET.UNITLEVEL, 1, level);
-  }
-
-  /**
    * Sets the job of a unit to the specified id.
    * @param jobID -The id of the job to set
    */
   setJob(jobID: number) {
     this.setProperty(OFFSET.UNITJOB, 1, jobID);
+  }
+
+  /**
+   * @returns The job id of a unit.
+   */
+  getJob() {
+    return this.getProperty(OFFSET.UNITJOB, 1);
+  }
+
+  /**
+   * Sets the A Ability of a unit.
+   * @param setID - The ID of the A Ability set
+   */
+  setAAbility(setID: number) {
+    this.setProperty(OFFSET.UNITABILITY, 1, setID);
+  }
+
+  /**
+   * Sets the level of a unit.
+   * @param level - The level to set
+   */
+  setLevel(level: number) {
+    this.setProperty(OFFSET.UNITLEVEL, 1, level);
   }
 
   /**

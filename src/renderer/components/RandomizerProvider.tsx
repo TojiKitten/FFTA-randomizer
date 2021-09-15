@@ -31,6 +31,7 @@ const initialRandomizerOptions = {
         job: "random",
         rngEquip: false,
         level: 3,
+        masterType: "abilities",
         masteredAbilities: 0,
       },
       {
@@ -40,6 +41,7 @@ const initialRandomizerOptions = {
         job: "random",
         rngEquip: false,
         level: 3,
+        masterType: "abilities",
         masteredAbilities: 0,
       },
       {
@@ -49,6 +51,7 @@ const initialRandomizerOptions = {
         job: "random",
         rngEquip: false,
         level: 3,
+        masterType: "abilities",
         masteredAbilities: 0,
       },
       {
@@ -58,6 +61,7 @@ const initialRandomizerOptions = {
         job: "random",
         rngEquip: false,
         level: 3,
+        masterType: "abilities",
         masteredAbilities: 0,
       },
       {
@@ -67,6 +71,7 @@ const initialRandomizerOptions = {
         job: "random",
         rngEquip: false,
         level: 3,
+        masterType: "abilities",
         masteredAbilities: 0,
       },
       {
@@ -76,6 +81,7 @@ const initialRandomizerOptions = {
         job: "random",
         rngEquip: false,
         level: 3,
+        masterType: "abilities",
         masteredAbilities: 0,
       },
     ],
