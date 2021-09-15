@@ -163,7 +163,9 @@ export const MissionLog = (props: any) => {
             );
           })
           .filter((mission) => {
-            return mission["Name"].includes(searchString);
+            return mission["Name"]
+              .toLowerCase()
+              .includes(searchString.toLowerCase());
           });
   }
 
