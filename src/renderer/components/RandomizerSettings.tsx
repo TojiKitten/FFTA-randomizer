@@ -19,6 +19,34 @@ export const RandomizerSettings = () => {
           })
         }
       />
+      <button
+        onClick={(event) =>
+          dispatch({
+            type: "generalSettings",
+            option: {
+              randomizerSeed: parseInt(
+                new Date().getFullYear().toString() +
+                  (new Date().getMonth() + 1).toString().padStart(2, "0") +
+                  new Date().getUTCDate().toString().padStart(2, "0")
+              ),
+            },
+          })
+        }
+      >
+        Today's Seed
+      </button>
+      <button
+        onClick={(event) =>
+          dispatch({
+            type: "generalSettings",
+            option: {
+              randomizerSeed: Math.trunc(Math.random() * 1000000000),
+            },
+          })
+        }
+      >
+        Random Seed
+      </button>
     </div>
   );
 };

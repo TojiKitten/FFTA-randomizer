@@ -8,8 +8,8 @@ const initialRandomizerOptions = {
     isRandomized: false,
     randomizerSeed: parseInt(
       new Date().getFullYear().toString() +
-        new Date().getMonth().toString().padStart(2, "0") +
-        new Date().getDay().toString().padStart(2, "0")
+        (new Date().getMonth() + 1).toString().padStart(2, "0") +
+        new Date().getUTCDate().toString().padStart(2, "0")
     ),
     missionScaling: "normal",
     missionScalingValue: 1,
