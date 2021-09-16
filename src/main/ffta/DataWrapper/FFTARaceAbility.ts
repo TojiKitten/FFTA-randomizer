@@ -8,6 +8,15 @@ const enum OFFSET {
   APCOST = 0x07, //Multiply by 10
 }
 
+export const enum ABILITYTYPE {
+  ACTION2 = 0,
+  ACTION0 = 1,
+  REACTION = 2,
+  SUPPORT = 3,
+  ACTION1 = 4,
+  COMBO = 5,
+}
+
 export interface RaceAbilityLite {
   displayName: string;
 }
@@ -27,7 +36,7 @@ export class FFTARaceAbility extends FFTAObject {
   }
 
   /**
-   * Returns lightweight information for the item
+   * @returns Lightweight object for the item
    */
   getRaceAbilityInfo(): RaceAbilityLite {
     return {
@@ -36,8 +45,14 @@ export class FFTARaceAbility extends FFTAObject {
   }
 
   /**
-   * Gets the ability type
-   * @returns The type of ability
+   * @returns The id of the ability
+   */
+  getAbilityID() {
+    return this.getProperty(OFFSET.ABILITYID, 1);
+  }
+
+  /**
+   * @returns The type of the ability
    */
   getAbilityType() {
     return this.properties[OFFSET.TYPE];

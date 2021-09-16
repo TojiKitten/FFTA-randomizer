@@ -648,6 +648,80 @@ export class FFTAData {
   }
 
   /**
+   * Updates each formation to randomize enemy loadouts
+   * @param options - Randomizer UI selected options
+   */
+  handleRandomEnemies(randomEnemies: boolean) {
+    if (randomEnemies) {
+      // Randomize non Guest, non monster enemies
+      for (var i = 3; i < this.formations.length; i++) {
+        const formation = this.formations[i];
+        formation.units
+          .filter(
+            (unit) =>
+              unit.getType() === 1 &&
+              unit.getJob() >= this.jobs.get(RACES.Human)![0].jobId &&
+              unit.getJob() <=
+                this.jobs.get(RACES.Moogle)![
+                  this.jobs.get(RACES.Moogle)!.length - 1
+                ].jobId
+          )
+          .forEach((unit) => {
+            StartingPartyHacks.setUnitData(
+              unit,
+              this.jobs,
+              this.items,
+              this.raceAbilities,
+              {
+                name: "NPC",
+                raceChangeable: true,
+                race: "random",
+                job: "random",
+                rngEquip: true,
+                level: 0,
+                masteredAbilities: 50,
+                masterType: "abilities",
+              },
+              this.rng
+            );
+          });
+      }
+
+      type guestLocation = { formation: number; position: number; race: RACES };
+      const guests: Array<guestLocation> = [
+        { formation: 6, position: 5, race: RACES.Viera },
+        { formation: 6, position: 6, race: RACES.Viera },
+        { formation: 17, position: 4, race: RACES.Viera },
+        { formation: 17, position: 5, race: RACES.Viera },
+        { formation: 29, position: 0, race: RACES.Viera },
+        { formation: 29, position: 1, race: RACES.Viera },
+      ];
+
+      guests.forEach((unit) => {
+        const { formation, position, race } = unit;
+        const member = this.formations[formation].units[position];
+        StartingPartyHacks.setUnitData(
+          member,
+          this.jobs,
+          this.items,
+          this.raceAbilities,
+          {
+            name: "NPC",
+            raceChangeable: false,
+            race: race,
+            job: "random",
+            rngEquip: true,
+            level: 0,
+            masteredAbilities: 75,
+            masterType: "abilities",
+          },
+          this.rng
+        );
+      });
+    }
+  }
+
+  /**
    * Sets AP for missions, or skips if AP is 0
    * @param option - The value of AP to set
    */
@@ -832,6 +906,7 @@ export class FFTAData {
           this.formations[0].units[i],
           this.jobs,
           this.items,
+          this.raceAbilities,
           unit,
           this.rng
         );

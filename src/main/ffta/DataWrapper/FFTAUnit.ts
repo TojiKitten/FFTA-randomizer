@@ -30,6 +30,13 @@ export class FFTAUnit extends FFTAObject {
   }
 
   /**
+   * @returns The job type of a unit.
+   */
+  getType() {
+    return this.getProperty(OFFSET.TYPE, 1);
+  }
+
+  /**
    * Sets the job of a unit to the specified id.
    * @param jobID -The id of the job to set
    */
@@ -87,5 +94,21 @@ export class FFTAUnit extends FFTAObject {
       (this.properties[abilityByte] & ~mask) | (masteredBit << abilityBit),
     ]);
     this.properties.set(newFlags, abilityByte);
+  }
+
+  /**
+   * Sets the Reaction Ability of a unit.
+   * @param abilityID - The level to set
+   */
+  setReaction(abilityID: number) {
+    this.setProperty(OFFSET.UNITREACTION, 1, abilityID);
+  }
+
+  /**
+   * Sets the Support Ability of a unit.
+   * @param abilityID - The level to set
+   */
+  setSupport(abilityID: number) {
+    this.setProperty(OFFSET.UNITSUPPORT, 1, abilityID);
   }
 }

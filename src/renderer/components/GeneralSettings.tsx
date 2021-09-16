@@ -43,6 +43,20 @@ export const GeneralSettings = () => {
         {state.generalSettings.missionScalingValue}
       </div>
       <div className="generalSettingsOption">
+        <label htmlFor="randomEnemies">Randomize Enemies</label>
+        <input
+          id="randomEnemies"
+          type="checkbox"
+          checked={state.generalSettings.randomEnemies}
+          onChange={(event) => {
+            dispatch({
+              type: "generalSettings",
+              option: { randomEnemies: event.target.checked },
+            });
+          }}
+        />
+      </div>
+      <div className="generalSettingsOption">
         <label htmlFor="cutsceneOption">Cutscenes</label>
         <select
           id="cutsceneOption"
