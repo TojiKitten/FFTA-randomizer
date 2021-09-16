@@ -8,6 +8,7 @@ export function randomizeFFTA(fftaData: FFTAData, options: RandomizerState) {
   const { generalSettings, partySettings, jobSettings, shopSettings } = options;
   fftaData.setSeed(generalSettings.randomizerSeed);
   fftaData.runForcedHacks();
+  fftaData.handleRandomEnemies(generalSettings.randomEnemies);
   fftaData.handleMissionScaling(
     generalSettings.missionScaling,
     generalSettings.missionScalingValue

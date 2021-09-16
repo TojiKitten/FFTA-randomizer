@@ -20,6 +20,7 @@ const initialRandomizerOptions = {
     startingGold: 5000,
     frostyMageBoost: false,
     noJudgeTurn: false,
+    randomEnemies: false,
   },
   partySettings: {
     partyRNGEnabled: false,

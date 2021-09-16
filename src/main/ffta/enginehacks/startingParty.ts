@@ -3,6 +3,7 @@ import { FFTAUnit } from "../DataWrapper/FFTAUnit";
 import { FFTAItem, ITEMTYPES } from "../DataWrapper/FFTAItem";
 import { FFTAJob } from "../DataWrapper/FFTAJob";
 import NoiseGenerator from "../utils/NoiseGenerator";
+import { FFTARaceAbility, ABILITYTYPE } from "../DataWrapper/FFTARaceAbility";
 
 /**
  * Sets starting gold to a value.
@@ -25,6 +26,7 @@ export function setUnitData(
   unit: FFTAUnit,
   raceJobs: Map<string, Array<FFTAJob>>,
   items: Array<FFTAItem>,
+  raceAbilities: Map<string, FFTARaceAbility[]>,
   options: {
     name: string;
     raceChangeable: boolean;
@@ -52,7 +54,7 @@ export function setUnitData(
     unit.setItem(item, i);
   });
 
-  if (options.masteredAbilities > 0) {
+  if (options.masteredAbilities > 0 && options.name != "NPC") {
     // get set of random abilities and master them
     let mastered: Array<number> = new Array<number>();
     switch (options.masterType) {
@@ -73,6 +75,20 @@ export function setUnitData(
         );
         break;
     }
+    mastered.forEach((ability) => {
+      unit.setMasterAbility(ability, true);
+    });
+  }
+
+  if (options.name === "NPC") {
+    let mastered = getEnemyMasteryAbilityIDs(
+      unit,
+      raceJobs.get(newJob.race)!,
+      raceAbilities.get(newJob.race)!,
+      options.masteredAbilities,
+      rng
+    );
+
     mastered.forEach((ability) => {
       unit.setMasterAbility(ability, true);
     });
@@ -195,25 +211,26 @@ function getValidLoadOut(
   let weaponID = items.findIndex(
     (element) => element === validWeapons[subWeaponID]
   );
-  loadout.push(weaponID + 1); //+1 because item ids start at 1 not 0 NotLikeThis
+  loadout.push(weaponID + items[0].ITEMIDOFFSET); //+1 because item ids start at 1 not 0 NotLikeThis
 
-  enum FEMALEONLY {
-    CACHUSHA = "Cachusha",
-    BARETTE = "Barette",
-    RIBBON = "Ribbon",
-    MINERVAPLATE = "Minerva Plate",
-    RUBBERSUIT = "Rubber Suit",
-  }
+  const FEMALEONLY = [
+    "Cachusha",
+    "Barette",
+    "Ribbon",
+    "Minerva Plate",
+    "Rubber Suit",
+  ];
 
   //find valid armor from validArmors array and find the correct index for full item array
   //doesnt allow for female only items right now
-  let subArmorID = 0;
-  do {
-    subArmorID = rng.randomIntMax(validArmor.length - 1);
-  } while (validArmor[subArmorID].displayName! in FEMALEONLY);
+
+  validArmor = validArmor.filter(
+    (armor) => !FEMALEONLY.includes(armor.displayName!)
+  );
+  let subArmorID = rng.randomIntMax(validArmor.length - 1);
 
   let armorID = items.findIndex(
-    (element) => element === validArmor[subWeaponID]
+    (element) => element === validArmor[subArmorID]
   );
   loadout.push(armorID + items[0].ITEMIDOFFSET); //+1 because item ids start at 1 not 0 NotLikeThis
 
@@ -298,6 +315,61 @@ function getJobMasteryAbilityIDs(
       } else throw new Error("Job Mastery Error: Second Job not found");
     }
   }
+
+  return abilityIndicies;
+}
+
+function getEnemyMasteryAbilityIDs(
+  unit: FFTAUnit,
+  raceJobs: Array<FFTAJob>,
+  raceAbilities: FFTARaceAbility[],
+  count: number,
+  rng: NoiseGenerator
+): Array<number> {
+  let abilityIndicies: Array<number> = [];
+  let unusedJobs: Array<FFTAJob> = [...raceJobs];
+
+  // Get Unit's Primary job
+  const firstJob = raceJobs.find((job) => job.jobId === unit.getJob());
+  if (firstJob != undefined) {
+    abilityIndicies = abilityIndicies.concat(firstJob.getAbilityIDs());
+    unusedJobs = unusedJobs.filter((job) => firstJob.jobId != job.jobId);
+  } else throw new Error("Job Mastery Error: First Job not found");
+
+  // Get Unit's Secondary job
+  const secondJob = unusedJobs[rng.randomIntMax(unusedJobs.length - 1)];
+  if (secondJob != undefined) {
+    abilityIndicies = abilityIndicies.concat(secondJob.getAbilityIDs());
+    unit.setAAbility(secondJob.jobId);
+    unusedJobs = unusedJobs.filter((job) => secondJob.jobId != job.jobId);
+  } else throw new Error("Job Mastery Error: Second Job not found");
+
+  abilityIndicies = abilityIndicies.filter(
+    (abilityID) => rng.randomIntMax(100) <= count
+  );
+
+  const masteredAbilities = abilityIndicies.map(
+    (abilityID) => raceAbilities[abilityID]
+  );
+
+  // Finds the first valid ability from all mastered abilities of the specified type
+  const getAbilityByType = (abilityType: ABILITYTYPE): number => {
+    const validAbility = masteredAbilities.find(
+      (ability) => ability.getAbilityType() === abilityType
+    );
+    if (validAbility != undefined) {
+      return (
+        raceAbilities.findIndex(
+          (ability) => ability.displayName === validAbility.displayName
+        ) + 1
+      );
+    } else {
+      return 0;
+    }
+  };
+
+  unit.setReaction(getAbilityByType(ABILITYTYPE.REACTION));
+  unit.setSupport(getAbilityByType(ABILITYTYPE.SUPPORT));
 
   return abilityIndicies;
 }
