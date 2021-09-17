@@ -678,7 +678,7 @@ export class FFTAData {
                 race: "random",
                 job: "random",
                 rngEquip: true,
-                level: 0,
+                level: unit.getLevel(),
                 masteredAbilities: 50,
                 masterType: "abilities",
               },
@@ -687,14 +687,19 @@ export class FFTAData {
           });
       }
 
-      type guestLocation = { formation: number; position: number; race: RACES };
-      const guests: Array<guestLocation> = [
-        { formation: 6, position: 5, race: RACES.Viera },
-        { formation: 6, position: 6, race: RACES.Viera },
-        { formation: 17, position: 4, race: RACES.Viera },
-        { formation: 17, position: 5, race: RACES.Viera },
-        { formation: 29, position: 0, race: RACES.Viera },
-        { formation: 29, position: 1, race: RACES.Viera },
+      type specialUnitLocation = {
+        formation: number;
+        position: number;
+        race: RACES;
+      };
+      const guests: Array<specialUnitLocation> = [
+        { formation: 5, position: 1, race: RACES.Human }, // Thesis Hunt Thief
+        { formation: 6, position: 5, race: RACES.Viera }, // Ritz Cheetah's
+        { formation: 6, position: 6, race: RACES.Viera }, // Shara Cheetah's
+        { formation: 17, position: 4, race: RACES.Viera }, // Ritz Golden Clock
+        { formation: 17, position: 5, race: RACES.Viera }, // Shara Golden Clock
+        { formation: 29, position: 0, race: RACES.Viera }, // Ritz Over the Hill
+        { formation: 29, position: 1, race: RACES.Viera }, // Shara Over the Hill
       ];
 
       guests.forEach((unit) => {
@@ -711,7 +716,7 @@ export class FFTAData {
             race: race,
             job: "random",
             rngEquip: true,
-            level: 0,
+            level: member.getLevel(),
             masteredAbilities: 75,
             masterType: "abilities",
           },

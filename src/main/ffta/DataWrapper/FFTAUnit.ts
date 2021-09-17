@@ -68,6 +68,13 @@ export class FFTAUnit extends FFTAObject {
   }
 
   /**
+   * @returns The level of the unit.
+   */
+  getLevel(): number {
+    return this.getProperty(OFFSET.UNITLEVEL, 1);
+  }
+
+  /**
    * Sets an item slot to a specified item id.
    * @param itemID - The id of the item to set
    * @param slot - The item slot to set
