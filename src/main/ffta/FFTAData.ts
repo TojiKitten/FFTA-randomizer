@@ -13,7 +13,10 @@ import * as JobHacks from "./enginehacks/jobHacks";
 import * as ItemHacks from "./enginehacks/itemHacks";
 import * as ForcedHacks from "./enginehacks/forcedHacks";
 import NoiseGenerator from "./utils/NoiseGenerator";
-import { JobSettingsState } from "_/renderer/components/RandomizerProvider";
+import {
+  JobSettingsState,
+  RandomizerState,
+} from "_/renderer/components/RandomizerProvider";
 
 export enum RACES {
   Human = "human",
@@ -891,7 +894,6 @@ export class FFTAData {
           this.rng,
           true
         );
-        ForcedHacks.animationFixRaw(this.rom);
         break;
       case "random":
         this.raceAbilities = JobHacks.changeRaceAbilities(
@@ -899,7 +901,6 @@ export class FFTAData {
           this.rng,
           false
         );
-        ForcedHacks.animationFixRaw(this.rom);
         break;
     }
   }
@@ -970,7 +971,11 @@ export class FFTAData {
   /**
    * Runs a set of hacks that cannot be skipped
    */
-  runForcedHacks() {}
+  runForcedHacks(options: RandomizerState) {
+    if (options.jobSettings.abilities != "normal") {
+      ForcedHacks.animationFixRaw(this.rom);
+    }
+  }
 }
 
 export default FFTAData;

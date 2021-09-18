@@ -169,6 +169,7 @@ function savefile(filepath: any, payload: any) {
   if (filepath) {
     RandomizerOptions.randomizeFFTA(fftaData, payload);
     fftaData.writeData();
+    fftaData.runForcedHacks(payload);
     fs.writeFileSync(filepath, fftaData.rom, null);
   }
 }
