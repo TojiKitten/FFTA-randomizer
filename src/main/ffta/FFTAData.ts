@@ -693,7 +693,6 @@ export class FFTAData {
         race: RACES;
       };
       const guests: Array<specialUnitLocation> = [
-        { formation: 5, position: 1, race: RACES.Human }, // Thesis Hunt Thief
         { formation: 6, position: 5, race: RACES.Viera }, // Ritz Cheetah's
         { formation: 6, position: 6, race: RACES.Viera }, // Shara Cheetah's
         { formation: 17, position: 4, race: RACES.Viera }, // Ritz Golden Clock
@@ -723,6 +722,24 @@ export class FFTAData {
           this.rng
         );
       });
+
+      StartingPartyHacks.setUnitData(
+        this.formations[5].units[1],
+        this.jobs,
+        this.items,
+        this.raceAbilities,
+        {
+          name: "NPC",
+          raceChangeable: false,
+          race: RACES.Human,
+          job: "thief",
+          rngEquip: true,
+          level: this.formations[5].units[1].getLevel(),
+          masteredAbilities: 75,
+          masterType: "abilities",
+        },
+        this.rng
+      );
     }
   }
 
