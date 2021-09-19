@@ -204,3 +204,24 @@ export function randomRewards(
     }
   });
 }
+
+export function hideRewardPreviews(missions: Array<FFTAMission>) {
+  missions.forEach((mission) => {
+    if (mission.getItemReward1() != 0x00) mission.setHiddenItem1(1);
+    if (mission.getItemReward2() != 0x00) mission.setHiddenItem2(1);
+  });
+}
+
+export function unlockAllStoryMissions(missions: Array<FFTAMission>) {
+  missions
+    .filter(
+      (mission) => mission.getMissionID() >= 3 && mission.getMissionID() <= 24
+    )
+    .forEach((mission) => {
+      mission.setUnlockFlag1(0x3b, 0x04, 1);
+      mission.setUnlockFlag2(0x00, 0x00, 0);
+      mission.setUnlockFlag3(0x00, 0x00, 0);
+      mission.setMissionType(0x0b); // Makes all misions regular encounters
+      mission.setMoreFlags(0x00); // Makes all missions appear in pub
+    });
+}

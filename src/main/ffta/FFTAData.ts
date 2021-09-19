@@ -480,6 +480,8 @@ export class FFTAData {
       );
       items.push(newItem);
     }
+    MissionHacks.hideRewardPreviews(items);
+    MissionHacks.unlockAllStoryMissions(items);
     return items;
   }
 

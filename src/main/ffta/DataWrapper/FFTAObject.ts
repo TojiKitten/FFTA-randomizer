@@ -33,10 +33,16 @@ export class FFTAObject {
    * @param value - The number, in decimal, to set
    */
   protected setProperty(offset: number, bytes: 1 | 2 | 4, value: number): void {
-    if (bytes === 2) {
-      this.properties.set(FFTAUtils.getShortUint8Array(value, true), offset);
-    } else {
-      this.properties.set(new Uint8Array([value]), offset);
+    switch (bytes) {
+      case 1:
+        this.properties.set(new Uint8Array([value]), offset);
+        break;
+      case 2:
+        this.properties.set(FFTAUtils.getShortUint8Array(value, true), offset);
+        break;
+      case 4:
+        this.properties.set(FFTAUtils.getWordUint8Array(value, true), offset);
+        break;
     }
   }
 
@@ -54,6 +60,20 @@ export class FFTAObject {
     } else {
       return this.properties[offset];
     }
+  }
+
+  /**
+   * Sets an inner bit of the given offset
+   * @param offset - The offset of the property
+   * @param flag - The offset of the flag to set
+   * @param value - The bit value to which the flag is set
+   */
+  protected setFlag(offset: number, flag: number, value: 0 | 1): void {
+    let mask = 0x1 << flag;
+    let newFlags = new Uint8Array([
+      (this.properties[offset] & ~mask) | (value << flag),
+    ]);
+    this.properties.set(newFlags, offset);
   }
 
   /**
