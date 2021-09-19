@@ -134,9 +134,9 @@ const FFTAMap: FFTAMemoryMap = {
       length: 767,
     },
     MissionNames: {
-      offset: 0x55a650,
+      offset: 0x55a64c,
       byteSize: 0x4,
-      length: 396,
+      length: 0x196,
     },
     Animations: {
       offset: 0x390e44,
@@ -172,7 +172,7 @@ const FFTAMap: FFTAMemoryMap = {
   Missions: {
     offset: 0x55ae4c,
     byteSize: 0x46,
-    length: 396,
+    length: 0x196,
   },
 };
 const allowedWeaponAddress = 0x51d0f4;
@@ -478,10 +478,9 @@ export class FFTAData {
         this.missionNames[(this.rom[memory + 1] << 8) | this.rom[memory]],
         this.rom.slice(memory, memory + dataType.byteSize)
       );
+
       items.push(newItem);
     }
-    MissionHacks.hideRewardPreviews(items);
-    MissionHacks.unlockAllStoryMissions(items);
     return items;
   }
 
@@ -836,6 +835,10 @@ export class FFTAData {
       default:
         throw new Error("Reward case: " + option + " unhandled!");
     }
+
+    MissionHacks.hideRewardPreviews(this.missions);
+    MissionHacks.randomizeStory(this.missions, this.rng);
+    //MissionHacks.unlockAllStoryMissions(items);
   }
 
   /**

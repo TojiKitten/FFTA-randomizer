@@ -2,7 +2,7 @@ import { FFTAObject } from "./FFTAObject";
 
 const enum OFFSET {
   ID = 0x00,
-  TYPE = 0x02, // 0B is regular encounter, 02 is dispatch maybe uses flags
+  TYPE = 0x01, // 0B is regular encounter, 02 is dispatch maybe uses flags
   RANK = 0x03,
   UNLOCKFLAG1 = 0x05, // 3 Bytes (Bit Offset, Row Offset * 0x20, Value)
   UNLOCKFLAG2 = 0x08, // 3 Bytes (Bit Offset, Row Offset * 0x20, Value)
@@ -19,7 +19,7 @@ const enum OFFSET {
   REQSKILLAMOUNT = 0x39, //0x01 = level 8? maybe tied to "difficulty"
   HIDDENREWARDFLAGS = 0x41,
   MOREFLAGS = 0x42,
-  MISSIONLOCATION = 0x45, // Encounter Only
+  MISSIONLOCATION = 0x45, // Used for encounters and loading cut scenes
 }
 
 const enum MISSIONTYPE {
@@ -34,6 +34,37 @@ const enum MISSIONTYPE {
  * An {@link FFTAObject} representing a mission.
  */
 export class FFTAMission extends FFTAObject {
+  get encounterMission() {
+    return this.getFlag(OFFSET.TYPE, 2, 0xb);
+  }
+
+  get linkMission() {
+    return this.getFlag(OFFSET.TYPE, 2, 0xc);
+  }
+
+  get specialMission() {
+    return this.getFlag(OFFSET.TYPE, 2, 0x0);
+  }
+
+  get storyMission() {
+    return this.getFlag(OFFSET.TYPE, 2, 0x08);
+  }
+
+  get missionType() {
+    return this.getProperty(OFFSET.TYPE, 2);
+  }
+  set missionType(type: number) {
+    this.setProperty(OFFSET.TYPE, 2, type);
+  }
+
+  get missionLocation() {
+    return this.getProperty(OFFSET.MISSIONLOCATION, 1);
+  }
+
+  get missionRank() {
+    return this.getProperty(OFFSET.RANK, 2);
+  }
+
   /**
    * Constructor for a mission
    * @param memory - The memory address of an object
@@ -85,14 +116,6 @@ export class FFTAMission extends FFTAObject {
     this.setProperty(OFFSET.UNLOCKFLAG3, 1, bitOffset);
     this.setProperty(OFFSET.UNLOCKFLAG3 + 1, 1, blockOffset);
     this.setProperty(OFFSET.UNLOCKFLAG3 + 2, 1, value);
-  }
-
-  /**
-   * Sets the type of a mission.
-   * @param type - The type to set
-   */
-  setMissionType(type: number) {
-    this.setProperty(OFFSET.TYPE, 1, type);
   }
 
   /**

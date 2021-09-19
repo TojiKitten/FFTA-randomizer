@@ -77,6 +77,17 @@ export class FFTAObject {
   }
 
   /**
+   * Sets an inner bit of the given offset
+   * @param offset - The offset of the property
+   * @param bytes - The number of bytes of the offset
+   * @param flag - The offset of the flag to set
+   * @returns The value of an inner bit of a given offet
+   */
+  protected getFlag(offset: number, bytes: 1 | 2 | 4, flag: number): number {
+    return (this.getProperty(offset, bytes) >> flag) & 1;
+  }
+
+  /**
    * Sets the allowed flag to the given value
    * @param allowed - The value to set
    */

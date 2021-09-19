@@ -221,7 +221,70 @@ export function unlockAllStoryMissions(missions: Array<FFTAMission>) {
       mission.setUnlockFlag1(0x3b, 0x04, 1);
       mission.setUnlockFlag2(0x00, 0x00, 0);
       mission.setUnlockFlag3(0x00, 0x00, 0);
-      mission.setMissionType(0x0b); // Makes all misions regular encounters
+      mission.missionType = 0x0b; // Makes all misions regular encounters
       mission.setMoreFlags(0x00); // Makes all missions appear in pub
     });
+}
+
+export function randomizeStory(
+  missions: Array<FFTAMission>,
+  rng: NoiseGenerator
+) {
+  missions.forEach((mission) => {
+    mission.setUnlockFlag1(0x02, 0x03, 0x01);
+    mission.setUnlockFlag2(0x02, 0x03, 0x00);
+    mission.setUnlockFlag3(0x00, 0x00, 0x00);
+  });
+
+  const validMissions = missions.filter(
+    (mission) =>
+      mission.displayName != "dummy" &&
+      mission.displayName != "Royal Valley" &&
+      mission.encounterMission === 1 &&
+      mission.linkMission === 0 &&
+      mission.missionType != 0x0d01
+  );
+
+  const setNewUnlockFlag = (
+    mission: FFTAMission,
+    previousMissionID: number
+  ) => {
+    mission.setUnlockFlag1(
+      previousMissionID - (1 % 255),
+      3 + Math.floor((previousMissionID - 1) / 255),
+      0x01
+    );
+    mission.setUnlockFlag2(0x00, 0x00, 0x00);
+    mission.setUnlockFlag3(0x00, 0x00, 0x00);
+  };
+
+  let newStory: Array<FFTAMission> = [];
+  for (var i = 0; i < 1; i++) {
+    const selectedMission = validMissions.splice(
+      rng.randomIntMax(validMissions.length - 1),
+      1
+    )[0];
+    selectedMission.missionType = 0x0a00;
+    selectedMission.setMoreFlags(0x00);
+    if (newStory.length > 0) {
+      setNewUnlockFlag(
+        selectedMission,
+        newStory[newStory.length - 1].getMissionID()
+      );
+    } else {
+      selectedMission.setUnlockFlag1(0x00, 0x00, 0x00);
+      selectedMission.setUnlockFlag2(0x00, 0x00, 0x00);
+      selectedMission.setUnlockFlag3(0x00, 0x00, 0x00);
+    }
+    newStory.push(selectedMission);
+  }
+
+  const royalValley = missions.find(
+    (mission) => mission.displayName === "Royal Valley"
+  )!;
+  royalValley.missionType = 0x0a00;
+  royalValley.setMoreFlags(0x00);
+  setNewUnlockFlag(royalValley, newStory[newStory.length - 1].getMissionID());
+  newStory.push(royalValley);
+  console.log(newStory);
 }
