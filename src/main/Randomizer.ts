@@ -13,6 +13,7 @@ export function randomizeFFTA(fftaData: FFTAData, options: RandomizerState) {
     shopSettings,
   } = options;
   fftaData.setSeed(generalSettings.randomizerSeed);
+  fftaData.handleSeed(generalSettings.randomizerSeed);
   fftaData.handleCutScene(generalSettings.cutscenes);
   fftaData.handleStartingGold(generalSettings.startingGold);
   fftaData.handleFrostyBoost(generalSettings.frostyMageBoost);

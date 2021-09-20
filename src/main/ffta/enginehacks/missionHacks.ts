@@ -251,7 +251,7 @@ export function randomizeLinearStory(
 
   // Create new "path" for the story
   let newStory: Array<FFTAMission> = [];
-  for (var i = 0; i < storyLength; i++) {
+  for (var i = 0; i < storyLength - 1; i++) {
     // Get a random mission and remove it from t he valid missions
     const selectedMission = validMissions.splice(
       rng.randomIntMax(validMissions.length - 1),
@@ -289,6 +289,7 @@ export function randomizeLinearStory(
   // Fix certain things about the missions
   newStory.forEach((mission) => {
     mission.recruit = 0x00;
+    mission.pickUpInfo = 0x00; // Clears info to pick up in specific days
     mission.requiredItem1 = 0x0000;
     mission.requiredItem2 = 0x0000;
     mission.price = 0;

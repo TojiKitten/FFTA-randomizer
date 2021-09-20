@@ -628,6 +628,10 @@ export class FFTAData {
     return rewardItemSets;
   }
 
+  handleSeed(seed: number) {
+    this.rom.set(FFTAUtils.getWordUint8Array(seed, true), 0xa3991c);
+  }
+
   /**
    * Updates missions to scale enemy levels
    * @param option - Type of scaling

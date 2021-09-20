@@ -25,6 +25,75 @@ export const MissionSettings = () => {
   const [gilRewardText, setGilRewardText] = React.useState("Off");
   const [apRewardText, setAPRewardText] = React.useState("Off");
 
+  // Update UI based on story setting option
+  React.useEffect(() => {
+    switch (storySetting) {
+      case "normal":
+        setShowStoryLength(false);
+        break;
+      case "linear":
+        setShowStoryLength(true);
+        dispatch({
+          type: "missionSettings",
+          option: { missionScaling: "average" },
+        });
+        break;
+      case "branching":
+        setShowStoryLength(true);
+        dispatch({
+          type: "missionSettings",
+          option: { missionScaling: "average" },
+        });
+        break;
+    }
+  }, [storySetting]);
+
+  // Update UI based on mission scaling option
+  React.useEffect(() => {
+    switch (missionScaling) {
+      case "normal":
+        setLevelModifierText("Level Modifier");
+        setMinLevelModifier(0);
+        setShowLevelModifier(false);
+        break;
+      case "lerp":
+        setLevelModifierText("Li Grim Level");
+        setMinLevelModifier(1);
+        setShowLevelModifier(true);
+        dispatch({
+          type: "missionSettings",
+          option: {
+            missionScalingValue: clamp(missionScalingValue, 1, 50),
+          },
+        });
+        break;
+      case "average":
+        setLevelModifierText("Additional Enemy Levels");
+        setMinLevelModifier(0);
+        setShowLevelModifier(true);
+        break;
+      case "highest":
+        setLevelModifierText("Additional Enemy Levels");
+        setMinLevelModifier(0);
+        setShowLevelModifier(true);
+        break;
+    }
+  }, [missionScaling]);
+
+  // Update UI based on gil reward option
+  React.useEffect(() => {
+    gilReward < 0
+      ? setGilRewardText("Off")
+      : setGilRewardText((gilReward * 200).toString());
+  }, [gilReward]);
+
+  // Update UI based on AP reward option
+  React.useEffect(() => {
+    apBoost < 0
+      ? setAPRewardText("Off")
+      : setAPRewardText((apBoost * 10).toString());
+  }, [apBoost]);
+
   return (
     <div className="missionSettings">
       <div className="missionSettingsOption">
@@ -37,31 +106,6 @@ export const MissionSettings = () => {
               type: "missionSettings",
               option: { storySetting: event.target.value },
             });
-            switch (event.target.value) {
-              case "normal":
-                setShowStoryLength(false);
-                break;
-              case "linear":
-                setShowStoryLength(true);
-                setLevelModifierText("Additional Enemy Levels");
-                setMinLevelModifier(0);
-                setShowLevelModifier(true);
-                dispatch({
-                  type: "missionSettings",
-                  option: { missionScaling: "average" },
-                });
-                break;
-              case "branching":
-                setShowStoryLength(true);
-                setLevelModifierText("Additional Enemy Levels");
-                setMinLevelModifier(0);
-                setShowLevelModifier(true);
-                dispatch({
-                  type: "missionSettings",
-                  option: { missionScaling: "average" },
-                });
-                break;
-            }
           }}
         >
           <option value="normal">Normal</option>
@@ -99,34 +143,6 @@ export const MissionSettings = () => {
               type: "missionSettings",
               option: { missionScaling: event.target.value },
             });
-            switch (event.target.value) {
-              case "normal":
-                setLevelModifierText("Level Modifier");
-                setMinLevelModifier(0);
-                setShowLevelModifier(false);
-                break;
-              case "lerp":
-                setLevelModifierText("Li Grim Level");
-                setMinLevelModifier(1);
-                setShowLevelModifier(true);
-                dispatch({
-                  type: "missionSettings",
-                  option: {
-                    missionScalingValue: clamp(missionScalingValue, 1, 50),
-                  },
-                });
-                break;
-              case "average":
-                setLevelModifierText("Additional Enemy Levels");
-                setMinLevelModifier(0);
-                setShowLevelModifier(true);
-                break;
-              case "highest":
-                setLevelModifierText("Additional Enemy Levels");
-                setMinLevelModifier(0);
-                setShowLevelModifier(true);
-                break;
-            }
           }}
         >
           <option value="normal">Normal</option>
@@ -217,10 +233,6 @@ export const MissionSettings = () => {
               type: "missionSettings",
               option: { gilReward: gilValue },
             });
-
-            gilValue < 0
-              ? setGilRewardText("Off")
-              : setGilRewardText((gilValue * 200).toString());
           }}
         />
         {gilRewardText}
@@ -239,9 +251,6 @@ export const MissionSettings = () => {
               type: "missionSettings",
               option: { apBoost: apValue },
             });
-            parseInt(event.target.value) < 0
-              ? setAPRewardText("Off")
-              : setAPRewardText((apValue * 10).toString());
           }}
         />
         {apRewardText}
