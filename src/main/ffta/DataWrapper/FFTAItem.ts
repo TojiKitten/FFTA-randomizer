@@ -180,35 +180,35 @@ export class FFTAItem extends FFTAObject {
   }
 
   setDoubleSword(value: 0 | 1) {
-    this.setFlag(OFFSET.FLAGS, ITEMFLAG.DOUBLESWORD, value);
+    this.setFlag(OFFSET.FLAGS, 1, ITEMFLAG.DOUBLESWORD, value);
   }
 
   setDoubleHand(value: 0 | 1) {
-    this.setFlag(OFFSET.FLAGS, ITEMFLAG.DOUBLEHAND, value);
+    this.setFlag(OFFSET.FLAGS, 1, ITEMFLAG.DOUBLEHAND, value);
   }
 
   setMonkeyGrip(value: 0 | 1) {
-    this.setFlag(OFFSET.FLAGS, ITEMFLAG.MONKEYGRIP, value);
+    this.setFlag(OFFSET.FLAGS, 1, ITEMFLAG.MONKEYGRIP, value);
   }
 
   setDiscount(value: 0 | 1) {
-    this.setFlag(OFFSET.FLAGS, ITEMFLAG.DISCOUNT, value);
+    this.setFlag(OFFSET.FLAGS, 1, ITEMFLAG.DISCOUNT, value);
   }
 
   setTier1(value: 0 | 1) {
-    this.setFlag(OFFSET.FLAGS, ITEMFLAG.TIER1, value);
+    this.setFlag(OFFSET.FLAGS, 1, ITEMFLAG.TIER1, value);
   }
 
   setTier2(value: 0 | 1) {
-    this.setFlag(OFFSET.FLAGS, ITEMFLAG.TIER2, value);
+    this.setFlag(OFFSET.FLAGS, 1, ITEMFLAG.TIER2, value);
   }
 
   setTier3(value: 0 | 1) {
-    this.setFlag(OFFSET.FLAGS, ITEMFLAG.TIER3, value);
+    this.setFlag(OFFSET.FLAGS, 1, ITEMFLAG.TIER3, value);
   }
 
   setMythrilOrConsumable(value: 0 | 1) {
-    this.setFlag(OFFSET.FLAGS, ITEMFLAG.MYTHRILORCONSUMABLE, value);
+    this.setFlag(OFFSET.FLAGS, 1, ITEMFLAG.MYTHRILORCONSUMABLE, value);
   }
 
   setNono(value: number) {

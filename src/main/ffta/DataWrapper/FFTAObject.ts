@@ -68,12 +68,16 @@ export class FFTAObject {
    * @param flag - The offset of the flag to set
    * @param value - The bit value to which the flag is set
    */
-  protected setFlag(offset: number, flag: number, value: 0 | 1): void {
+  protected setFlag(
+    offset: number,
+    bytes: 1 | 2 | 4,
+    flag: number,
+    value: 0 | 1
+  ): void {
     let mask = 0x1 << flag;
-    let newFlags = new Uint8Array([
-      (this.properties[offset] & ~mask) | (value << flag),
-    ]);
-    this.properties.set(newFlags, offset);
+    let currentFlags = this.getProperty(offset, bytes);
+    let newFlags = (currentFlags & ~mask) | (value << flag);
+    this.setProperty(offset, bytes, newFlags);
   }
 
   /**

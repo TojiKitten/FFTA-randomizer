@@ -11,14 +11,16 @@ const enum OFFSET {
   DISPATCHTIME = 0x10,
   ITEMREWARD1 = 0x22, // 0x178 = Magic Trophy as reward
   ITEMREWARD2 = 0x24,
+  GILREWARD = 0x33,
   AP = 0x34,
   RECRUIT = 0x35,
   REQITEM1 = 0x36, // 0x01 = Magic Trophy as required
   REQITEM2 = 0x37,
   REQSKILL = 0x38, // 0x01 = Combat
   REQSKILLAMOUNT = 0x39, //0x01 = level 8? maybe tied to "difficulty"
-  HIDDENREWARDFLAGS = 0x41,
-  MOREFLAGS = 0x42,
+  PRICE = 0x3e,
+  MISSIONDISPLAY = 0x41,
+  MOREFLAGS = 0x42, // ???, Hide from OW Menu, ??? Law 2, ??? Law 1
   MISSIONLOCATION = 0x45, // Used for encounters and loading cut scenes
 }
 
@@ -34,37 +36,6 @@ const enum MISSIONTYPE {
  * An {@link FFTAObject} representing a mission.
  */
 export class FFTAMission extends FFTAObject {
-  get encounterMission() {
-    return this.getFlag(OFFSET.TYPE, 2, 0xb);
-  }
-
-  get linkMission() {
-    return this.getFlag(OFFSET.TYPE, 2, 0xc);
-  }
-
-  get specialMission() {
-    return this.getFlag(OFFSET.TYPE, 2, 0x0);
-  }
-
-  get storyMission() {
-    return this.getFlag(OFFSET.TYPE, 2, 0x08);
-  }
-
-  get missionType() {
-    return this.getProperty(OFFSET.TYPE, 2);
-  }
-  set missionType(type: number) {
-    this.setProperty(OFFSET.TYPE, 2, type);
-  }
-
-  get missionLocation() {
-    return this.getProperty(OFFSET.MISSIONLOCATION, 1);
-  }
-
-  get missionRank() {
-    return this.getProperty(OFFSET.RANK, 2);
-  }
-
   /**
    * Constructor for a mission
    * @param memory - The memory address of an object
@@ -75,11 +46,147 @@ export class FFTAMission extends FFTAObject {
     super(memory, properties, name);
   }
 
-  /**
-   * @return The ID of the mission.
-   */
-  getMissionID() {
+  get missionID(): number {
     return this.getProperty(OFFSET.ID, 2);
+  }
+
+  get specialMission(): 0 | 1 {
+    return this.getFlag(OFFSET.TYPE, 2, 0x0) as 0 | 1;
+  }
+
+  get storyMission(): 0 | 1 {
+    return this.getFlag(OFFSET.TYPE, 2, 0x08) as 0 | 1;
+  }
+
+  set encounterMission(bit: 0 | 1) {
+    this.setFlag(OFFSET.TYPE, 2, 0xb, bit);
+  }
+  get encounterMission(): 0 | 1 {
+    return this.getFlag(OFFSET.TYPE, 2, 0xb) as 0 | 1;
+  }
+
+  get linkMission(): number {
+    return this.getFlag(OFFSET.TYPE, 2, 0xc);
+  }
+
+  get missionRank(): number {
+    return this.getProperty(OFFSET.RANK, 2);
+  }
+
+  set missionType(type: number) {
+    this.setProperty(OFFSET.TYPE, 2, type);
+  }
+  get missionType(): number {
+    return this.getProperty(OFFSET.TYPE, 2);
+  }
+
+  set pickUpInfo(value: number) {
+    this.setProperty(OFFSET.PICKUPINFO, 2, value);
+  }
+  get pickUpInfo(): number {
+    return this.getProperty(OFFSET.PICKUPINFO, 2);
+  }
+
+  set itemReward1(itemID: number) {
+    this.setProperty(OFFSET.ITEMREWARD1, 2, itemID);
+  }
+  get itemReward1(): number {
+    return this.getProperty(OFFSET.ITEMREWARD1, 2);
+  }
+
+  set itemReward2(itemID: number) {
+    this.setProperty(OFFSET.ITEMREWARD2, 2, itemID);
+  }
+  get itemReward2(): number {
+    return this.getProperty(OFFSET.ITEMREWARD2, 2);
+  }
+
+  set gilReward(amount: number) {
+    this.setProperty(OFFSET.GILREWARD, 1, Math.min(0xff, amount / 200));
+  }
+  get gilReward(): number {
+    return this.getProperty(OFFSET.GILREWARD, 1) * 200;
+  }
+
+  set apReward(ap: number) {
+    this.setProperty(OFFSET.AP, 1, ap / 10);
+  }
+  get apReward(): number {
+    return this.getProperty(OFFSET.AP, 1) * 10;
+  }
+
+  set recruit(id: number) {
+    this.setProperty(OFFSET.RECRUIT, 1, id);
+  }
+  get recruit(): number {
+    return this.getProperty(OFFSET.RECRUIT, 1);
+  }
+
+  set requiredItem1(id: number) {
+    this.setProperty(OFFSET.REQITEM1, 2, id);
+  }
+  get reqiredItem1(): number {
+    return this.getProperty(OFFSET.REQITEM1, 1);
+  }
+
+  set requiredItem2(id: number) {
+    this.setProperty(OFFSET.REQITEM2, 2, id);
+  }
+  get reqiredItem2(): number {
+    return this.getProperty(OFFSET.REQITEM2, 1);
+  }
+
+  set requiredJob(id: number) {
+    this.setProperty(OFFSET.REQITEM2, 2, id);
+  }
+  get reqiredJob(): number {
+    return this.getProperty(OFFSET.REQITEM2, 1);
+  }
+
+  set price(amount: number) {
+    this.setProperty(OFFSET.PRICE, 1, Math.min(0xff, amount / 300));
+  }
+  get price(): number {
+    return this.getProperty(OFFSET.PRICE, 1) * 300;
+  }
+
+  set itemReward1Hidden(bit: 0 | 1) {
+    this.setFlag(OFFSET.MISSIONDISPLAY, 2, 0x06, bit);
+  }
+  get itemReward1Hidden(): 0 | 1 {
+    return this.getFlag(OFFSET.MISSIONDISPLAY, 2, 0x06) as 0 | 1;
+  }
+
+  set itemReward2Hidden(bit: 0 | 1) {
+    this.setFlag(OFFSET.MISSIONDISPLAY, 2, 0x07, bit);
+  }
+  get itemReward2Hidden(): 0 | 1 {
+    return this.getFlag(OFFSET.MISSIONDISPLAY, 2, 0x07) as 0 | 1;
+  }
+
+  set lawCard1Hidden(bit: 0 | 1) {
+    this.setFlag(OFFSET.MISSIONDISPLAY, 2, 0x08, bit);
+  }
+  get lawCard1Hidden(): 0 | 1 {
+    return this.getFlag(OFFSET.MISSIONDISPLAY, 2, 0x08) as 0 | 1;
+  }
+
+  set lawCard2Hidden(bit: 0 | 1) {
+    this.setFlag(OFFSET.MISSIONDISPLAY, 2, 0x09, bit);
+  }
+  get lawCard2Hidden(): 0 | 1 {
+    return this.getFlag(OFFSET.MISSIONDISPLAY, 2, 0x09) as 0 | 1;
+  }
+
+  set hideOnLocationMenu(bit: 0 | 1) {
+    this.setFlag(OFFSET.MISSIONDISPLAY, 2, 0x0a, bit);
+  }
+  get hideOnLocationMenu(): 0 | 1 {
+    return this.getFlag(OFFSET.MISSIONDISPLAY, 2, 0x0a) as 0 | 1;
+  }
+
+  get missionLocation(): number {
+    return this.getProperty(OFFSET.MISSIONLOCATION, 1);
   }
 
   /**
@@ -116,68 +223,6 @@ export class FFTAMission extends FFTAObject {
     this.setProperty(OFFSET.UNLOCKFLAG3, 1, bitOffset);
     this.setProperty(OFFSET.UNLOCKFLAG3 + 1, 1, blockOffset);
     this.setProperty(OFFSET.UNLOCKFLAG3 + 2, 1, value);
-  }
-
-  /**
-   * Sets the AP to be earned for a mission.
-   * @param ap - The amout of AP to set
-   */
-  setAPReward(ap: number) {
-    this.setProperty(OFFSET.AP, 1, ap / 10);
-  }
-
-  /**
-   * Sets item reward 1 to the specified itemID.
-   * @param itemID - The ID to set
-   */
-  setItemReward1(itemID: number) {
-    this.setProperty(OFFSET.ITEMREWARD1, 2, itemID);
-  }
-
-  /**
-   * @return itemID - The ID of item reward 1
-   */
-  getItemReward1() {
-    return this.getProperty(OFFSET.ITEMREWARD1, 2);
-  }
-
-  /**
-   * Sets item reward 2 to the specified itemID.
-   * @param itemID - The ID to set
-   */
-  setItemReward2(itemID: number) {
-    this.setProperty(OFFSET.ITEMREWARD2, 2, itemID);
-  }
-
-  /**
-   * @return itemID - The ID of item reward 2
-   */
-  getItemReward2() {
-    return this.getProperty(OFFSET.ITEMREWARD2, 2);
-  }
-
-  /**
-   * Sets the Recruiting Type to be used
-   * @param recruitType The type to be set
-   */
-  setRecruit(type: number) {
-    this.setProperty(OFFSET.RECRUIT, 1, type);
-  }
-
-  /**
-   * Sets reward item 1 to show the ??? bag symbol in the pub
-   * @param value - The bit value to which the flag is set; 1 for hidden
-   */
-  setHiddenItem1(value: 0 | 1) {
-    this.setFlag(OFFSET.HIDDENREWARDFLAGS, 0x06, value);
-  }
-
-  /**
-   * Sets reward item 2 to show the ??? bag symbol in the pub
-   * @param value - The bit value to which the flag is set; 1 for hidden
-   */
-  setHiddenItem2(value: 0 | 1) {
-    this.setFlag(OFFSET.HIDDENREWARDFLAGS, 0x07, value);
   }
 
   /**
