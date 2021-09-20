@@ -5,6 +5,7 @@ import { FFTAFormation } from "../DataWrapper/FFTAFormation";
 import { FFTALawSet } from "../DataWrapper/FFTALaw";
 import NoiseGenerator from "../utils/NoiseGenerator";
 import FFTAItem, { FFTARewardItemSet } from "../DataWrapper/FFTAItem";
+import { first } from "lodash";
 
 /**
  * Sets the story missions interpolate between a minium and maximum value.
@@ -262,6 +263,11 @@ export function randomizeLinearStory(
     selectedMission.missionType = 0x0a00;
     // Set the extra flags to show on the location menu
     selectedMission.setMoreFlags(0x00);
+
+    // Give two new random tier rewards
+    selectedMission.itemReward2 = 0xfff0 + rng.randomIntRange(1, 7);
+    selectedMission.itemReward2 = 0xfff0 + rng.randomIntRange(1, 7);
+
     // Set the unlock of this mission to the previous mission, if it exists
     if (newStory.length > 0) {
       setNewUnlockFlag(
@@ -292,6 +298,162 @@ export function randomizeLinearStory(
     mission.pickUpInfo = 0x00; // Clears info to pick up in specific days
     mission.requiredItem1 = 0x0000;
     mission.requiredItem2 = 0x0000;
+    mission.cityAppearance = 0;
     mission.price = 0;
+  });
+}
+
+export function randomizeBranchingStory(
+  missions: Array<FFTAMission>,
+  storyLength: number,
+  rng: NoiseGenerator
+) {
+  // Helper function to set the mission's prereq to a given mission
+  const setNewUnlockFlag = (
+    mission: FFTAMission,
+    previousMissionID: number,
+    alternateOption1MissionID: number,
+    alternateOption2MissionID: number
+  ) => {
+    mission.setUnlockFlag1(
+      previousMissionID - (1 % 255),
+      3 + Math.floor((previousMissionID - 1) / 255),
+      0x01
+    );
+    mission.setUnlockFlag2(
+      alternateOption1MissionID - (1 % 255),
+      3 + Math.floor((alternateOption1MissionID - 1) / 255),
+      0x00
+    );
+    mission.setUnlockFlag3(
+      alternateOption2MissionID - (1 % 255),
+      3 + Math.floor((alternateOption2MissionID - 1) / 255),
+      0x00
+    );
+    mission.requiredItem1 = 0x0001;
+    mission.requiredItem2 = 0x0000;
+  };
+
+  const updateStoryInfo = (
+    mission: FFTAMission,
+    previousID: number,
+    alternateMissionID1: number,
+    alternateMissionID2: number
+  ) => {
+    // Set the mission type to appear as purchasable in shop and selectable at location
+    mission.missionType = 0x0a00;
+    // Set the extra flags to show on the location menu
+    mission.setMoreFlags(0x00);
+    // Set the unlock of this mission to the previous mission, if it exists
+    if (previousID > 0) {
+      setNewUnlockFlag(
+        mission,
+        previousID,
+        alternateMissionID1,
+        alternateMissionID2
+      );
+      // Otherwise clear all requirements, since it is the starting mission
+    } else {
+      mission.setUnlockFlag1(0x00, 0x00, 0x00);
+      mission.setUnlockFlag2(0x00, 0x00, 0x00);
+      mission.setUnlockFlag3(0x00, 0x00, 0x00);
+    }
+    mission.itemReward1 = 0x178;
+    mission.itemReward2 = 0xfff0 + rng.randomIntRange(1, 7);
+  };
+
+  // Sets all missions to have impossible unlock criteria
+  missions.forEach((mission) => {
+    mission.setUnlockFlag1(0x02, 0x03, 0x01);
+    mission.setUnlockFlag2(0x02, 0x03, 0x00);
+    mission.setUnlockFlag3(0x00, 0x00, 0x00);
+  });
+
+  // Filter to all encounter missions
+  const validMissions = missions.filter(
+    (mission) =>
+      mission.displayName != "dummy" &&
+      mission.displayName != "Royal Valley" &&
+      mission.encounterMission === 1 &&
+      mission.linkMission === 0 &&
+      mission.missionType != 0x0d01
+  );
+
+  // Create new "path" for the story
+  let newStory: Array<FFTAMission> = [];
+  const firstMission = validMissions.splice(
+    rng.randomIntMax(validMissions.length - 1),
+    1
+  )[0];
+  firstMission.setUnlockFlag1(0, 0, 0);
+  firstMission.setUnlockFlag2(0, 0, 0);
+  firstMission.setUnlockFlag3(0, 0, 0);
+  firstMission.requiredItem1 = 0x0000;
+  firstMission.requiredItem2 = 0x0000;
+  firstMission.itemReward1 = 0x0178;
+  firstMission.itemReward2 = 0xfff0 + rng.randomIntRange(1, 7);
+  newStory.push(firstMission);
+
+  for (var i = 0; i < storyLength - 2; i++) {
+    // Get a random mission and remove it from t he valid missions
+    const option1 = validMissions.splice(
+      rng.randomIntMax(validMissions.length - 1),
+      1
+    )[0];
+    const option2 = validMissions.splice(
+      rng.randomIntMax(validMissions.length - 1),
+      1
+    )[0];
+    const option3 = validMissions.splice(
+      rng.randomIntMax(validMissions.length - 1),
+      1
+    )[0];
+    updateStoryInfo(
+      option1,
+      newStory[newStory.length - 1].missionID,
+      option2.missionID,
+      option3.missionID
+    );
+    updateStoryInfo(
+      option2,
+      newStory[newStory.length - 1].missionID,
+      option1.missionID,
+      option3.missionID
+    );
+    updateStoryInfo(
+      option3,
+      newStory[newStory.length - 1].missionID,
+      option1.missionID,
+      option2.missionID
+    );
+
+    newStory.push(option1);
+    newStory.push(option2);
+    newStory.push(option3);
+  }
+
+  newStory[newStory.length - 1].itemReward1 = 0x0179;
+  newStory[newStory.length - 2].itemReward1 = 0x0179;
+  newStory[newStory.length - 3].itemReward1 = 0x0179;
+
+  // Find Royal Valley, and set it to unlock after the last "new story" mission is completed
+  const royalValley = missions.find(
+    (mission) => mission.displayName === "Royal Valley"
+  )!;
+  royalValley.missionType = 0x0a00;
+  royalValley.setMoreFlags(0x00);
+  royalValley.setUnlockFlag1(0, 0, 0);
+  royalValley.setUnlockFlag2(0, 0, 0);
+  royalValley.setUnlockFlag3(0, 0, 0);
+  royalValley.requiredItem1 = 0x02;
+  royalValley.requiredItem2 = 0x0000;
+  newStory.push(royalValley);
+
+  // Fix certain things about the missions
+  newStory.forEach((mission) => {
+    mission.recruit = 0x00;
+    mission.pickUpInfo = 0x00; // Clears info to pick up in specific days
+    mission.price = 0;
+    mission.cityAppearance = 0;
   });
 }

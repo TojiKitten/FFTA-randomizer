@@ -3,7 +3,8 @@ import { FFTAObject } from "./FFTAObject";
 const enum OFFSET {
   ID = 0x00,
   TYPE = 0x01, // 0B is regular encounter, 02 is dispatch maybe uses flags
-  RANK = 0x03,
+  RANK = 0x03, // 2 Bytes of combined info, bottom 3 bits are rank, next 3 are where city appears, next 1 is cancellations allowed
+  // 0 anywhere, 1 Cyril, 2 Muscadet, 3 Baguba, 4 Nowhere, 5 Sprohm, 6 Cadoan, 7 nowhere
   UNLOCKFLAG1 = 0x05, // 3 Bytes (Bit Offset, Row Offset * 0x20, Value)
   UNLOCKFLAG2 = 0x08, // 3 Bytes (Bit Offset, Row Offset * 0x20, Value)
   UNLOCKFLAG3 = 0x0b, // 3 Bytes (Bit Offset, Row Offset * 0x20, Value)
@@ -70,7 +71,19 @@ export class FFTAMission extends FFTAObject {
   }
 
   get missionRank(): number {
-    return this.getProperty(OFFSET.RANK, 2);
+    return (this.getProperty(OFFSET.RANK, 2) & (7 << 4)) >> 4;
+  }
+
+  get cityAppearance(): number {
+    return (this.getProperty(OFFSET.RANK, 2) & (7 << 7)) >> 7;
+  }
+  set cityAppearance(cityID: number) {
+    const proposedValue = cityID << 7;
+    const currentValue = this.cityAppearance << 7;
+    const newValue =
+      this.getProperty(OFFSET.RANK, 2) - currentValue + proposedValue;
+
+    this.setProperty(OFFSET.RANK, 2, newValue);
   }
 
   set missionType(type: number) {
@@ -125,21 +138,21 @@ export class FFTAMission extends FFTAObject {
   set requiredItem1(id: number) {
     this.setProperty(OFFSET.REQITEM1, 2, id);
   }
-  get reqiredItem1(): number {
-    return this.getProperty(OFFSET.REQITEM1, 1);
+  get requiredItem1(): number {
+    return this.getProperty(OFFSET.REQITEM1, 2);
   }
 
   set requiredItem2(id: number) {
     this.setProperty(OFFSET.REQITEM2, 2, id);
   }
-  get reqiredItem2(): number {
-    return this.getProperty(OFFSET.REQITEM2, 1);
+  get requiredItem2(): number {
+    return this.getProperty(OFFSET.REQITEM2, 2);
   }
 
   set requiredJob(id: number) {
     this.setProperty(OFFSET.REQITEM2, 2, id);
   }
-  get reqiredJob(): number {
+  get requiredJob(): number {
     return this.getProperty(OFFSET.REQITEM2, 1);
   }
 
@@ -187,6 +200,9 @@ export class FFTAMission extends FFTAObject {
 
   get missionLocation(): number {
     return this.getProperty(OFFSET.MISSIONLOCATION, 1);
+  }
+  set missionLocation(locationID: number) {
+    this.setProperty(OFFSET.MISSIONLOCATION, 1, locationID);
   }
 
   /**

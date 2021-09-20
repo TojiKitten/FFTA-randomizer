@@ -22,6 +22,7 @@ export const MissionSettings = () => {
   const [showLevelModifier, setShowLevelModifier] = React.useState(false);
   const [minLevelModifier, setMinLevelModifier] = React.useState(0);
   const [showStoryLength, setShowStoryLength] = React.useState(false);
+  const [maxStoryLength, setMaxStoryLength] = React.useState(126);
   const [gilRewardText, setGilRewardText] = React.useState("Off");
   const [apRewardText, setAPRewardText] = React.useState("Off");
 
@@ -33,6 +34,7 @@ export const MissionSettings = () => {
         break;
       case "linear":
         setShowStoryLength(true);
+        setMaxStoryLength(126);
         dispatch({
           type: "missionSettings",
           option: { missionScaling: "average" },
@@ -40,6 +42,7 @@ export const MissionSettings = () => {
         break;
       case "branching":
         setShowStoryLength(true);
+        setMaxStoryLength(Math.floor(126 / 3));
         dispatch({
           type: "missionSettings",
           option: { missionScaling: "average" },
@@ -110,7 +113,7 @@ export const MissionSettings = () => {
         >
           <option value="normal">Normal</option>
           <option value="linear">Randomized Linear</option>
-          <option value="branching">Randomized Branching</option>
+          {false && <option value="branching">Randomized Branching</option>}
         </select>
       </div>
       {showStoryLength && (
@@ -120,7 +123,7 @@ export const MissionSettings = () => {
             id="storyLength"
             type="Range"
             min="2"
-            max="126"
+            max={maxStoryLength.toString()}
             value={storyLength}
             onChange={(event) => {
               const { value } = event.target;

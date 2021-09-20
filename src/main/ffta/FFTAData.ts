@@ -848,7 +848,7 @@ export class FFTAData {
         MissionHacks.randomizeLinearStory(this.missions, length, this.rng);
         break;
       case "branching":
-        // TODO
+        MissionHacks.randomizeBranchingStory(this.missions, length, this.rng);
         break;
       default:
         throw new Error("Reward case: " + mode + " unhandled!");
