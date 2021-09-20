@@ -68,17 +68,6 @@ export function highestMissionLevels(fftaData: FFTAData) {
 }
 
 /**
- * Sets all missions to give a certain amount of AP.
- * @param missions - An array of all missions
- * @param apBoost - The AP to set
- */
-export function apBoost(missions: Array<FFTAMission>, apBoost: number) {
-  missions.forEach((mission) => {
-    mission.apReward = apBoost;
-  });
-}
-
-/**
  * Sets the two orbs on Frosty Mage to level 50
  * @param rom - A buffer holding FFTA
  */
@@ -224,10 +213,25 @@ export function unlockAllStoryMissions(missions: Array<FFTAMission>) {
     });
 }
 
-export function randomizeStory(
+export function randomizeLinearStory(
   missions: Array<FFTAMission>,
+  storyLength: number,
   rng: NoiseGenerator
 ) {
+  // Helper function to set the mission's prereq to a given mission
+  const setNewUnlockFlag = (
+    mission: FFTAMission,
+    previousMissionID: number
+  ) => {
+    mission.setUnlockFlag1(
+      previousMissionID - (1 % 255),
+      3 + Math.floor((previousMissionID - 1) / 255),
+      0x01
+    );
+    mission.setUnlockFlag2(0x00, 0x00, 0x00);
+    mission.setUnlockFlag3(0x00, 0x00, 0x00);
+  };
+
   // Sets all missions to have impossible unlock criteria
   missions.forEach((mission) => {
     mission.setUnlockFlag1(0x02, 0x03, 0x01);
@@ -245,23 +249,9 @@ export function randomizeStory(
       mission.missionType != 0x0d01
   );
 
-  // Helper function to set the mission's prereq to a given mission
-  const setNewUnlockFlag = (
-    mission: FFTAMission,
-    previousMissionID: number
-  ) => {
-    mission.setUnlockFlag1(
-      previousMissionID - (1 % 255),
-      3 + Math.floor((previousMissionID - 1) / 255),
-      0x01
-    );
-    mission.setUnlockFlag2(0x00, 0x00, 0x00);
-    mission.setUnlockFlag3(0x00, 0x00, 0x00);
-  };
-
   // Create new "path" for the story
   let newStory: Array<FFTAMission> = [];
-  for (var i = 0; i < 1; i++) {
+  for (var i = 0; i < storyLength; i++) {
     // Get a random mission and remove it from t he valid missions
     const selectedMission = validMissions.splice(
       rng.randomIntMax(validMissions.length - 1),
@@ -302,7 +292,5 @@ export function randomizeStory(
     mission.requiredItem1 = 0x0000;
     mission.requiredItem2 = 0x0000;
     mission.price = 0;
-    mission.gilReward = 5000;
-    console.log(mission);
   });
 }

@@ -98,7 +98,7 @@ const requiredMissionItems = [
 
 export const MissionLog = (props: any) => {
   const dispatch = useRandomizerUpdate();
-  const missionState = useRandomizer().missionSettings;
+  const missionState = useRandomizer().missionLogSettings;
   const missionItems: any = missionState.missionItems;
   const [allMissions, setAllMissions] = React.useState(new Array<any>());
   const [searchString, setSearchString] = React.useState("");
@@ -117,7 +117,7 @@ export const MissionLog = (props: any) => {
     });
 
     dispatch({
-      type: "missionSettings",
+      type: "missionLogSettings",
       option: { missionItems: newItems },
     });
   };
@@ -241,7 +241,7 @@ export const MissionLog = (props: any) => {
           checked={missionState.showAllMissions}
           onChange={(event) => {
             dispatch({
-              type: "missionSettings",
+              type: "missionLogSettings",
               option: { showAllMissions: event.target.checked },
             });
           }}
@@ -255,7 +255,7 @@ export const MissionLog = (props: any) => {
           checked={missionState.showCompletedMissions}
           onChange={(event) => {
             dispatch({
-              type: "missionSettings",
+              type: "missionLogSettings",
               option: { showCompletedMissions: event.target.checked },
             });
           }}
@@ -269,7 +269,7 @@ export const MissionLog = (props: any) => {
           checked={missionState.showRepeatableMissions}
           onChange={(event) => {
             dispatch({
-              type: "missionSettings",
+              type: "missionLogSettings",
               option: { showRepeatableMissions: event.target.checked },
             });
           }}
@@ -285,7 +285,7 @@ export const MissionLog = (props: any) => {
           checked={missionState.showMissingMissionItems}
           onChange={(event) => {
             dispatch({
-              type: "missionSettings",
+              type: "missionLogSettings",
               option: { showMissingMissionItems: event.target.checked },
             });
           }}

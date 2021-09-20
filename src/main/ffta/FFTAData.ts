@@ -748,12 +748,26 @@ export class FFTAData {
   }
 
   /**
-   * Sets AP for missions, or skips if AP is 0
-   * @param option - The value of AP to set
+   * Sets universal AP reward for missions
+   * @param apAmount - The amount of AP to reward
    */
-  handleAPBoost(option: number) {
-    if (option > 0) {
-      MissionHacks.apBoost(this.missions, option);
+  handleAPBoost(apAmount: number) {
+    if (apAmount >= 0) {
+      this.missions.forEach((mission) => {
+        mission.apReward = apAmount;
+      });
+    }
+  }
+
+  /**
+   * Sets universal Gil reward for missions
+   * @param gilAmount - The amount of Gil to reward
+   */
+  handleGilReward(gilAmount: number) {
+    if (gilAmount >= 0) {
+      this.missions.forEach((mission) => {
+        mission.gilReward = gilAmount;
+      });
     }
   }
 
@@ -821,6 +835,26 @@ export class FFTAData {
    * Shuffles or randomizes mission item rewards
    * @param option - State of mission item rewards
    */
+  handleRandomizedStory(mode: string, length: number) {
+    this.rng.setPosition(4000);
+    switch (mode) {
+      case "normal":
+        break;
+      case "linear":
+        MissionHacks.randomizeLinearStory(this.missions, length, this.rng);
+        break;
+      case "branching":
+        // TODO
+        break;
+      default:
+        throw new Error("Reward case: " + mode + " unhandled!");
+    }
+  }
+
+  /**
+   * Shuffles or randomizes mission item rewards
+   * @param option - State of mission item rewards
+   */
   handleRewardOptions(option: string) {
     this.rng.setPosition(1200);
     switch (option) {
@@ -835,10 +869,14 @@ export class FFTAData {
       default:
         throw new Error("Reward case: " + option + " unhandled!");
     }
+  }
 
-    MissionHacks.hideRewardPreviews(this.missions);
-    MissionHacks.randomizeStory(this.missions, this.rng);
-    //MissionHacks.unlockAllStoryMissions(items);
+  /**
+   * Swaps all mission reward item previews with a ??? bag
+   * @param disable - True means Item Preview shows ??? bag, false means vanilla
+   */
+  handleRewardPreview(disable: boolean) {
+    disable ? MissionHacks.hideRewardPreviews(this.missions) : false;
   }
 
   /**

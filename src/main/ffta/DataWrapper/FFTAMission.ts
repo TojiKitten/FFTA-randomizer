@@ -102,17 +102,17 @@ export class FFTAMission extends FFTAObject {
   }
 
   set gilReward(amount: number) {
-    this.setProperty(OFFSET.GILREWARD, 1, Math.min(0xff, amount / 200));
+    this.setProperty(OFFSET.GILREWARD, 1, amount);
   }
   get gilReward(): number {
-    return this.getProperty(OFFSET.GILREWARD, 1) * 200;
+    return this.getProperty(OFFSET.GILREWARD, 1);
   }
 
   set apReward(ap: number) {
-    this.setProperty(OFFSET.AP, 1, ap / 10);
+    this.setProperty(OFFSET.AP, 1, ap);
   }
   get apReward(): number {
-    return this.getProperty(OFFSET.AP, 1) * 10;
+    return this.getProperty(OFFSET.AP, 1);
   }
 
   set recruit(id: number) {

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { NavBar } from "./NavBar";
 import { GeneralSettings } from "./GeneralSettings";
+import { MissionSettings } from "./MissionSettings";
 import { PartySettings } from "./PartySettings";
 import { JobSettings } from "./JobSettings";
 import { ItemSettings } from "./ItemSettings";
@@ -18,6 +19,9 @@ export const RomSettings = () => {
     case "general":
       loadedPage = <GeneralSettings />;
       break;
+    case "missions":
+      loadedPage = <MissionSettings />;
+      break;
     case "party":
       loadedPage = <PartySettings />;
       break;
@@ -30,7 +34,7 @@ export const RomSettings = () => {
     case "logbook":
       loadedPage = <Logbook />;
       break;
-    case "missions":
+    case "mission Log":
       loadedPage = <MissionLog />;
       break;
   }

@@ -120,7 +120,8 @@ label {
 }
 
 .partyMember,
-.generalSettings {
+.generalSettings,
+.missionSettings {
   grid-column: span 12;
   display: grid;
   grid-template-rows: auto-fill;
@@ -129,7 +130,8 @@ label {
 }
 
 .partyMemberOption,
-.generalSettingsOption {
+.generalSettingsOption,
+.missionSettingsOption {
   grid-column: span 12;
 }
 
