@@ -28,7 +28,10 @@ export function randomizeFFTA(fftaData: FFTAData, options: RandomizerState) {
     missionSettings.missionScaling,
     missionSettings.missionScalingValue
   );
-  fftaData.handleRandomEnemies(missionSettings.randomEnemies);
+  fftaData.handleRandomEnemies(
+    missionSettings.randomEnemies,
+    missionSettings.enemyAbilityPercentage
+  );
   fftaData.handleRewardOptions(missionSettings.missionRewards);
   fftaData.handleGilReward(missionSettings.gilReward);
   fftaData.handleRewardPreview(missionSettings.disableRewardPreview);

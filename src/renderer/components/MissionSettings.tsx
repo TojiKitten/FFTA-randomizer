@@ -14,6 +14,7 @@ export const MissionSettings = () => {
     missionScaling,
     missionScalingValue,
     randomEnemies,
+    enemyAbilityPercentage,
     storyLength,
   } = state.missionSettings;
 
@@ -22,6 +23,7 @@ export const MissionSettings = () => {
   const [showLevelModifier, setShowLevelModifier] = React.useState(false);
   const [minLevelModifier, setMinLevelModifier] = React.useState(0);
   const [showStoryLength, setShowStoryLength] = React.useState(false);
+  const [showEnemyAbilities, setShowEnemyAbilities] = React.useState(false);
   const [maxStoryLength, setMaxStoryLength] = React.useState(126);
   const [gilRewardText, setGilRewardText] = React.useState("Off");
   const [apRewardText, setAPRewardText] = React.useState("Off");
@@ -96,6 +98,11 @@ export const MissionSettings = () => {
       ? setAPRewardText("Off")
       : setAPRewardText((apBoost * 10).toString());
   }, [apBoost]);
+
+  // Update UI based on random enemies option
+  React.useEffect(() => {
+    setShowEnemyAbilities(randomEnemies);
+  }, [randomEnemies]);
 
   return (
     <div className="missionSettings">
@@ -190,6 +197,30 @@ export const MissionSettings = () => {
           }}
         />
       </div>
+      {showEnemyAbilities && (
+        <div className="missionSettingsOption">
+          <label htmlFor="enemyAbilityPercentage">
+            Percent of Abilities Learned
+          </label>
+          <input
+            id="enemyAbilityPercentage"
+            type="Range"
+            min="0"
+            max="100"
+            value={enemyAbilityPercentage}
+            onChange={(event) => {
+              const { value } = event.target;
+              dispatch({
+                type: "missionSettings",
+                option: {
+                  enemyAbilityPercentage: parseInt(value),
+                },
+              });
+            }}
+          />
+          {enemyAbilityPercentage}
+        </div>
+      )}
       <div className="missionSettingsOption">
         <label htmlFor="missionRewardOption">Item Rewards</label>
         <select

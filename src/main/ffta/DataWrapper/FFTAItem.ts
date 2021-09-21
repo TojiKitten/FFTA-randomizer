@@ -300,19 +300,6 @@ export class FFTAItem extends FFTAObject {
     return this.itemAbilities;
   }
 
-  // /**
-  //  * Sets an inner bit of the item flags to a specific value.
-  //  * @param flag - The offset of the flag to set
-  //  * @param value - The bit value to which the flag is set
-  //  */
-  // private setFlag(flag: ITEMFLAG, value: 0 | 1): void {
-  //   let mask = 0x1 << flag;
-  //   let newFlags = new Uint8Array([
-  //     (this.properties[OFFSET.FLAGS] & ~mask) | (value << flag),
-  //   ]);
-  //   this.properties.set(newFlags, OFFSET.FLAGS);
-  // }
-
   /**
    * Changes the item buy and sell price to be proportionate to its primary Offensive and Defensive stat.
    */

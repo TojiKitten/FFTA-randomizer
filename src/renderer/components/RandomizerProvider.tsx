@@ -27,6 +27,7 @@ const initialRandomizerOptions = {
     apBoost: -1,
     gilReward: -1,
     randomEnemies: false,
+    enemyAbilityPercentage: 50,
   },
   partySettings: {
     partyRNGEnabled: false,

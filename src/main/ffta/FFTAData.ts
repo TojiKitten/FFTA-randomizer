@@ -659,7 +659,7 @@ export class FFTAData {
    * Updates each formation to randomize enemy loadouts
    * @param options - Randomizer UI selected options
    */
-  handleRandomEnemies(randomEnemies: boolean) {
+  handleRandomEnemies(randomEnemies: boolean, abilityPercentage: number) {
     if (randomEnemies) {
       // Randomize non Guest, non monster enemies
       for (var i = 3; i < this.formations.length; i++) {
@@ -687,7 +687,7 @@ export class FFTAData {
                 job: "random",
                 rngEquip: true,
                 level: unit.getLevel(),
-                masteredAbilities: 50,
+                masteredAbilities: abilityPercentage,
                 masterType: "abilities",
               },
               this.rng
@@ -724,7 +724,7 @@ export class FFTAData {
             job: "random",
             rngEquip: true,
             level: member.getLevel(),
-            masteredAbilities: 75,
+            masteredAbilities: abilityPercentage,
             masterType: "abilities",
           },
           this.rng

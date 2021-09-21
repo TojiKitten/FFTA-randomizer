@@ -345,7 +345,7 @@ function getEnemyMasteryAbilityIDs(
   } else throw new Error("Job Mastery Error: Second Job not found");
 
   abilityIndicies = abilityIndicies.filter(
-    (abilityID) => rng.randomIntMax(100) <= count
+    (abilityID) => rng.randomIntRange(1, 100) <= count
   );
 
   const masteredAbilities = abilityIndicies.map(
