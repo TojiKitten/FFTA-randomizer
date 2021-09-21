@@ -134,9 +134,9 @@ const FFTAMap: FFTAMemoryMap = {
       length: 767,
     },
     MissionNames: {
-      offset: 0x55a650,
+      offset: 0x55a64c,
       byteSize: 0x4,
-      length: 396,
+      length: 0x196,
     },
     Animations: {
       offset: 0x390e44,
@@ -172,7 +172,7 @@ const FFTAMap: FFTAMemoryMap = {
   Missions: {
     offset: 0x55ae4c,
     byteSize: 0x46,
-    length: 396,
+    length: 0x196,
   },
 };
 const allowedWeaponAddress = 0x51d0f4;
@@ -478,6 +478,7 @@ export class FFTAData {
         this.missionNames[(this.rom[memory + 1] << 8) | this.rom[memory]],
         this.rom.slice(memory, memory + dataType.byteSize)
       );
+
       items.push(newItem);
     }
     return items;
@@ -627,6 +628,10 @@ export class FFTAData {
     return rewardItemSets;
   }
 
+  handleSeed(seed: number) {
+    this.rom.set(FFTAUtils.getWordUint8Array(seed, true), 0xa3991c);
+  }
+
   /**
    * Updates missions to scale enemy levels
    * @param option - Type of scaling
@@ -654,7 +659,7 @@ export class FFTAData {
    * Updates each formation to randomize enemy loadouts
    * @param options - Randomizer UI selected options
    */
-  handleRandomEnemies(randomEnemies: boolean) {
+  handleRandomEnemies(randomEnemies: boolean, abilityPercentage: number) {
     if (randomEnemies) {
       // Randomize non Guest, non monster enemies
       for (var i = 3; i < this.formations.length; i++) {
@@ -682,7 +687,7 @@ export class FFTAData {
                 job: "random",
                 rngEquip: true,
                 level: unit.getLevel(),
-                masteredAbilities: 50,
+                masteredAbilities: abilityPercentage,
                 masterType: "abilities",
               },
               this.rng
@@ -719,7 +724,7 @@ export class FFTAData {
             job: "random",
             rngEquip: true,
             level: member.getLevel(),
-            masteredAbilities: 75,
+            masteredAbilities: abilityPercentage,
             masterType: "abilities",
           },
           this.rng
@@ -747,12 +752,26 @@ export class FFTAData {
   }
 
   /**
-   * Sets AP for missions, or skips if AP is 0
-   * @param option - The value of AP to set
+   * Sets universal AP reward for missions
+   * @param apAmount - The amount of AP to reward
    */
-  handleAPBoost(option: number) {
-    if (option > 0) {
-      MissionHacks.apBoost(this.missions, option);
+  handleAPBoost(apAmount: number) {
+    if (apAmount >= 0) {
+      this.missions.forEach((mission) => {
+        mission.apReward = apAmount;
+      });
+    }
+  }
+
+  /**
+   * Sets universal Gil reward for missions
+   * @param gilAmount - The amount of Gil to reward
+   */
+  handleGilReward(gilAmount: number) {
+    if (gilAmount >= 0) {
+      this.missions.forEach((mission) => {
+        mission.gilReward = gilAmount;
+      });
     }
   }
 
@@ -820,6 +839,26 @@ export class FFTAData {
    * Shuffles or randomizes mission item rewards
    * @param option - State of mission item rewards
    */
+  handleRandomizedStory(mode: string, length: number) {
+    this.rng.setPosition(4000);
+    switch (mode) {
+      case "normal":
+        break;
+      case "linear":
+        MissionHacks.randomizeLinearStory(this.missions, length, this.rng);
+        break;
+      case "branching":
+        MissionHacks.randomizeBranchingStory(this.missions, length, this.rng);
+        break;
+      default:
+        throw new Error("Reward case: " + mode + " unhandled!");
+    }
+  }
+
+  /**
+   * Shuffles or randomizes mission item rewards
+   * @param option - State of mission item rewards
+   */
   handleRewardOptions(option: string) {
     this.rng.setPosition(1200);
     switch (option) {
@@ -834,6 +873,14 @@ export class FFTAData {
       default:
         throw new Error("Reward case: " + option + " unhandled!");
     }
+  }
+
+  /**
+   * Swaps all mission reward item previews with a ??? bag
+   * @param disable - True means Item Preview shows ??? bag, false means vanilla
+   */
+  handleRewardPreview(disable: boolean) {
+    disable ? MissionHacks.hideRewardPreviews(this.missions) : false;
   }
 
   /**

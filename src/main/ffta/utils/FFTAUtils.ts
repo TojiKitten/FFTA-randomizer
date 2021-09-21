@@ -20,12 +20,10 @@ export function getShortUint8Array(value: number, littleEndian: boolean) {
  * @returns A Uint8Array of length 4
  */
 export function getWordUint8Array(value: number, littleEndian: boolean) {
-  var firstByte = littleEndian ? value & 0xff : (value >> 0x24) & 0xff;
-  var secondByte = littleEndian
-    ? (value >> 0x8) & 0xff
-    : (value >> 0x16) & 0xff;
-  var thirdByte = littleEndian ? (value >> 0x16) & 0xff : (value >> 0x8) & 0xff;
-  var fourthByte = littleEndian ? (value >> 0x24) & 0xff : value & 0xff;
+  var firstByte = littleEndian ? value & 0xff : (value >> 24) & 0xff;
+  var secondByte = littleEndian ? (value >> 8) & 0xff : (value >> 16) & 0xff;
+  var thirdByte = littleEndian ? (value >> 16) & 0xff : (value >> 8) & 0xff;
+  var fourthByte = littleEndian ? (value >> 24) & 0xff : value & 0xff;
 
   return new Uint8Array([firstByte, secondByte, thirdByte, fourthByte]);
 }

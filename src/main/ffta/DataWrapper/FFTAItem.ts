@@ -180,35 +180,35 @@ export class FFTAItem extends FFTAObject {
   }
 
   setDoubleSword(value: 0 | 1) {
-    this.setFlag(ITEMFLAG.DOUBLESWORD, value);
+    this.setFlag(OFFSET.FLAGS, 1, ITEMFLAG.DOUBLESWORD, value);
   }
 
   setDoubleHand(value: 0 | 1) {
-    this.setFlag(ITEMFLAG.DOUBLEHAND, value);
+    this.setFlag(OFFSET.FLAGS, 1, ITEMFLAG.DOUBLEHAND, value);
   }
 
   setMonkeyGrip(value: 0 | 1) {
-    this.setFlag(ITEMFLAG.MONKEYGRIP, value);
+    this.setFlag(OFFSET.FLAGS, 1, ITEMFLAG.MONKEYGRIP, value);
   }
 
   setDiscount(value: 0 | 1) {
-    this.setFlag(ITEMFLAG.DISCOUNT, value);
+    this.setFlag(OFFSET.FLAGS, 1, ITEMFLAG.DISCOUNT, value);
   }
 
   setTier1(value: 0 | 1) {
-    this.setFlag(ITEMFLAG.TIER1, value);
+    this.setFlag(OFFSET.FLAGS, 1, ITEMFLAG.TIER1, value);
   }
 
   setTier2(value: 0 | 1) {
-    this.setFlag(ITEMFLAG.TIER2, value);
+    this.setFlag(OFFSET.FLAGS, 1, ITEMFLAG.TIER2, value);
   }
 
   setTier3(value: 0 | 1) {
-    this.setFlag(ITEMFLAG.TIER3, value);
+    this.setFlag(OFFSET.FLAGS, 1, ITEMFLAG.TIER3, value);
   }
 
   setMythrilOrConsumable(value: 0 | 1) {
-    this.setFlag(ITEMFLAG.MYTHRILORCONSUMABLE, value);
+    this.setFlag(OFFSET.FLAGS, 1, ITEMFLAG.MYTHRILORCONSUMABLE, value);
   }
 
   setNono(value: number) {
@@ -298,19 +298,6 @@ export class FFTAItem extends FFTAObject {
    */
   getItemAbilities() {
     return this.itemAbilities;
-  }
-
-  /**
-   * Sets an inner bit of the item flags to a specific value.
-   * @param flag - The offset of the flag to set
-   * @param value - The bit value to which the flag is set
-   */
-  private setFlag(flag: ITEMFLAG, value: 0 | 1): void {
-    let mask = 0x1 << flag;
-    let newFlags = new Uint8Array([
-      (this.properties[OFFSET.FLAGS] & ~mask) | (value << flag),
-    ]);
-    this.properties.set(newFlags, OFFSET.FLAGS);
   }
 
   /**

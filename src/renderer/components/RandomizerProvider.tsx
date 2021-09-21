@@ -11,16 +11,23 @@ const initialRandomizerOptions = {
         (new Date().getMonth() + 1).toString().padStart(2, "0") +
         new Date().getUTCDate().toString().padStart(2, "0")
     ),
-    missionScaling: "normal",
-    missionScalingValue: 1,
     cutscenes: "all",
-    missionRewards: "normal",
-    apBoost: 0,
     laws: "normal",
     startingGold: 5000,
     frostyMageBoost: false,
     noJudgeTurn: false,
+  },
+  missionSettings: {
+    storySetting: "normal",
+    storyLength: 5,
+    missionScaling: "normal",
+    missionScalingValue: 1,
+    missionRewards: "normal",
+    disableRewardPreview: false,
+    apBoost: -1,
+    gilReward: -1,
     randomEnemies: false,
+    enemyAbilityPercentage: 50,
   },
   partySettings: {
     partyRNGEnabled: false,
@@ -147,7 +154,7 @@ const initialRandomizerOptions = {
   shopSettings: {
     shopItems: "default",
   },
-  missionSettings: {
+  missionLogSettings: {
     showAllMissions: false,
     showCompletedMissions: false,
     showRepeatableMissions: true,
