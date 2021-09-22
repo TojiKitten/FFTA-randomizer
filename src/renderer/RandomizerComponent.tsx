@@ -28,6 +28,22 @@ export function RandomizerComponent() {
 
   return (
     <>
+      <div className="has-help-text">
+        Credits
+        <div className="help-text">
+          <p>Development Team: FGKeiji and TojiKitten</p>
+          <p>Early Testers: Vallnoir, RealNostalgic, and BlueSaxorcist</p>
+          <p>
+            Special thanks to Leonarth, Darthatron, and the FFTAHacktics
+            community. Their work and research was referenced and used to create
+            this randomizer.
+          </p>
+          <p>
+            Special thanks to the FFTA Speedrunning Community for their support.
+          </p>
+          <p>Color Palette: https://lospec.com/palette-list/apollo</p>
+        </div>
+      </div>
       <h1>FFTA Randomizer</h1>
       <RomLoader />
       {loaded && <RomSaver />}

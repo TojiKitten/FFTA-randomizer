@@ -63,7 +63,8 @@ button:hover:not(.navBar-button-active) {
   font-family: "Oswald", sans-serif;
 }
 
-.appGrid > h1 {
+.appGrid > h1,
+.appGrid > .has-help-text {
   grid-column: span 12;
 }
 
