@@ -35,7 +35,9 @@ function createWindow(): void {
     },
   });
 
-  //mainWindow.removeMenu();
+  // Hide the menu if the app is packaged
+  app.isPackaged ? mainWindow.removeMenu() : false;
+
   // and load the index.html of the app.
   mainWindow
     .loadURL(

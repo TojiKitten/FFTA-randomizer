@@ -1,8 +1,8 @@
 /*Using https://lospec.com/palette-list/apollo as a color palette*/
 
 body {
-  height: 98%;
-  width: 98%;
+  height: 95vh;
+  width: 95vw;
   background-color: #172038;
   color: #c7cfcc;
   text-shadow: 2px 2px 2px #090a14;
@@ -25,37 +25,24 @@ button:hover:not(.navBar-button-active) {
 .help-text {
   width: 0;
   height: 0;
+  overflow: hidden;
   visibility: hidden;
 }
 
-.has-help-text:hover > .help-text,
 .has-help-text:hover > .help-text {
-  z-index: 1;
-  height: auto;
-  width: 96%;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  border-radius: 20px;
-  background-color: #819796;
-  box-shadow: 0px 1px 4px #577277;
+  display: inline-block;
+  margin-left: 1em;
   visibility: visible;
-  padding: 1em;
+  width: auto;
+  height: auto;
 }
 
-.has-help-text > select:focus + .help-text,
-.has-help-text > input:focus + .help-text {
-  z-index: 2;
-  height: auto;
-  width: 96%;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  border-radius: 20px;
-  background-color: #819796;
-  box-shadow: 0px 1px 4px #577277;
+.has-help-text:focus-within > .help-text {
+  display: inline-block;
+  margin-left: 1em;
   visibility: visible;
-  padding: 1em;
+  width: auto;
+  height: auto;
 }
 
 @import url("https://fonts.googleapis.com/css2?family=Oswald&display=swap");

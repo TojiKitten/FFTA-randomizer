@@ -153,6 +153,7 @@ const initialRandomizerOptions = {
   },
   shopSettings: {
     shopItems: "default",
+    randomChance: 50,
   },
   missionLogSettings: {
     showAllMissions: false,

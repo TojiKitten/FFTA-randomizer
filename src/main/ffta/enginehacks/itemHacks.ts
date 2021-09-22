@@ -26,12 +26,13 @@ export function toggleAllShopItems(items: Array<FFTAItem>, allowed: boolean) {
  */
 export function toggleRandomShopItems(
   items: Array<FFTAItem>,
-  rng: NoiseGenerator
+  rng: NoiseGenerator,
+  randomChance: number
 ) {
   // Randomly set all items to be available in shop, or not
   let newItems: Array<FFTAItem> = createNewItemArray(items);
   newItems.forEach((item) => {
-    let allowed = rng.randomBit();
+    let allowed = rng.randomIntRange(1, 100) > randomChance;
     item.setTier1(allowed ? 1 : 0);
     item.setTier2(allowed ? 1 : 0);
     item.setTier3(allowed ? 1 : 0);

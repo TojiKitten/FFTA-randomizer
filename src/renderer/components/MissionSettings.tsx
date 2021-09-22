@@ -18,25 +18,37 @@ export const MissionSettings = () => {
     storyLength,
   } = state.missionSettings;
 
+  const [showStoryLength, setShowStoryLength] = React.useState(false);
+  const [maxStoryLength, setMaxStoryLength] = React.useState(126);
+  const [storyHelp, setStoryHelp] = React.useState("");
+
   const [levelModifierText, setLevelModifierText] =
     React.useState("Level Modifier");
+  const [enemyLevelHelp, setEnemyLevelHelp] = React.useState("");
   const [showLevelModifier, setShowLevelModifier] = React.useState(false);
   const [minLevelModifier, setMinLevelModifier] = React.useState(0);
-  const [showStoryLength, setShowStoryLength] = React.useState(false);
-  const [showEnemyAbilities, setShowEnemyAbilities] = React.useState(false);
-  const [maxStoryLength, setMaxStoryLength] = React.useState(126);
+
+  const [missionRewardHelp, setMissionRewardHelp] = React.useState("");
+  const [missionPreviewHelp, setMissionPreviewHelp] = React.useState("");
+
   const [gilRewardText, setGilRewardText] = React.useState("Off");
   const [apRewardText, setAPRewardText] = React.useState("Off");
+
+  const [showEnemyAbilities, setShowEnemyAbilities] = React.useState(false);
 
   // Update UI based on story setting option
   React.useEffect(() => {
     switch (storySetting) {
       case "normal":
         setShowStoryLength(false);
+        setStoryHelp("The game is unchanged.");
         break;
       case "linear":
         setShowStoryLength(true);
-        setMaxStoryLength(126);
+        setMaxStoryLength(127);
+        setStoryHelp(
+          "Only one mission is available in the pub, and completing it unlocks the next mission. The last mission will always be Royal Valley."
+        );
         dispatch({
           type: "missionSettings",
           option: { missionScaling: "average" },
@@ -45,6 +57,7 @@ export const MissionSettings = () => {
       case "branching":
         setShowStoryLength(true);
         setMaxStoryLength(Math.floor(126 / 3));
+        setStoryHelp("This mode does not work.");
         dispatch({
           type: "missionSettings",
           option: { missionScaling: "average" },
@@ -60,6 +73,7 @@ export const MissionSettings = () => {
         setLevelModifierText("Level Modifier");
         setMinLevelModifier(0);
         setShowLevelModifier(false);
+        setEnemyLevelHelp("Enemy levels are unchanged.");
         break;
       case "lerp":
         setLevelModifierText("Li Grim Level");
@@ -71,19 +85,54 @@ export const MissionSettings = () => {
             missionScalingValue: clamp(missionScalingValue, 1, 50),
           },
         });
+        setEnemyLevelHelp(
+          "Each story mission leading up to Royal Valley interpolates to the value. Non-story missions will scale to the average clan level."
+        );
         break;
       case "average":
         setLevelModifierText("Additional Enemy Levels");
         setMinLevelModifier(0);
         setShowLevelModifier(true);
+        setEnemyLevelHelp(
+          "Missions scale to the average clan level. Additional Enemy Levels will be added into the calculation."
+        );
         break;
       case "highest":
         setLevelModifierText("Additional Enemy Levels");
         setMinLevelModifier(0);
         setShowLevelModifier(true);
+        setEnemyLevelHelp(
+          "Missions scale to the highest level member of the clan. Additional Enemy Levels will be added into the calculation."
+        );
         break;
     }
   }, [missionScaling]);
+
+  // Update UI based on mission reward option
+  React.useEffect(() => {
+    switch (missionRewards) {
+      case "normal":
+        setMissionRewardHelp("Mission reward sets are unchanged.");
+        break;
+      case "random":
+        setMissionRewardHelp("Mission reward sets are randomized.");
+        break;
+      case "shuffled":
+        setMissionRewardHelp(
+          "Mission reward items may appear in different sets."
+        );
+        break;
+    }
+  }, [missionRewards]);
+
+  // Update UI based on mission preview option
+  React.useEffect(() => {
+    disableRewardPreview
+      ? setMissionPreviewHelp(
+          'Mission item reward previews are replaced by "???" bags.'
+        )
+      : setMissionPreviewHelp("Mission item reward previews are unchanged.");
+  }, [disableRewardPreview]);
 
   // Update UI based on gil reward option
   React.useEffect(() => {
@@ -106,7 +155,7 @@ export const MissionSettings = () => {
 
   return (
     <div className="missionSettings">
-      <div className="missionSettingsOption">
+      <div className="missionSettingsOption has-help-text">
         <label htmlFor="storyOption">Story Setting</label>
         <select
           id="storyOption"
@@ -122,6 +171,7 @@ export const MissionSettings = () => {
           <option value="linear">Randomized Linear</option>
           {false && <option value="branching">Randomized Branching</option>}
         </select>
+        <div className="help-text">{storyHelp}</div>
       </div>
       {showStoryLength && (
         <div className="missionSettingsOption">
@@ -140,10 +190,10 @@ export const MissionSettings = () => {
               });
             }}
           />
-          {storyLength}
+          {storyLength} encounter missions to beat the game.
         </div>
       )}
-      <div className="missionSettingsOption">
+      <div className="missionSettingsOption has-help-text">
         <label htmlFor="missionScaleOption">Enemy Levels</label>
         <select
           id="missionScaleOption"
@@ -160,6 +210,7 @@ export const MissionSettings = () => {
           <option value="average">Scale to Average Team Level</option>
           <option value="highest">Scale to Highest Member Level</option>
         </select>
+        <div className="help-text">{enemyLevelHelp}</div>
       </div>
       {showLevelModifier && (
         <div className="missionSettingsOption">
@@ -218,10 +269,10 @@ export const MissionSettings = () => {
               });
             }}
           />
-          {enemyAbilityPercentage}
+          Enemies will learn {enemyAbilityPercentage}% of their abilities.
         </div>
       )}
-      <div className="missionSettingsOption">
+      <div className="missionSettingsOption has-help-text">
         <label htmlFor="missionRewardOption">Item Rewards</label>
         <select
           id="missionRewardOption"
@@ -237,8 +288,9 @@ export const MissionSettings = () => {
           <option value="random">Random</option>
           <option value="shuffled">Shuffled</option>
         </select>
+        <div className="help-text">{missionRewardHelp}</div>
       </div>
-      <div className="missionSettingsOption">
+      <div className="missionSettingsOption has-help-text">
         <label htmlFor="disableRewardPreview">Disable Reward Preview</label>
         <input
           id="disableRewardPreview"
@@ -251,6 +303,7 @@ export const MissionSettings = () => {
             });
           }}
         />
+        <div className="help-text">{missionPreviewHelp}</div>
       </div>
       <div className="missionSettingsOption">
         <label htmlFor="gilReward">Universal Gil Reward</label>
