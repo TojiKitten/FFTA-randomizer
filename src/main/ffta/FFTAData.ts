@@ -993,7 +993,7 @@ export class FFTAData {
    * Updates the state of all items appearing in shop
    * @param options - State of shop items
    */
-  handleShopItems(options: string) {
+  handleShopItems(options: string, randomChance: number) {
     this.rng.setPosition(1100);
     switch (options) {
       case "default":
@@ -1002,7 +1002,11 @@ export class FFTAData {
         this.items = ItemHacks.toggleLimitedShopItems(this.items, this.rng);
         break;
       case "random":
-        this.items = ItemHacks.toggleRandomShopItems(this.items, this.rng);
+        this.items = ItemHacks.toggleRandomShopItems(
+          this.items,
+          this.rng,
+          randomChance
+        );
         break;
       case "all":
         this.items = ItemHacks.toggleAllShopItems(this.items, true);

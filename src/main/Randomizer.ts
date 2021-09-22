@@ -43,7 +43,7 @@ export function randomizeFFTA(fftaData: FFTAData, options: RandomizerState) {
     partySettings.partyRNGEnabled,
     partySettings.partyMembers
   );
-  fftaData.handleShopItems(shopSettings.shopItems);
+  fftaData.handleShopItems(shopSettings.shopItems, shopSettings.randomChance);
 }
 
 export default iRandomizerOptions;

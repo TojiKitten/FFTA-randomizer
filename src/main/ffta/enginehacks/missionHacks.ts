@@ -265,7 +265,7 @@ export function randomizeLinearStory(
     selectedMission.setMoreFlags(0x00);
 
     // Give two new random tier rewards
-    selectedMission.itemReward2 = 0xfff0 + rng.randomIntRange(1, 7);
+    selectedMission.itemReward1 = 0xfff0 + rng.randomIntRange(1, 7);
     selectedMission.itemReward2 = 0xfff0 + rng.randomIntRange(1, 7);
 
     // Set the unlock of this mission to the previous mission, if it exists

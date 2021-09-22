@@ -40,7 +40,7 @@ export const RandomizerSettings = () => {
           dispatch({
             type: "generalSettings",
             option: {
-              randomizerSeed: Math.trunc(Math.random() * 1000000000),
+              randomizerSeed: Math.trunc(Math.random() * 0xffffffff),
             },
           })
         }

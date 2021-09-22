@@ -136,7 +136,11 @@ export const MissionLog = (props: any) => {
 
   function getShownMissions() {
     return missionState.showAllMissions
-      ? allMissions
+      ? allMissions.filter((mission) => {
+          return mission["Name"]
+            .toLowerCase()
+            .includes(searchString.toLowerCase());
+        })
       : allMissions
           .filter((mission) => {
             return missionReqsMet([

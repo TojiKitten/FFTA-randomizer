@@ -34,14 +34,13 @@ export const Logbook = () => {
   return (
     <div>
       <form>
-        <label>
-          Search
-          <input
-            type="text"
-            value={searchName}
-            onChange={(event) => setSearchName(event.target.value)}
-          ></input>
-        </label>
+        <label htmlFor="logbookSearch">Search</label>
+        <input
+          id="logbookSearch"
+          type="text"
+          value={searchName}
+          onChange={(event) => setSearchName(event.target.value)}
+        ></input>
       </form>
       <div className="logbook">
         {raceAbilitiesLite.length > 0 &&
