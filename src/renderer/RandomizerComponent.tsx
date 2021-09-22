@@ -28,9 +28,9 @@ export function RandomizerComponent() {
 
   return (
     <>
-      <div className="has-help-text">
-        Credits
-        <div className="help-text">
+      <div className="grid-full">
+        <div className="credits">Credits</div>
+        <div className="credits-text">
           <p>Development Team: FGKeiji and TojiKitten</p>
           <p>Early Testers: Vallnoir, RealNostalgic, and BlueSaxorcist</p>
           <p>

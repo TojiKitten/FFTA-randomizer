@@ -63,9 +63,21 @@ button:hover:not(.navBar-button-active) {
   font-family: "Oswald", sans-serif;
 }
 
-.appGrid > h1,
-.appGrid > .has-help-text {
+.appGrid > h1 {
   grid-column: span 12;
+}
+
+.credits-text {
+  height: 0;
+  overflow: hidden;
+}
+.credits {
+  width: 25px;
+}
+
+.credits:hover + .credits-text {
+  height: auto;
+  overflow: visible;
 }
 
 .fileButton {
