@@ -9,10 +9,6 @@ import * as fs from "fs";
 import "../../public/favicon-96x96.png";
 import { FFTAData } from "./ffta/FFTAData";
 import * as RandomizerOptions from "./Randomizer";
-import { PathLike } from "original-fs";
-import ItemSettings from "_/renderer/components/ItemSettings";
-import JobSettings from "_/renderer/components/JobSettings";
-import { JobLite } from "./ffta/DataWrapper/FFTAJob";
 
 const ipc = require("electron").ipcMain;
 
@@ -25,8 +21,8 @@ function createWindow(): void {
     icon: path.join(__dirname, "public", "favicon-96x96.png"),
     width: 900,
     height: 680,
-    maxHeight: 1080,
-    maxWidth: 1920,
+    maxHeight: 2160,
+    maxWidth: 3840,
     minHeight: 400,
     minWidth: 400,
     backgroundColor: "#FFFFFF",

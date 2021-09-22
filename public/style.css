@@ -1,16 +1,79 @@
+/*Using https://lospec.com/palette-list/apollo as a color palette*/
+
 body {
   height: 98%;
   width: 98%;
-  background: #151515;
-  color: #b4a5a5;
+  background-color: #172038;
+  color: #c7cfcc;
+  text-shadow: 2px 2px 2px #090a14;
+}
+
+button {
+  background-color: #394a50;
+  color: #c7cfcc;
+  text-shadow: 2px 2px 2px #090a14;
+  border: none;
+  box-shadow: 2px 2px 2px #151d28;
+  cursor: pointer;
+  font-size: larger;
+}
+
+button:hover:not(.navBar-button-active) {
+  background-color: #577277;
+}
+
+.help-text {
+  width: 0;
+  height: 0;
+  visibility: hidden;
+}
+
+.has-help-text:hover > .help-text,
+.has-help-text:hover > .help-text {
+  z-index: 1;
+  height: auto;
+  width: 96%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  border-radius: 20px;
+  background-color: #819796;
+  box-shadow: 0px 1px 4px #577277;
+  visibility: visible;
+  padding: 1em;
+}
+
+.has-help-text > select:focus + .help-text,
+.has-help-text > input:focus + .help-text {
+  z-index: 2;
+  height: auto;
+  width: 96%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  border-radius: 20px;
+  background-color: #819796;
+  box-shadow: 0px 1px 4px #577277;
+  visibility: visible;
+  padding: 1em;
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Oswald&display=swap");
+
+.navBar-button-active {
+  color: #ebede9;
+  background-color: #172038;
+  box-shadow: none;
 }
 
 .appGrid {
   display: grid;
   grid-template-rows: auto-fill;
-  grid-template-columns: repeat(12, 12fr);
+  grid-template-columns: repeat(12, 1fr);
   grid-gap: 0.25em;
   justify-content: center;
+  font-size: large;
+  font-family: "Oswald", sans-serif;
 }
 
 .appGrid > h1 {
@@ -19,16 +82,34 @@ body {
 
 .fileButton {
   grid-column: span 6;
+  margin: 0em 0.05em 0.5em;
+
+  border-radius: 0.5em;
 }
 
 .div-RandoSettings {
   grid-column: span 12;
+  margin: 0.25em;
+}
+
+.div-RandoSettings > button {
+  border-radius: 0;
+  font-size: medium;
 }
 
 .div-RomSettings {
   grid-column: span 12;
-  margin-top: 5px;
+  margin: 0.25em;
   border: 2px solid gray;
+}
+
+.navBar {
+  margin-top: -0.3em;
+  margin-bottom: 0.5em;
+}
+
+.navBar > button {
+  font-size: medium;
 }
 
 .centering-wrapper {
@@ -39,15 +120,12 @@ body {
 label {
   margin: 0 0.2em 0 0;
 }
-.navBar-button-active {
-  color: red;
-}
 
 .jobMenu,
 .mission-log {
   display: grid;
   grid-template-rows: auto-fill;
-  grid-template-columns: repeat(12, 12fr);
+  grid-template-columns: repeat(12, 1fr);
   grid-gap: 0.25em;
   justify-content: center;
 }
@@ -57,7 +135,7 @@ label {
   grid-column: span 12;
   display: grid;
   grid-template-rows: auto-fill;
-  grid-template-columns: repeat(12, 12fr);
+  grid-template-columns: repeat(12, 1fr);
   justify-items: left;
 }
 
@@ -69,7 +147,7 @@ label {
   grid-gap: 1em;
   display: grid;
   grid-template-rows: auto-fill;
-  grid-template-columns: repeat(12, 12fr);
+  grid-template-columns: repeat(12, 1fr);
   justify-items: left;
 }
 
@@ -98,7 +176,7 @@ label {
   grid-column: span 12;
   display: grid;
   grid-template-rows: auto-fill;
-  grid-template-columns: repeat(12, 12fr);
+  grid-template-columns: repeat(12, 1fr);
   justify-items: left;
 }
 
@@ -115,7 +193,7 @@ label {
   display: grid;
   grid-gap: 0.5em;
   grid-template-rows: auto-fill;
-  grid-template-columns: repeat(12, 12fr);
+  grid-template-columns: repeat(12, 1fr);
   justify-items: left;
 }
 
@@ -125,7 +203,7 @@ label {
   grid-column: span 12;
   display: grid;
   grid-template-rows: auto-fill;
-  grid-template-columns: repeat(12, 12fr);
+  grid-template-columns: repeat(12, 1fr);
   justify-items: left;
 }
 
@@ -145,11 +223,35 @@ label {
 
 .item-view {
   border-radius: 20px;
-  padding: 0.1em;
-  background-color: rgb(255, 255, 255, 0.8);
-  box-shadow: 0 2px 4px 0 rgb(255, 255, 255, 0.3);
-  color: black;
+  background-color: #819796;
+  color: #ebede9;
+  text-shadow: 2px 2px 2px #090a14;
+  box-shadow: 0px 1px 4px #577277;
   grid-column: span 12;
+  height: 75px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.item-view:focus {
+  background-color: #a8b5b2;
+}
+
+.item-view:focus > .item-content {
+  z-index: 1;
+  height: auto;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  border-radius: 20px;
+  background-color: #819796;
+  opacity: 1;
+  box-shadow: 0px 1px 4px #577277;
+}
+
+.item-view > h3 {
+  text-align: center;
 }
 
 @media screen and (min-width: 480px) {
@@ -180,12 +282,4 @@ label {
   .jobList {
     grid-column: span 2;
   }
-}
-
-.item-view > h3 {
-  text-align: center;
-}
-
-.clearFix {
-  overflow: auto;
 }

@@ -4,13 +4,59 @@ import { useRandomizer, useRandomizerUpdate } from "./RandomizerProvider";
 export const GeneralSettings = () => {
   const dispatch = useRandomizerUpdate();
   const state = useRandomizer();
+  const { generalSettings } = state;
+  const { cutscenes, laws, noJudgeTurn, frostyMageBoost } = generalSettings;
+
+  const [cutSceneHelp, setcutSceneHelp] = React.useState("");
+  React.useEffect(() => {
+    switch (cutscenes) {
+      case "all":
+        setcutSceneHelp("Cutscenes are unchanged.");
+        break;
+      case "none":
+        setcutSceneHelp("Many story cut scenes are skipped.");
+        break;
+      case "noTutorial":
+        setcutSceneHelp(
+          "Many story cut scenes are skipped and New Game starts at the overworld."
+        );
+        break;
+    }
+  }, [cutscenes]);
+
+  const [lawHelp, setLawHelp] = React.useState("");
+  React.useEffect(() => {
+    switch (laws) {
+      case "normal":
+        setLawHelp("Laws are unchanged.");
+        break;
+      case "shuffled":
+        setLawHelp("Laws are shuffled and may also appear in different ranks.");
+        break;
+    }
+  }, [laws]);
+
+  const [noJudgeHelp, setNoJudgeHelp] = React.useState("");
+  React.useEffect(() => {
+    noJudgeTurn
+      ? setNoJudgeHelp("The judge will not take turns.")
+      : setNoJudgeHelp("The judge is unchanged.");
+  }, [noJudgeTurn]);
+
+  const [frostyHelp, setFrostyHelpHelp] = React.useState("");
+  React.useEffect(() => {
+    frostyMageBoost
+      ? setFrostyHelpHelp("The Frosty Mage mission has level 50 pillars.")
+      : setFrostyHelpHelp("The Frosty Mage mission is unchanged.");
+  }, [frostyMageBoost]);
+
   return (
     <div className="generalSettings">
-      <div className="generalSettingsOption">
+      <div className="generalSettingsOption has-help-text">
         <label htmlFor="cutsceneOption">Cutscenes</label>
         <select
           id="cutsceneOption"
-          value={state.generalSettings.cutscenes}
+          value={cutscenes}
           onChange={(event) => {
             dispatch({
               type: "generalSettings",
@@ -22,12 +68,13 @@ export const GeneralSettings = () => {
           <option value="none">None</option>
           <option value="noTutorial">None + No Tutorial</option>
         </select>
+        <div className="help-text">{cutSceneHelp}</div>
       </div>
-      <div className="generalSettingsOption">
+      <div className="generalSettingsOption has-help-text">
         <label htmlFor="lawOption">Laws</label>
         <select
           id="lawOption"
-          value={state.generalSettings.laws}
+          value={laws}
           onChange={(event) => {
             dispatch({
               type: "generalSettings",
@@ -38,6 +85,7 @@ export const GeneralSettings = () => {
           <option value="normal">Normal</option>
           <option value="shuffled">Shuffled</option>
         </select>
+        <div className="help-text">{lawHelp}</div>
       </div>
       <div className="generalSettingsOption">
         <label htmlFor="goldOption">Starting Gold</label>
@@ -53,26 +101,12 @@ export const GeneralSettings = () => {
           }}
         />
       </div>
-      <div className="generalSettingsOption">
-        <label htmlFor="frostyOption">Frosty Mage Boost</label>
-        <input
-          id="frostyOption"
-          type="checkbox"
-          checked={state.generalSettings.frostyMageBoost}
-          onChange={(event) => {
-            dispatch({
-              type: "generalSettings",
-              option: { frostyMageBoost: event.target.checked },
-            });
-          }}
-        />
-      </div>
-      <div className="generalSettingsOption">
+      <div className="generalSettingsOption has-help-text">
         <label htmlFor="noJudgeOption">No Judge Turn</label>
         <input
           id="noJudgeOption"
           type="checkbox"
-          checked={state.generalSettings.noJudgeTurn}
+          checked={noJudgeTurn}
           onChange={(event) => {
             dispatch({
               type: "generalSettings",
@@ -80,6 +114,22 @@ export const GeneralSettings = () => {
             });
           }}
         />
+        <div className="help-text">{noJudgeHelp}</div>
+      </div>
+      <div className="generalSettingsOption has-help-text">
+        <label htmlFor="frostyOption">Frosty Mage Boost</label>
+        <input
+          id="frostyOption"
+          type="checkbox"
+          checked={frostyMageBoost}
+          onChange={(event) => {
+            dispatch({
+              type: "generalSettings",
+              option: { frostyMageBoost: event.target.checked },
+            });
+          }}
+        />
+        <div className="help-text">{frostyHelp}</div>
       </div>
     </div>
   );
