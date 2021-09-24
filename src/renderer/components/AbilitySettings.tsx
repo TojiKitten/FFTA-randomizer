@@ -1,4 +1,5 @@
 import * as React from "react";
+import { FFTAAbility } from "_/main/ffta/DataWrapper/FFTAAbility";
 import { FFTARaceAbility } from "_/main/ffta/DataWrapper/FFTARaceAbility";
 import { useRandomizer, useRandomizerUpdate } from "./RandomizerProvider";
 
@@ -8,31 +9,27 @@ const { api } = window;
 export const JobSettings = () => {
   const dispatch = useRandomizerUpdate();
   const state = useRandomizer();
-  const { jobSettings } = state;
-  const { jobRequirements, abilities, mpRegen } = jobSettings;
-
-  const toggledJobs = [
-    { raceName: "Human", jobs: state.jobSettings.human },
-    { raceName: "Bangaa", jobs: state.jobSettings.bangaa },
-    { raceName: "Nu Mou", jobs: state.jobSettings.nuMou },
-    { raceName: "Viera", jobs: state.jobSettings.viera },
-    { raceName: "Moogle", jobs: state.jobSettings.moogle },
-  ];
-  type ToggledJobs = typeof toggledJobs[0];
-
-  const [raceAbilities, setRaceAbilities] = React.useState(
-    new Array<FFTARaceAbility>()
+  const { abilitySettings } = state;
+  const { abilities, bannedAbilities } = abilitySettings;
+  const [abilityNames, setAbilityNames] = React.useState(new Array<string>());
+  const [stateBannedAbilities, setStateBannedAbilities] = React.useState(
+    new Array<string>()
   );
+  const [searchName, setSearchName] = React.useState("");
 
   React.useEffect(() => {
     api.receive("get-fftaData", (parms: any) => {
-      setRaceAbilities(parms.raceAbilities);
+      setAbilityNames(parms.abilityData.abilityNames);
     });
     api.send("request-fftaData", {
-      raceAbilities: true,
+      abilityData: true,
     });
     return () => api.remove("get-fftaData");
-  }, []);
+  }, [state.generalSettings.isRandomized]);
+
+  React.useEffect(() => {
+    setStateBannedAbilities(bannedAbilities);
+  }, [bannedAbilities]);
 
   const [abilityHelp, setAbilityHelp] = React.useState("");
   React.useEffect(() => {
@@ -63,7 +60,7 @@ export const JobSettings = () => {
             value={abilities}
             onChange={(event) => {
               dispatch({
-                type: "jobSettings",
+                type: "abilitySettings",
                 option: { abilities: event.target.value },
               });
             }}
@@ -74,63 +71,44 @@ export const JobSettings = () => {
           </select>
           <div className="help-text">{abilityHelp}</div>
         </div>
-        <div className="jobOption">
-          <label htmlFor="mpRegen">MP Regen</label>
-          <select
-            id="mpRegen"
-            value={mpRegen}
-            onChange={(event) => {
-              dispatch({
-                type: "jobSettings",
-                option: { mpRegen: event.target.value },
-              });
-            }}
-          >
-            <option value="normal">5 MP gained per turn</option>
-            <option value="precentage">10% of Max MP gained per turn</option>
-          </select>
-        </div>
       </div>
-      {toggledJobs.map((raceJobs: ToggledJobs) => {
-        return (
-          <div key={raceJobs.raceName} className="jobList">
-            <h3>{raceJobs.raceName}</h3>
-            {raceJobs.jobs.map(
-              (value: { jobName: string; enabled: boolean }) => (
-                <div
-                  key={value.jobName + raceJobs.raceName}
-                  className="jobListJob"
-                >
-                  <label htmlFor={value.jobName + raceJobs.raceName}>
-                    {value.jobName}
-                  </label>
-                  <input
-                    type="checkbox"
-                    id={value.jobName + raceJobs.raceName}
-                    key={value.jobName + raceJobs.raceName}
-                    checked={value.enabled}
-                    onChange={(event) =>
-                      dispatch({
-                        type: "jobSettings",
-                        option: {
-                          [raceJobs.raceName[0].toLowerCase() +
-                          raceJobs.raceName.substr(1).replaceAll(" ", "")]:
-                            raceJobs.jobs.map(
-                              (job: { jobName: string; enabled: boolean }) =>
-                                job.jobName == value.jobName
-                                  ? { ...job, enabled: event.target.checked }
-                                  : { ...job }
-                            ),
-                        },
-                      })
-                    }
-                  />
-                </div>
-              )
-            )}
-          </div>
-        );
-      })}
+      <div className="jobOptions">
+        <label htmlFor="abilitySearch">Search</label>
+        <input
+          id="abilitySearch"
+          type="search"
+          value={searchName}
+          onChange={(event) => setSearchName(event.target.value)}
+        ></input>
+      </div>
+      {abilityNames
+        ?.filter((ability: string) =>
+          ability.toLowerCase().includes(searchName.toLowerCase())
+        )
+        .map((ability: string, index: number) => {
+          return (
+            <div key={ability + index.toString()} className="jobListJob">
+              <label htmlFor={ability + index.toString()}>{ability}</label>
+              <input
+                type="checkbox"
+                id={ability + index.toString()}
+                checked={!stateBannedAbilities.includes(ability)}
+                onChange={(event) =>
+                  dispatch({
+                    type: "abilitySettings",
+                    option: {
+                      bannedAbilities: event.target.checked
+                        ? [...bannedAbilities].filter(
+                            (bannedAbilityID) => bannedAbilityID != ability
+                          )
+                        : [...bannedAbilities, ability],
+                    },
+                  })
+                }
+              />
+            </div>
+          );
+        })}
     </div>
   );
 };

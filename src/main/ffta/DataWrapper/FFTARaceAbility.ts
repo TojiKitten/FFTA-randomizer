@@ -27,10 +27,6 @@ export const enum ABILITYTYPE {
   COMBO = 5,
 }
 
-export interface RaceAbilityLite {
-  displayName: string;
-}
-
 /**
  * An {@link FFTAObject} representing an ability learned by a race.
  */
@@ -60,28 +56,7 @@ export class FFTARaceAbility extends FFTAObject {
     byteOffset: OFFSET.TYPE,
     byteLength: 1,
     displayName: "Could not retrieve.",
-    set value(val: number) {
-      switch (val) {
-        case 0:
-          this.displayName = "Action";
-          break;
-        case 1:
-          this.displayName = "Action";
-          break;
-        case 2:
-          this.displayName = "Reaction";
-          break;
-        case 3:
-          this.displayName = "Support";
-          break;
-        case 4:
-          this.displayName = "Action";
-          break;
-        case 5:
-          this.displayName = "Combo";
-          break;
-      }
-    },
+    value: 0,
   };
 
   readonly apCost: ROMProperty = {
@@ -106,6 +81,7 @@ export class FFTARaceAbility extends FFTAObject {
     this.loadProperty(descriptionID, rom);
     this.loadProperty(abilityID, rom);
     this.loadProperty(type, rom);
+    this.updateTypeDisplay();
     this.loadProperty(apCost, rom);
   }
 
@@ -167,6 +143,29 @@ export class FFTARaceAbility extends FFTAObject {
     properties.forEach((property) => {
       this.writeProperty(property, rom);
     });
+  }
+
+  updateTypeDisplay() {
+    switch (this.type.value) {
+      case 0:
+        this.type.displayName = "Action";
+        break;
+      case 1:
+        this.type.displayName = "Action";
+        break;
+      case 2:
+        this.type.displayName = "Reaction";
+        break;
+      case 3:
+        this.type.displayName = "Support";
+        break;
+      case 4:
+        this.type.displayName = "Action";
+        break;
+      case 5:
+        this.type.displayName = "Combo";
+        break;
+    }
   }
 
   // get name(): number {

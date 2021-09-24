@@ -16,6 +16,7 @@ const initialRandomizerOptions = {
     startingGold: 5000,
     frostyMageBoost: false,
     noJudgeTurn: false,
+    mpRegen: "normal",
   },
   missionSettings: {
     storySetting: "normal",
@@ -96,8 +97,6 @@ const initialRandomizerOptions = {
   },
   jobSettings: {
     jobRequirements: "normal",
-    abilities: "normal",
-    mpRegen: "normal",
     human: [
       { jobName: "Soldier", enabled: true },
       { jobName: "Paladin", enabled: true },
@@ -150,6 +149,10 @@ const initialRandomizerOptions = {
       { jobName: "Black Mage", enabled: true },
       { jobName: "Time Mage", enabled: true },
     ],
+  },
+  abilitySettings: {
+    abilities: "normal",
+    bannedAbilities: new Array<string>(),
   },
   shopSettings: {
     shopItems: "default",

@@ -10,10 +10,12 @@ export function randomizeFFTA(fftaData: FFTAData, options: RandomizerState) {
     missionSettings,
     partySettings,
     jobSettings,
+    abilitySettings,
     shopSettings,
   } = options;
   fftaData.setSeed(generalSettings.randomizerSeed);
   fftaData.handleSeed(generalSettings.randomizerSeed);
+  fftaData.handleBannedAbilities(abilitySettings.bannedAbilities);
   fftaData.handleCutScene(generalSettings.cutscenes);
   fftaData.handleStartingGold(generalSettings.startingGold);
   fftaData.handleFrostyBoost(generalSettings.frostyMageBoost);
@@ -35,9 +37,9 @@ export function randomizeFFTA(fftaData: FFTAData, options: RandomizerState) {
   fftaData.handleRewardOptions(missionSettings.missionRewards);
   fftaData.handleGilReward(missionSettings.gilReward);
   fftaData.handleRewardPreview(missionSettings.disableRewardPreview);
-  fftaData.handlePercentageMP(jobSettings.mpRegen);
+  fftaData.handlePercentageMP(generalSettings.mpRegen);
   fftaData.handleJobRequirements(jobSettings.jobRequirements);
-  fftaData.handleUnitAbilities(jobSettings.abilities);
+  fftaData.handleUnitAbilities(abilitySettings.abilities);
   fftaData.handleDisableJobs(jobSettings);
   fftaData.handlePartyMembers(
     partySettings.partyRNGEnabled,

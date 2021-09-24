@@ -158,6 +158,19 @@ ipc.on("request-fftaData", (event, parms: any) => {
             )
             .flat()
         : {},
+      abilityData: parms.abilityData
+        ? {
+            abilityNames: [
+              ...new Set(
+                Array.from(fftaData.raceAbilities.entries())
+                  .map((entry) =>
+                    entry[1].map((raceAbility, num) => raceAbility.displayName)
+                  )
+                  .flat()
+              ),
+            ],
+          }
+        : {},
     });
   }
 });
@@ -169,6 +182,7 @@ function savefile(filepath: any, payload: any) {
     fftaData.writeData();
     fftaData.runForcedHacks(payload);
     fs.writeFileSync(filepath, fftaData.rom, null);
+    mainWindow!.webContents.send("File-saved", { filepath: filepath });
   }
 }
 

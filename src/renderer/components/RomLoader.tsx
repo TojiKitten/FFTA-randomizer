@@ -13,6 +13,10 @@ export const RomLoader = () => {
         type: "generalSettings",
         option: { romLoaded: true },
       });
+      dispatch({
+        type: "generalSettings",
+        option: { isRandomized: false },
+      });
     });
     return () => {
       api.remove("FileName-Change");

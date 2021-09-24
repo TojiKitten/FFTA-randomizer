@@ -8,6 +8,7 @@ import { ItemSettings } from "./ItemSettings";
 import { Logbook } from "./Logbook";
 import { useRandomizer } from "./RandomizerProvider";
 import MissionLog from "./MissionLog";
+import AbilitySettings from "./AbilitySettings";
 
 export const RomSettings = () => {
   const state = useRandomizer();
@@ -27,6 +28,9 @@ export const RomSettings = () => {
       break;
     case "jobs":
       loadedPage = <JobSettings />;
+      break;
+    case "abilities":
+      loadedPage = <AbilitySettings />;
       break;
     case "items":
       loadedPage = <ItemSettings />;
