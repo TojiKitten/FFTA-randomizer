@@ -206,6 +206,11 @@ function getValidLoadOut(
     }
   }
 
+  if (randomized) {
+    validWeapons.filter((weapon) => weapon.allowed);
+    validArmor.filter((armor) => armor.allowed);
+  }
+
   //find valid weapon from validweapons array and find the correct index for full item array
   let subWeaponID = rng.randomIntMax(validWeapons.length - 1);
   let weaponID = items.findIndex(

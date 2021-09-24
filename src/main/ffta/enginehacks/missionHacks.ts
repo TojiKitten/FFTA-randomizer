@@ -183,9 +183,11 @@ export function randomRewards(
   const rewardSize = 2;
   // Get all reward items into one array
   rewardSets.forEach((set) => {
+    const allowedItems = items.filter((item) => item.allowed);
+
     for (var i = 0; i < numberRewards; i++) {
       let offset = rewardSize * i;
-      let randomItemID = rng.randomIntRange(1, items.length);
+      let randomItemID = rng.randomIntRange(1, allowedItems.length);
       let randomItemUint8Array = FFTAUtils.getShortUint8Array(
         randomItemID,
         true
@@ -231,6 +233,8 @@ export function randomizeLinearStory(
     );
     mission.setUnlockFlag2(0x00, 0x00, 0x00);
     mission.setUnlockFlag3(0x00, 0x00, 0x00);
+    mission.itemReward1Hidden = 0;
+    mission.itemReward2Hidden = 0;
   };
 
   // Sets all missions to have impossible unlock criteria

@@ -51,9 +51,9 @@ export const JobSettings = () => {
   }, [abilities]);
 
   return (
-    <div className="jobMenu">
-      <div className="jobOptions">
-        <div className="jobOption has-help-text">
+    <div className="abilityMenu">
+      <div className="abilityOptions">
+        <div className="abilityOption has-help-text">
           <label htmlFor="abilities">Abilities</label>
           <select
             id="abilities"
@@ -72,43 +72,55 @@ export const JobSettings = () => {
           <div className="help-text">{abilityHelp}</div>
         </div>
       </div>
-      <div className="jobOptions">
-        <label htmlFor="abilitySearch">Search</label>
-        <input
-          id="abilitySearch"
-          type="search"
-          value={searchName}
-          onChange={(event) => setSearchName(event.target.value)}
-        ></input>
+      {abilities === "random" && (
+        <div className="abilityOption">
+          <label htmlFor="abilitySearch">Search</label>
+          <input
+            id="abilitySearch"
+            type="search"
+            value={searchName}
+            onChange={(event) => setSearchName(event.target.value)}
+          ></input>
+        </div>
+      )}
+      <div className="abilityOptions">
+        {abilities === "random" &&
+          abilityNames
+            ?.filter((ability: string) =>
+              ability.toLowerCase().includes(searchName.toLowerCase())
+            )
+            .sort((first, second) =>
+              first.toLowerCase() > second.toLowerCase() ? 1 : -1
+            )
+            .map((ability: string, index: number) => {
+              return (
+                <div
+                  key={ability + index.toString()}
+                  className="ability-toggle"
+                >
+                  <label htmlFor={ability + index.toString()}>{ability}</label>
+                  <input
+                    type="checkbox"
+                    id={ability + index.toString()}
+                    checked={!stateBannedAbilities.includes(ability)}
+                    readOnly={state.generalSettings.isRandomized}
+                    onChange={(event) =>
+                      dispatch({
+                        type: "abilitySettings",
+                        option: {
+                          bannedAbilities: event.target.checked
+                            ? [...bannedAbilities].filter(
+                                (bannedAbilityID) => bannedAbilityID != ability
+                              )
+                            : [...bannedAbilities, ability],
+                        },
+                      })
+                    }
+                  />
+                </div>
+              );
+            })}
       </div>
-      {abilityNames
-        ?.filter((ability: string) =>
-          ability.toLowerCase().includes(searchName.toLowerCase())
-        )
-        .map((ability: string, index: number) => {
-          return (
-            <div key={ability + index.toString()} className="jobListJob">
-              <label htmlFor={ability + index.toString()}>{ability}</label>
-              <input
-                type="checkbox"
-                id={ability + index.toString()}
-                checked={!stateBannedAbilities.includes(ability)}
-                onChange={(event) =>
-                  dispatch({
-                    type: "abilitySettings",
-                    option: {
-                      bannedAbilities: event.target.checked
-                        ? [...bannedAbilities].filter(
-                            (bannedAbilityID) => bannedAbilityID != ability
-                          )
-                        : [...bannedAbilities, ability],
-                    },
-                  })
-                }
-              />
-            </div>
-          );
-        })}
     </div>
   );
 };

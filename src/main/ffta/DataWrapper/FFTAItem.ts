@@ -80,6 +80,7 @@ export interface ItemLite {
   buyPrice: number;
   sellPrice: number;
   itemAbilities: Array<ItemAbility>;
+  memory: number;
 }
 
 interface ItemAbility {
@@ -113,6 +114,7 @@ export class FFTAItem extends FFTAObject {
       buyPrice: this.getBuyPrice(),
       sellPrice: this.getSellPrice(),
       itemAbilities: this.getItemAbilities(),
+      memory: this.memory,
     };
   }
 

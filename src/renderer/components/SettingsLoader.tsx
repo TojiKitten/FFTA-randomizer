@@ -13,7 +13,11 @@ export const SeetingsLoader = () => {
       Object.keys(msg.newConfig).forEach((setting: string) => {
         dispatch({
           type: setting,
-          option: { ...msg.newConfig[setting] },
+          option: {
+            ...msg.newConfig[setting],
+            romLoaded: true,
+            isRandomized: false,
+          },
         });
       });
 

@@ -5,7 +5,7 @@ import { MissionSettings } from "./MissionSettings";
 import { PartySettings } from "./PartySettings";
 import { JobSettings } from "./JobSettings";
 import { ItemSettings } from "./ItemSettings";
-import { Logbook } from "./Logbook";
+import { ItemLog } from "./ItemLog";
 import { useRandomizer } from "./RandomizerProvider";
 import MissionLog from "./MissionLog";
 import AbilitySettings from "./AbilitySettings";
@@ -32,11 +32,8 @@ export const RomSettings = () => {
     case "abilities":
       loadedPage = <AbilitySettings />;
       break;
-    case "items":
-      loadedPage = <ItemSettings />;
-      break;
-    case "logbook":
-      loadedPage = <Logbook />;
+    case "item Log":
+      loadedPage = <ItemLog />;
       break;
     case "mission Log":
       loadedPage = <MissionLog />;

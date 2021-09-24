@@ -11,11 +11,12 @@ export function randomizeFFTA(fftaData: FFTAData, options: RandomizerState) {
     partySettings,
     jobSettings,
     abilitySettings,
-    shopSettings,
+    itemSettings,
   } = options;
   fftaData.setSeed(generalSettings.randomizerSeed);
   fftaData.handleSeed(generalSettings.randomizerSeed);
   fftaData.handleBannedAbilities(abilitySettings.bannedAbilities);
+  fftaData.handleBannedItems(itemSettings.bannedItems);
   fftaData.handleCutScene(generalSettings.cutscenes);
   fftaData.handleStartingGold(generalSettings.startingGold);
   fftaData.handleFrostyBoost(generalSettings.frostyMageBoost);
@@ -45,7 +46,7 @@ export function randomizeFFTA(fftaData: FFTAData, options: RandomizerState) {
     partySettings.partyRNGEnabled,
     partySettings.partyMembers
   );
-  fftaData.handleShopItems(shopSettings.shopItems, shopSettings.randomChance);
+  fftaData.handleShopItems(itemSettings.shopItems, itemSettings.randomChance);
 }
 
 export default iRandomizerOptions;

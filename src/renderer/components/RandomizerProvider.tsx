@@ -154,9 +154,10 @@ const initialRandomizerOptions = {
     abilities: "normal",
     bannedAbilities: new Array<string>(),
   },
-  shopSettings: {
+  itemSettings: {
     shopItems: "default",
     randomChance: 50,
+    bannedItems: new Array<number>(),
   },
   missionLogSettings: {
     showAllMissions: false,

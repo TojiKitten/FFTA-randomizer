@@ -55,7 +55,29 @@ export class FFTARaceAbility extends FFTAObject {
   readonly type: ROMProperty = {
     byteOffset: OFFSET.TYPE,
     byteLength: 1,
-    displayName: "Could not retrieve.",
+    get displayName() {
+      switch (this.value) {
+        case 0:
+          return "Action";
+
+        case 1:
+          return "Action";
+
+        case 2:
+          return "Reaction";
+
+        case 3:
+          return "Support";
+
+        case 4:
+          return "Action";
+
+        case 5:
+          return "Combo";
+        default:
+          return "Could not retrieve.";
+      }
+    },
     value: 0,
   };
 
@@ -145,28 +167,7 @@ export class FFTARaceAbility extends FFTAObject {
     });
   }
 
-  updateTypeDisplay() {
-    switch (this.type.value) {
-      case 0:
-        this.type.displayName = "Action";
-        break;
-      case 1:
-        this.type.displayName = "Action";
-        break;
-      case 2:
-        this.type.displayName = "Reaction";
-        break;
-      case 3:
-        this.type.displayName = "Support";
-        break;
-      case 4:
-        this.type.displayName = "Action";
-        break;
-      case 5:
-        this.type.displayName = "Combo";
-        break;
-    }
-  }
+  updateTypeDisplay() {}
 
   // get name(): number {
   //   return this.getProperty(OFFSET.NAME, 2);

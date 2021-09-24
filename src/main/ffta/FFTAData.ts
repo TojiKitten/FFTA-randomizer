@@ -643,6 +643,14 @@ export class FFTAData {
     bannedRaceAbilities.forEach((ability) => (ability.allowed = false));
   }
 
+  handleBannedItems(bannedItems: Array<number>) {
+    const bannedFFTAItems: Array<FFTAItem> = this.items.filter((item) =>
+      bannedItems.includes(item.memory)
+    );
+
+    bannedFFTAItems.forEach((item) => (item.allowed = false));
+  }
+
   /**
    * Updates missions to scale enemy levels
    * @param option - Type of scaling
