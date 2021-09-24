@@ -10,6 +10,7 @@ export const NavBar = () => {
     "missions",
     "party",
     "jobs",
+    "abilities",
     "items",
     "logbook",
     "mission Log",

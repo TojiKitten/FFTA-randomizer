@@ -355,7 +355,7 @@ function getEnemyMasteryAbilityIDs(
   // Finds the first valid ability from all mastered abilities of the specified type
   const getAbilityByType = (abilityType: ABILITYTYPE): number => {
     const validAbility = masteredAbilities.find(
-      (ability) => ability.getAbilityType() === abilityType
+      (ability) => ability.type.value === abilityType
     );
     if (validAbility != undefined) {
       return (

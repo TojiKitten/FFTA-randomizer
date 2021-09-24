@@ -120,7 +120,7 @@ function abilityReplace(
     // Shuffled case, sortedAbilities gets smaller and smaller
     let type = sortedAbilities.filter(
       (iter, i) =>
-        iter.getAbilityType() === ability.getAbilityType() &&
+        iter.type.value === ability.type.value &&
         sortedAbilities.indexOf(iter) === i
     );
 

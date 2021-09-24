@@ -152,7 +152,7 @@ ipc.on("request-fftaData", (event, parms: any) => {
             .map((entry) =>
               entry[1].map((raceAbility, num) => ({
                 race: entry[0],
-                ...raceAbility.getRaceAbilityInfo(),
+                displayName: raceAbility.displayName,
                 id: num,
               }))
             )
