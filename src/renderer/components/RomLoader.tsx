@@ -9,7 +9,6 @@ export const RomLoader = () => {
 
   React.useEffect(() => {
     api.receive("FileName-Change", (msg: any) => {
-      console.log("Loaded")
       dispatch({
         type: "generalSettings",
         option: { romLoaded: true, isRandomized:false },
