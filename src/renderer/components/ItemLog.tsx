@@ -73,7 +73,7 @@ export const ItemLog = () => {
           value={shopItems}
           onChange={(event) => {
             dispatch({
-              type: "shopSettings",
+              type: "itemSettings",
               option: { shopItems: event.target.value },
             });
           }}
@@ -97,7 +97,7 @@ export const ItemLog = () => {
             value={randomChance.toString()}
             onChange={(event) => {
               dispatch({
-                type: "shopSettings",
+                type: "itemSettings",
                 option: { randomChance: parseInt(event.target.value) },
               });
             }}

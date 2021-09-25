@@ -21,7 +21,7 @@ export const ItemView = (props: any) => {
   return (
     <div className="item-view">
       <h3>{props.itemLite.displayName}</h3>
-      <div className="item-content">
+      {(itemSettings.shopItems === "random" || itemSettings.shopItems==="limited") && <div className="item-content">
         <label htmlFor={"allowed" + memory.toString()}>Allowed</label>
         <input
           type="checkbox"
@@ -40,7 +40,7 @@ export const ItemView = (props: any) => {
             });
           }}
         />
-      </div>
+      </div>}
       <div className="item-content">
         <ul>
           <li>Buy: {props.itemLite.buyPrice}</li>
