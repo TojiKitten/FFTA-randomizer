@@ -632,6 +632,25 @@ export class FFTAData {
     this.rom.set(FFTAUtils.getWordUint8Array(seed, true), 0xa3991c);
   }
 
+  handleBannedAbilities(bannedAbilities: Array<string>) {
+    const bannedRaceAbilities: Array<FFTARaceAbility> = Array.from(
+      this.raceAbilities.entries()
+    )
+      .map((entry) => entry[1])
+      .flat()
+      .filter((ability) => bannedAbilities.includes(ability.displayName!));
+
+    bannedRaceAbilities.forEach((ability) => (ability.allowed = false));
+  }
+
+  handleBannedItems(bannedItems: Array<number>) {
+    const bannedFFTAItems: Array<FFTAItem> = this.items.filter((item) =>
+      bannedItems.includes(item.memory)
+    );
+
+    bannedFFTAItems.forEach((item) => (item.allowed = false));
+  }
+
   /**
    * Updates missions to scale enemy levels
    * @param option - Type of scaling
@@ -1023,7 +1042,7 @@ export class FFTAData {
    * Runs a set of hacks that cannot be skipped
    */
   runForcedHacks(options: RandomizerState) {
-    if (options.jobSettings.abilities != "normal") {
+    if (options.abilitySettings.abilities != "normal") {
       ForcedHacks.animationFixRaw(this.rom);
     }
   }

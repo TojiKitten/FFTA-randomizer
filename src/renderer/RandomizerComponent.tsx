@@ -19,12 +19,15 @@ const { api } = window;
 export function RandomizerComponent() {
   const state = useRandomizer();
   const [loaded, setLoaded] = React.useState(false);
+  const [randomized, setRandomized] = React.useState(false);
 
   React.useEffect(() => {
-    console.log(state.generalSettings.romLoaded);
-    console.log("CHANGED");
     setLoaded(state.generalSettings.romLoaded);
   }, [state.generalSettings.romLoaded]);
+
+  React.useEffect(() => {
+    setRandomized(state.generalSettings.isRandomized);
+  }, [state.generalSettings.isRandomized]);
 
   return (
     <>
@@ -46,8 +49,8 @@ export function RandomizerComponent() {
       </div>
       <h1>FFTA Randomizer</h1>
       <RomLoader />
-      {loaded && <RomSaver />}
-      {loaded && <SettingsLoader />}
+      {loaded && !randomized && <RomSaver />}
+      {loaded && !randomized && <SettingsLoader />}
       {loaded && <SettingsSaver />}
       {loaded && <RandomizerSettings />}
       {loaded && <RomSettings />}

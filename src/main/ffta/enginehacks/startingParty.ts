@@ -206,6 +206,11 @@ function getValidLoadOut(
     }
   }
 
+  if (randomized) {
+    validWeapons.filter((weapon) => weapon.allowed);
+    validArmor.filter((armor) => armor.allowed);
+  }
+
   //find valid weapon from validweapons array and find the correct index for full item array
   let subWeaponID = rng.randomIntMax(validWeapons.length - 1);
   let weaponID = items.findIndex(
@@ -355,7 +360,7 @@ function getEnemyMasteryAbilityIDs(
   // Finds the first valid ability from all mastered abilities of the specified type
   const getAbilityByType = (abilityType: ABILITYTYPE): number => {
     const validAbility = masteredAbilities.find(
-      (ability) => ability.getAbilityType() === abilityType
+      (ability) => ability.type.value === abilityType
     );
     if (validAbility != undefined) {
       return (

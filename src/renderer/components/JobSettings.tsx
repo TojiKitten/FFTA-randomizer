@@ -5,7 +5,7 @@ export const JobSettings = () => {
   const dispatch = useRandomizerUpdate();
   const state = useRandomizer();
   const { jobSettings } = state;
-  const { jobRequirements, abilities, mpRegen } = jobSettings;
+  const { jobRequirements } = jobSettings;
 
   const toggledJobs = [
     { raceName: "Human", jobs: state.jobSettings.human },
@@ -31,25 +31,6 @@ export const JobSettings = () => {
     }
   }, [jobRequirements]);
 
-  const [abilityHelp, setAbilityHelp] = React.useState("");
-  React.useEffect(() => {
-    switch (abilities) {
-      case "normal":
-        setAbilityHelp("Abilities are unchanged.");
-        break;
-      case "random":
-        setAbilityHelp(
-          "Abilities are randomized with no limitations. Some abilities may not appear at all. Example: Double Sword may not appear at all."
-        );
-        break;
-      case "shuffled":
-        setAbilityHelp(
-          "Abilities are randomized and are limited to the same number of occurrences as they normally appear. Example: Absolutely one job will learn Double Sword."
-        );
-        break;
-    }
-  }, [abilities]);
-
   return (
     <div className="jobMenu">
       <div className="jobOptions">
@@ -70,40 +51,6 @@ export const JobSettings = () => {
             <option value="locked">All Locked</option>
           </select>
           <div className="help-text">{jobReqHelp}</div>
-        </div>
-        <div className="jobOption has-help-text">
-          <label htmlFor="abilities">Abilities</label>
-          <select
-            id="abilities"
-            value={abilities}
-            onChange={(event) => {
-              dispatch({
-                type: "jobSettings",
-                option: { abilities: event.target.value },
-              });
-            }}
-          >
-            <option value="normal">Normal</option>
-            <option value="random">Random</option>
-            <option value="shuffled">Shuffled</option>
-          </select>
-          <div className="help-text">{abilityHelp}</div>
-        </div>
-        <div className="jobOption">
-          <label htmlFor="mpRegen">MP Regen</label>
-          <select
-            id="mpRegen"
-            value={mpRegen}
-            onChange={(event) => {
-              dispatch({
-                type: "jobSettings",
-                option: { mpRegen: event.target.value },
-              });
-            }}
-          >
-            <option value="normal">5 MP gained per turn</option>
-            <option value="precentage">10% of Max MP gained per turn</option>
-          </select>
         </div>
       </div>
       {toggledJobs.map((raceJobs: ToggledJobs) => {

@@ -11,7 +11,7 @@ export const RomLoader = () => {
     api.receive("FileName-Change", (msg: any) => {
       dispatch({
         type: "generalSettings",
-        option: { romLoaded: true },
+        option: { romLoaded: true, isRandomized:false },
       });
     });
     return () => {

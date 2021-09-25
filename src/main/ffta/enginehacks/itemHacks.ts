@@ -33,6 +33,7 @@ export function toggleRandomShopItems(
   let newItems: Array<FFTAItem> = createNewItemArray(items);
   newItems.forEach((item) => {
     let allowed = rng.randomIntRange(1, 100) <= randomChance;
+    allowed = item.allowed ? allowed : false;
     item.setTier1(allowed ? 1 : 0);
     item.setTier2(allowed ? 1 : 0);
     item.setTier3(allowed ? 1 : 0);
@@ -58,7 +59,7 @@ export function toggleLimitedShopItems(
   for (var iter = ITEMTYPES.Sword; iter <= ITEMTYPES.Accessory; iter++) {
     // Filter by type
     let itemsForType: Array<FFTAItem> = newItems.filter(
-      (item) => item.getType() === iter
+      (item) => item.getType() === iter && item.allowed
     );
 
     // Declare min for cases where items in the type is small

@@ -60,6 +60,9 @@ export function changeRaceAbilities(
   // For randomized case, abilities that appear multiple times are more likely to appear
   // Examples: Fire, Shield Bearer, Counter, Bow Combo
   let abilityRecord = flattenRaceMapAbilities(raceAbilities);
+  if (!shuffled) {
+    abilityRecord = abilityRecord.filter((ability) => ability.allowed);
+  }
   // Set up a new map with new abilities to return
   let newMap: Map<string, Array<FFTARaceAbility>> = new Map();
 
@@ -118,10 +121,8 @@ function abilityReplace(
     // Iterate through all abilities and filter to matching ability types
     // Removes duplicates
     // Shuffled case, sortedAbilities gets smaller and smaller
-    let type = sortedAbilities.filter(
-      (iter, i) =>
-        iter.getAbilityType() === ability.getAbilityType() &&
-        sortedAbilities.indexOf(iter) === i
+    const type = sortedAbilities.filter(
+      (iter, i) => iter.type.value === ability.type.value
     );
 
     // Get a random valid ability and its information

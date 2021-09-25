@@ -5,7 +5,8 @@ export const GeneralSettings = () => {
   const dispatch = useRandomizerUpdate();
   const state = useRandomizer();
   const { generalSettings } = state;
-  const { cutscenes, laws, noJudgeTurn, frostyMageBoost } = generalSettings;
+  const { cutscenes, laws, noJudgeTurn, mpRegen, frostyMageBoost } =
+    generalSettings;
 
   const [cutSceneHelp, setcutSceneHelp] = React.useState("");
   React.useEffect(() => {
@@ -100,6 +101,22 @@ export const GeneralSettings = () => {
             });
           }}
         />
+      </div>
+      <div className="jobOption">
+        <label htmlFor="mpRegen">MP Regen</label>
+        <select
+          id="mpRegen"
+          value={mpRegen}
+          onChange={(event) => {
+            dispatch({
+              type: "generalSettings",
+              option: { mpRegen: event.target.value },
+            });
+          }}
+        >
+          <option value="normal">5 MP gained per turn</option>
+          <option value="precentage">10% of Max MP gained per turn</option>
+        </select>
       </div>
       <div className="generalSettingsOption has-help-text">
         <label htmlFor="noJudgeOption">No Judge Turn</label>

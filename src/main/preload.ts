@@ -26,6 +26,7 @@ contextBridge.exposeInMainWorld("api", {
       "get-settings",
       "get-fftaData",
       "get-missions",
+      "File-saved",
     ];
     if (allowedChannels.includes(channel)) {
       ipcRenderer.on(channel, (event, ...args) => cb(...args));

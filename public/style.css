@@ -122,7 +122,8 @@ label {
 }
 
 .jobMenu,
-.mission-log {
+.mission-log,
+.abilityMenu {
   display: grid;
   grid-template-rows: auto-fill;
   grid-template-columns: repeat(12, 1fr);
@@ -130,7 +131,8 @@ label {
   justify-content: center;
 }
 
-.jobOptions {
+.jobOptions,
+.abilityOptions {
   grid-gap: 0.1em;
   grid-column: span 12;
   display: grid;
@@ -163,7 +165,8 @@ label {
 
 .grid-full,
 .jobOption,
-.mission-complete {
+.mission-complete,
+.abilityOption {
   grid-column: span 12;
 }
 
@@ -187,6 +190,10 @@ label {
 
 .jobListJob {
   grid-column: span 12;
+}
+
+.ability-toggle {
+  grid-column: span 6;
 }
 
 .partyList {
@@ -230,28 +237,19 @@ label {
   grid-column: span 12;
   height: 75px;
   overflow: hidden;
-  cursor: pointer;
 }
 
-.item-view:focus {
+.item-view:hover {
   background-color: #a8b5b2;
-}
-
-.item-view:focus > .item-content {
-  z-index: 1;
   height: auto;
-  width: 100%;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  border-radius: 20px;
-  background-color: #819796;
-  opacity: 1;
-  box-shadow: 0px 1px 4px #577277;
 }
 
 .item-view > h3 {
   text-align: center;
+}
+
+.item-content {
+  width: auto;
 }
 
 @media screen and (min-width: 480px) {
@@ -267,6 +265,10 @@ label {
   .jobList {
     grid-column: span 4;
   }
+
+  .ability-toggle {
+    grid-column: span 4;
+  }
 }
 
 @media screen and (min-width: 720px) {
@@ -280,6 +282,9 @@ label {
     grid-column: span 4;
   }
   .jobList {
+    grid-column: span 2;
+  }
+  .ability-toggle {
     grid-column: span 2;
   }
 }
