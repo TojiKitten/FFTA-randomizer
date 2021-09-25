@@ -1,17 +1,10 @@
-import { FFTAObject } from "./FFTAObject";
+import { FFTAObject, ROMProperty } from "./FFTAObject";
 
 const byteLength = 0x1c;
 const enum OFFSET {
   NAME = 0x00,
   DESCRIPTION = 0x02,
 }
-type ROMProperty = {
-  readonly byteOffset: number;
-  readonly byteLength: number;
-  readonly bitOffset?: number;
-  displayName: string;
-  value: number;
-};
 
 /**
  * An {@link FFTAObject} that represents an ability in the game that is referenced by one or many races.

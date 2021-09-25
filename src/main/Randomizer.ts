@@ -47,6 +47,7 @@ export function randomizeFFTA(fftaData: FFTAData, options: RandomizerState) {
     partySettings.partyMembers
   );
   fftaData.handleShopItems(itemSettings.shopItems, itemSettings.randomChance);
+  fftaData.handleRaceMode(generalSettings.raceMode);
 }
 
 export default iRandomizerOptions;

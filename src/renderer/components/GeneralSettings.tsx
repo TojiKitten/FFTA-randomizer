@@ -5,7 +5,7 @@ export const GeneralSettings = () => {
   const dispatch = useRandomizerUpdate();
   const state = useRandomizer();
   const { generalSettings } = state;
-  const { cutscenes, laws, noJudgeTurn, mpRegen, frostyMageBoost } =
+  const { cutscenes, laws, noJudgeTurn, mpRegen, frostyMageBoost, raceMode } =
     generalSettings;
 
   const [cutSceneHelp, setcutSceneHelp] = React.useState("");
@@ -53,6 +53,24 @@ export const GeneralSettings = () => {
 
   return (
     <div className="generalSettings">
+      <div className="generalSettingsOption has-help-text">
+        <label htmlFor="raceModeOption">Race Mode</label>
+        <input
+          id="raceModeOption"
+          type="checkbox"
+          checked={raceMode}
+          onChange={(event) => {
+            dispatch({
+              type: "generalSettings",
+              option: { raceMode: event.target.checked },
+            });
+          }}
+        />
+        <div className="help-text">
+          When enabled, mission rewards and job stat growths set to fixed
+          values.
+        </div>
+      </div>
       <div className="generalSettingsOption has-help-text">
         <label htmlFor="cutsceneOption">Cutscenes</label>
         <select
