@@ -4,7 +4,6 @@ import { GeneralSettings } from "./GeneralSettings";
 import { MissionSettings } from "./MissionSettings";
 import { PartySettings } from "./PartySettings";
 import { JobSettings } from "./JobSettings";
-import { ItemSettings } from "./ItemSettings";
 import { ItemLog } from "./ItemLog";
 import { useRandomizer } from "./RandomizerProvider";
 import MissionLog from "./MissionLog";

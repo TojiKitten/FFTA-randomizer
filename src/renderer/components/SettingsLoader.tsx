@@ -14,7 +14,12 @@ export const SeetingsLoader = () => {
         dispatch({
           type: setting,
           option: {
-            ...msg.newConfig[setting],
+            ...msg.newConfig[setting]
+          },
+        });
+        dispatch({
+          type: "generalSettings",
+          option: {
             romLoaded: true,
             isRandomized: false,
           },
@@ -27,7 +32,7 @@ export const SeetingsLoader = () => {
       });
     });
     return () => {
-      api.remove("FileName-Change");
+      api.remove("get-settings");
     };
   }, []);
 
