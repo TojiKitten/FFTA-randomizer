@@ -1,5 +1,13 @@
 import * as FFTAUtils from "../utils/FFTAUtils";
 
+export type ROMProperty = {
+  readonly byteOffset: number;
+  readonly byteLength: number;
+  readonly bitOffset?: number;
+  displayName: string;
+  value: number;
+};
+
 /**
  * Represents a piece of information in FFTA.
  * @see memory - The memory address of an object
@@ -98,6 +106,52 @@ export class FFTAObject {
   setAllowed(allowed: boolean) {
     this.allowed = allowed;
   }
+
+  protected loadProperty = (romProp: ROMProperty, properties: Uint8Array) => {
+    const start = romProp.byteOffset;
+    const end = start + romProp.byteLength;
+
+    switch (romProp.byteLength) {
+      case 0x1:
+        romProp.value = properties.slice(start, end)[0];
+        break;
+      case 0x2:
+        romProp.value = FFTAUtils.convertShortUint8Array(
+          properties.slice(start, end),
+          true
+        );
+        break;
+      case 0x4:
+        romProp.value = FFTAUtils.convertWordUint8Array(
+          properties.slice(start, end),
+          true
+        );
+        break;
+    }
+  };
+
+  protected writeProperty = (romProp: ROMProperty, rom: Uint8Array) => {
+    switch (romProp.byteLength) {
+      case 0x1:
+        rom.set(
+          new Uint8Array([romProp.value]),
+          this.memory + romProp.byteOffset
+        );
+        break;
+      case 0x2:
+        rom.set(
+          FFTAUtils.getShortUint8Array(romProp.value, true),
+          this.memory + romProp.byteOffset
+        );
+        break;
+      case 0x4:
+        rom.set(
+          FFTAUtils.getWordUint8Array(romProp.value, true),
+          this.memory + romProp.byteOffset
+        );
+        break;
+    }
+  };
 }
 
 export default FFTAObject;

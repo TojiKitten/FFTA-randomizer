@@ -248,4 +248,11 @@ export class FFTAMission extends FFTAObject {
   setMoreFlags(value: number) {
     this.setProperty(OFFSET.MOREFLAGS, 1, value);
   }
+
+  toString = (): string => {
+    return `Mission Name: ${this.displayName} (#${this.missionID})
+    Memory: ${this.memory.toString(16)}
+    Item Reward 1: ${this.itemReward1.toString(16)}
+    Item Reward 2: ${this.itemReward2.toString(16)}`;
+  };
 }

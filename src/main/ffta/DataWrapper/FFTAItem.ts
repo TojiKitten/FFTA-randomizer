@@ -1,4 +1,3 @@
-import { Item } from "electron/main";
 import { FFTAObject } from "./FFTAObject";
 
 const enum OFFSET {

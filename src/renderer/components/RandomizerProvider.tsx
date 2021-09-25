@@ -6,6 +6,7 @@ const initialRandomizerOptions = {
     romLoaded: false,
     currentPage: "general",
     isRandomized: false,
+    raceMode: false,
     randomizerSeed: parseInt(
       new Date().getFullYear().toString() +
         (new Date().getMonth() + 1).toString().padStart(2, "0") +

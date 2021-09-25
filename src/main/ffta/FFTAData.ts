@@ -263,6 +263,7 @@ export class FFTAData {
     for (let jobsElement of this.jobs.values()) {
       jobsElement.forEach((job) => {
         this.rom.set(job.properties, job.memory);
+        job.write(this.rom);
       });
     }
 
@@ -1035,6 +1036,20 @@ export class FFTAData {
         break;
       default:
         throw new Error("case: " + options + " unhandled!");
+    }
+  }
+
+  handleRaceMode(raceMode: boolean) {
+    if (raceMode) {
+      MissionHacks.setStaticRewards(
+        this.missions,
+        this.rewardItemSets,
+        this.rng
+      );
+      JobHacks.setStaticJobGrowth(
+        Array.from(this.jobs.values()).flat(),
+        this.rng
+      );
     }
   }
 

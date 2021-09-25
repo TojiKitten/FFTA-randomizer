@@ -233,8 +233,6 @@ export function randomizeLinearStory(
     );
     mission.setUnlockFlag2(0x00, 0x00, 0x00);
     mission.setUnlockFlag3(0x00, 0x00, 0x00);
-    mission.itemReward1Hidden = 0;
-    mission.itemReward2Hidden = 0;
   };
 
   // Sets all missions to have impossible unlock criteria
@@ -304,6 +302,8 @@ export function randomizeLinearStory(
     mission.requiredItem2 = 0x0000;
     mission.cityAppearance = 0;
     mission.price = 0;
+    mission.itemReward1Hidden = 0;
+    mission.itemReward2Hidden = 0;
   });
 }
 
@@ -459,5 +459,31 @@ export function randomizeBranchingStory(
     mission.pickUpInfo = 0x00; // Clears info to pick up in specific days
     mission.price = 0;
     mission.cityAppearance = 0;
+  });
+}
+
+export function setStaticRewards(
+  missions: Array<FFTAMission>,
+  rewardSets: Array<FFTARewardItemSet>,
+  rng: NoiseGenerator
+) {
+  missions.forEach((mission) => {
+    let { itemReward1, itemReward2 } = mission;
+    if (((itemReward1 >> 8) & 0xff) === 0xff) {
+      const rewardSet = rewardSets[itemReward1 & 0xf];
+      const randomIndex = rng.randomIntMax(19) * 2;
+      mission.itemReward1 = FFTAUtils.convertShortUint8Array(
+        rewardSet.properties.slice(randomIndex, randomIndex + 2),
+        true
+      );
+    }
+    if (((itemReward2 >> 8) & 0xff) === 0xff) {
+      const rewardSet = rewardSets[itemReward2 & 0xf];
+      const randomIndex = rng.randomIntMax(19) * 2;
+      mission.itemReward2 = FFTAUtils.convertShortUint8Array(
+        rewardSet.properties.slice(randomIndex, randomIndex + 2),
+        true
+      );
+    }
   });
 }
