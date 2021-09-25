@@ -160,7 +160,7 @@ ipc.on("request-fftaData", (event, parms: any) => {
         : {},
       abilityData: parms.abilityData
         ? {
-            abilityNames: [
+            uniqueAbilityNames: [
               ...new Set(
                 Array.from(fftaData.raceAbilities.entries())
                   .map((entry) =>

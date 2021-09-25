@@ -19,7 +19,7 @@ export const JobSettings = () => {
 
   React.useEffect(() => {
     api.receive("get-fftaData", (parms: any) => {
-      setAbilityNames(parms.abilityData.abilityNames);
+      setAbilityNames(parms.abilityData.uniqueAbilityNames);
     });
     api.send("request-fftaData", {
       abilityData: true,
