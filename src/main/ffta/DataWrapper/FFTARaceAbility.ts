@@ -103,7 +103,6 @@ export class FFTARaceAbility extends FFTAObject {
     this.loadProperty(descriptionID, rom);
     this.loadProperty(abilityID, rom);
     this.loadProperty(type, rom);
-    this.updateTypeDisplay();
     this.loadProperty(apCost, rom);
   }
 
@@ -166,57 +165,4 @@ export class FFTARaceAbility extends FFTAObject {
       this.writeProperty(property, rom);
     });
   }
-
-  updateTypeDisplay() {}
-
-  // get name(): number {
-  //   return this.getProperty(OFFSET.NAME, 2);
-  // }
-  // set name(id: number) {
-  //   this.setProperty(OFFSET.NAME, 2, id);
-  // }
-  // get description(): number {
-  //   return this.getProperty(OFFSET.DESCRIPTION, 2);
-  // }
-  // set description(id: number) {
-  //   this.setProperty(OFFSET.DESCRIPTION, 2, id);
-  // }
-  // get abilityID(): number {
-  //   return this.getProperty(OFFSET.ABILITYID, 2);
-  // }
-  // set abilityID(id: number) {
-  //   this.setProperty(OFFSET.ABILITYID, 2, id);
-  // }
-  // get abilityType(): number {
-  //   return this.getProperty(OFFSET.TYPE, 1);
-  // }
-  // set abilityType(type: ABILITYTYPE) {
-  //   this.setProperty(OFFSET.TYPE, 1, type);
-  // }
-  // get apCost(): number {
-  //   return this.getProperty(OFFSET.DESCRIPTION, 2);
-  // }
-
-  // /**
-  //  * @returns Lightweight object for the item
-  //  */
-  // getRaceAbilityInfo(): RaceAbilityLite {
-  //   return {
-  //     displayName: this.displayName!,
-  //   };
-  // }
-
-  // /**
-  //  * @returns The id of the ability
-  //  */
-  // getAbilityID() {
-  //   return this.getProperty(OFFSET.ABILITYID, 1);
-  // }
-
-  // /**
-  //  * @returns The type of the ability
-  //  */
-  // getAbilityType() {
-  //   return this.properties[OFFSET.TYPE];
-  // }
 }
