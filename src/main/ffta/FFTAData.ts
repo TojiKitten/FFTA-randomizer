@@ -1041,6 +1041,7 @@ export class FFTAData {
 
   handleRaceMode(raceMode: boolean) {
     if (raceMode) {
+      this.rng.setPosition(3000);
       MissionHacks.setStaticRewards(
         this.missions,
         this.rewardItemSets,
