@@ -152,6 +152,44 @@ function abilityReplace(
 
 export function setStaticJobGrowth(jobs: Array<FFTAJob>, rng: NoiseGenerator) {
   jobs.forEach((job) => {
+    job.hpBase =
+      job.hpBase +
+      rng.randomIntMax(
+        Math.ceil((job.hpGrowth - Math.floor(job.hpGrowth)) * 50)
+      );
+    job.mpBase =
+      job.mpBase +
+      rng.randomIntMax(
+        Math.ceil((job.mpGrowth - Math.floor(job.mpGrowth)) * 50)
+      );
+    job.speedBase =
+      job.speedBase +
+      rng.randomIntMax(
+        Math.ceil((job.speedGrowth - Math.floor(job.speedGrowth)) * 50)
+      );
+    job.attackBase =
+      job.attackBase +
+      rng.randomIntMax(
+        Math.ceil((job.attackGrowth - Math.floor(job.attackGrowth)) * 50)
+      );
+    job.defenseBase =
+      job.defenseBase +
+      rng.randomIntMax(
+        Math.ceil((job.defenseGrowth - Math.floor(job.defenseGrowth)) * 50)
+      );
+    job.powerBase =
+      job.powerBase +
+      rng.randomIntMax(
+        Math.ceil((job.powerGrowth - Math.floor(job.powerGrowth)) * 50)
+      );
+    job.resistanceBase =
+      job.resistanceBase +
+      rng.randomIntMax(
+        Math.ceil(
+          (job.resistanceGrowth - Math.floor(job.resistanceGrowth)) * 50
+        )
+      );
+
     job.hpGrowth = Math.floor(job.hpGrowth);
     job.mpGrowth = Math.floor(job.mpGrowth);
     job.speedGrowth = Math.floor(job.speedGrowth);
@@ -159,37 +197,5 @@ export function setStaticJobGrowth(jobs: Array<FFTAJob>, rng: NoiseGenerator) {
     job.defenseGrowth = Math.floor(job.defenseGrowth);
     job.powerGrowth = Math.floor(job.powerGrowth);
     job.resistanceGrowth = Math.floor(job.resistanceGrowth);
-
-    job.hpBase =
-      job.hpBase +
-      rng.randomIntMax(Math.ceil(job.hpBase - Math.floor(job.hpBase)) * 50);
-    job.mpBase =
-      job.mpBase +
-      rng.randomIntMax(Math.ceil(job.mpBase - Math.floor(job.mpBase)) * 50);
-    job.speedBase =
-      job.speedBase +
-      rng.randomIntMax(
-        Math.ceil(job.speedBase - Math.floor(job.speedBase)) * 50
-      );
-    job.attackBase =
-      job.attackBase +
-      rng.randomIntMax(
-        Math.ceil(job.attackBase - Math.floor(job.attackBase)) * 50
-      );
-    job.defenseBase =
-      job.defenseBase +
-      rng.randomIntMax(
-        Math.ceil(job.defenseBase - Math.floor(job.defenseBase)) * 50
-      );
-    job.powerBase =
-      job.powerBase +
-      rng.randomIntMax(
-        Math.ceil(job.powerBase - Math.floor(job.powerBase)) * 50
-      );
-    job.resistanceBase =
-      job.resistanceBase +
-      rng.randomIntMax(
-        Math.ceil(job.resistanceBase - Math.floor(job.resistanceBase)) * 50
-      );
   });
 }
