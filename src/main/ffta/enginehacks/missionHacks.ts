@@ -216,25 +216,22 @@ export function unlockAllStoryMissions(missions: Array<FFTAMission>) {
     });
 }
 
+// Helper function to set the mission's prereq to a given mission
+const setNewUnlockFlag = (mission: FFTAMission, previousMissionID: number) => {
+  mission.setUnlockFlag1(
+    previousMissionID - (1 % 255),
+    3 + Math.floor((previousMissionID - 1) / 255),
+    0x01
+  );
+  mission.setUnlockFlag2(0x00, 0x00, 0x00);
+  mission.setUnlockFlag3(0x00, 0x00, 0x00);
+};
+
 export function randomizeLinearStory(
   missions: Array<FFTAMission>,
   storyLength: number,
   rng: NoiseGenerator
 ) {
-  // Helper function to set the mission's prereq to a given mission
-  const setNewUnlockFlag = (
-    mission: FFTAMission,
-    previousMissionID: number
-  ) => {
-    mission.setUnlockFlag1(
-      previousMissionID - (1 % 255),
-      3 + Math.floor((previousMissionID - 1) / 255),
-      0x01
-    );
-    mission.setUnlockFlag2(0x00, 0x00, 0x00);
-    mission.setUnlockFlag3(0x00, 0x00, 0x00);
-  };
-
   // Sets all missions to have impossible unlock criteria
   missions.forEach((mission) => {
     mission.setUnlockFlag1(0x02, 0x03, 0x01);
@@ -242,10 +239,12 @@ export function randomizeLinearStory(
     mission.setUnlockFlag3(0x00, 0x00, 0x00);
   });
 
+  const unsupportedMissions = ["dummy", "Another World", "Present Day"];
+
   // Filter to all encounter missions
   const validMissions = missions.filter(
     (mission) =>
-      mission.displayName != "dummy" &&
+      !unsupportedMissions.includes(mission.displayName!) &&
       mission.displayName != "Royal Valley" &&
       mission.encounterMission === 1 &&
       mission.linkMission === 0 &&
@@ -297,7 +296,10 @@ export function randomizeLinearStory(
   // Fix certain things about the missions
   newStory.forEach((mission) => {
     mission.recruit = 0x00;
-    mission.pickUpInfo = 0x00; // Clears info to pick up in specific days
+    mission.monthVisibile = "Any";
+    mission.daysVisible = 1;
+    mission.timeoutDays = 0;
+    mission.daysAvaiblable = 0;
     mission.requiredItem1 = 0x0000;
     mission.requiredItem2 = 0x0000;
     mission.cityAppearance = 0;
@@ -456,7 +458,9 @@ export function randomizeBranchingStory(
   // Fix certain things about the missions
   newStory.forEach((mission) => {
     mission.recruit = 0x00;
-    mission.pickUpInfo = 0x00; // Clears info to pick up in specific days
+    mission.monthVisibile = "Any"; // Clears info to pick up in specific days
+    mission.daysVisible = 1;
+    mission.timeoutDays = 0;
     mission.price = 0;
     mission.cityAppearance = 0;
   });
