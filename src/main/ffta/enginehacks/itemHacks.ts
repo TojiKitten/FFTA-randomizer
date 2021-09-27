@@ -39,7 +39,6 @@ export function toggleRandomShopItems(
     item.setTier3(allowed ? 1 : 0);
     item.balanceItemPrice();
   });
-
   return newItems;
 }
 
@@ -98,7 +97,9 @@ function createNewItemArray(items: Array<FFTAItem>) {
     newItems.push(
       new FFTAItem(item.memory, item.displayName!, item.properties)
     );
-    newItems[newItems.length - 1].setItemAbilities(item.getItemAbilities());
+    const addedItem = newItems[newItems.length - 1];
+    addedItem.setItemAbilities(item.getItemAbilities());
+    addedItem.allowed = item.allowed;
   });
 
   return newItems;

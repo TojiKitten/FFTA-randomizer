@@ -45,7 +45,7 @@ export const MissionSettings = () => {
         break;
       case "linear":
         setShowStoryLength(true);
-        setMaxStoryLength(127);
+        setMaxStoryLength(125);
         setStoryHelp(
           "Only one mission is available in the pub, and completing it unlocks the next mission. The last mission will always be Royal Valley."
         );

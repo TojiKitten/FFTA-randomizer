@@ -1,4 +1,4 @@
-import { FFTAObject } from "./FFTAObject";
+import { FFTAObject, ROMProperty } from "./FFTAObject";
 
 const enum OFFSET {
   ID = 0x00,
@@ -8,7 +8,8 @@ const enum OFFSET {
   UNLOCKFLAG1 = 0x05, // 3 Bytes (Bit Offset, Row Offset * 0x20, Value)
   UNLOCKFLAG2 = 0x08, // 3 Bytes (Bit Offset, Row Offset * 0x20, Value)
   UNLOCKFLAG3 = 0x0b, // 3 Bytes (Bit Offset, Row Offset * 0x20, Value)
-  PICKUPINFO = 0x0e,
+  PUBVISIBILITY = 0x0e, // first 5 bits are actives days on pub list, last 3 bits are month available
+  DAYSAVAILABLE = 0x0f, // 0-2 ??, 3 - 10 days on map, 11 - 15 unknown
   DISPATCHTIME = 0x10,
   ITEMREWARD1 = 0x22, // 0x178 = Magic Trophy as reward
   ITEMREWARD2 = 0x24,
@@ -20,7 +21,8 @@ const enum OFFSET {
   REQSKILL = 0x38, // 0x01 = Combat
   REQSKILLAMOUNT = 0x39, //0x01 = level 8? maybe tied to "difficulty"
   PRICE = 0x3e,
-  MISSIONDISPLAY = 0x41,
+  TIMEOUTDAYS = 0x40,
+  MISSIONDISPLAY = 0x41, // Hide Item 1, Hide Item 2, ?? ?? // Repeatable, ??, ??, No Cancel
   MOREFLAGS = 0x42, // ???, Hide from OW Menu, ??? Law 2, ??? Law 1
   MISSIONLOCATION = 0x45, // Used for encounters and loading cut scenes
 }
@@ -32,6 +34,8 @@ const enum MISSIONTYPE {
   WALKONSTORY = 0x0d,
   DISPATCH = 0x20,
 }
+
+type FFTAMonth = "Kingmoon" | "Madmoon" | "Sagemoon" | "Huntmoon" | "Bardmoon";
 
 /**
  * An {@link FFTAObject} representing a mission.
@@ -93,11 +97,76 @@ export class FFTAMission extends FFTAObject {
     return this.getProperty(OFFSET.TYPE, 2);
   }
 
-  set pickUpInfo(value: number) {
-    this.setProperty(OFFSET.PICKUPINFO, 2, value);
+  private _pubVisibility: ROMProperty = {
+    byteOffset: OFFSET.PUBVISIBILITY,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  set daysVisible(days: number) {
+    days = Math.min(0xf8 >> 3, Math.max(0, days));
+    this._pubVisibility.value = (this._pubVisibility.value & 0x7) + (days << 3);
   }
-  get pickUpInfo(): number {
-    return this.getProperty(OFFSET.PICKUPINFO, 2);
+  get daysVisible(): number {
+    return this._pubVisibility.value >> 3;
+  }
+  set monthVisibile(month: FFTAMonth | "Any") {
+    let monthValue = 0;
+    switch (month) {
+      case "Any":
+        monthValue = 0;
+        break;
+      case "Kingmoon":
+        monthValue = 1;
+        break;
+      case "Madmoon":
+        monthValue = 2;
+        break;
+      case "Sagemoon":
+        monthValue = 3;
+        break;
+      case "Huntmoon":
+        monthValue = 4;
+        break;
+      case "Bardmoon":
+        monthValue = 5;
+        break;
+    }
+    this._pubVisibility.value = (this._pubVisibility.value & 0xf1) + monthValue;
+  }
+  get monthVisibile(): FFTAMonth | "Any" {
+    const monthValue = this._pubVisibility.value & 0x7;
+    switch (monthValue) {
+      case 0:
+        return "Any";
+      case 1:
+        return "Kingmoon";
+      case 2:
+        return "Madmoon";
+      case 3:
+        return "Sagemoon";
+      case 4:
+        return "Huntmoon";
+      case 5:
+        return "Bardmoon";
+      default:
+        throw new Error("Visbile Month Not Supported");
+    }
+  }
+
+  private _daysAvailable: ROMProperty = {
+    byteOffset: OFFSET.DAYSAVAILABLE,
+    byteLength: 2,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  set daysAvaiblable(days: number) {
+    days = Math.min((1 << 8) - 1, Math.max(0, days));
+    this._daysAvailable.value =
+      (this._daysAvailable.value & 0xf807) + (days << 3);
+  }
+  get daysAvaiblable(): number {
+    return (this._daysAvailable.value >> 3) & ((1 << 8) - 1);
   }
 
   set itemReward1(itemID: number) {
@@ -161,6 +230,20 @@ export class FFTAMission extends FFTAObject {
   }
   get price(): number {
     return this.getProperty(OFFSET.PRICE, 1) * 300;
+  }
+
+  private _timeoutDays: ROMProperty = {
+    byteOffset: OFFSET.TIMEOUTDAYS,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  set timeoutDays(days: number) {
+    days = Math.min(0xff, days);
+    this._timeoutDays.value = days;
+  }
+  get timeoutDays(): number {
+    return this._timeoutDays.value;
   }
 
   set itemReward1Hidden(bit: 0 | 1) {
@@ -247,6 +330,18 @@ export class FFTAMission extends FFTAObject {
    */
   setMoreFlags(value: number) {
     this.setProperty(OFFSET.MOREFLAGS, 1, value);
+  }
+
+  write(rom: Uint8Array) {
+    const properties: Array<ROMProperty> = [
+      this._pubVisibility,
+      this._daysAvailable,
+      this._timeoutDays,
+    ];
+
+    properties.forEach((property) => {
+      this.writeProperty(property, rom);
+    });
   }
 
   toString = (): string => {

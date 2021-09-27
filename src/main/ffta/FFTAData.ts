@@ -248,6 +248,7 @@ export class FFTAData {
 
     this.missions.forEach((mission) => {
       this.rom.set(mission.properties, mission.memory);
+      mission.write(this.rom);
     });
 
     for (let raceAbilitiesElement of this.raceAbilities.values()) {
