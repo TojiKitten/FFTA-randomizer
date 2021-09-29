@@ -58,6 +58,9 @@ export class FFTAUnit extends FFTAObject {
   setAAbility(setID: number) {
     this.setProperty(OFFSET.UNITABILITY, 1, setID);
   }
+  getAAbility(): number {
+    return this.getProperty(OFFSET.UNITABILITY, 1);
+  }
 
   /**
    * Sets the level of a unit.

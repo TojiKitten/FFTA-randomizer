@@ -15,6 +15,7 @@ export const MissionSettings = () => {
     missionScalingValue,
     randomEnemies,
     enemyAbilityPercentage,
+    randomEnemyItems,
     storyLength,
   } = state.missionSettings;
 
@@ -236,7 +237,7 @@ export const MissionSettings = () => {
         </div>
       )}
       <div className="missionSettingsOption">
-        <label htmlFor="randomEnemies">Randomize Enemies</label>
+        <label htmlFor="randomEnemies">Randomize Enemy Jobs</label>
         <input
           id="randomEnemies"
           type="checkbox"
@@ -244,7 +245,10 @@ export const MissionSettings = () => {
           onChange={(event) => {
             dispatch({
               type: "missionSettings",
-              option: { randomEnemies: event.target.checked },
+              option: {
+                randomEnemies: event.target.checked,
+                enemyAbilityPercentage: event.target.checked ? 50 : 0,
+              },
             });
           }}
         />
@@ -273,6 +277,20 @@ export const MissionSettings = () => {
           Enemies will learn {enemyAbilityPercentage}% of their abilities.
         </div>
       )}
+      <div className="missionSettingsOption">
+        <label htmlFor="randomEnemyItems">Randomize Enemy Items</label>
+        <input
+          id="randomEnemyItems"
+          type="checkbox"
+          checked={randomEnemyItems}
+          onChange={(event) => {
+            dispatch({
+              type: "missionSettings",
+              option: { randomEnemyItems: event.target.checked },
+            });
+          }}
+        />
+      </div>
       <div className="missionSettingsOption has-help-text">
         <label htmlFor="missionRewardOption">Item Rewards</label>
         <select

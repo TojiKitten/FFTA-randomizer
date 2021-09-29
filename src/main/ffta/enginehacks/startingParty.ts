@@ -4,6 +4,7 @@ import { FFTAItem, ITEMTYPES } from "../DataWrapper/FFTAItem";
 import { FFTAJob } from "../DataWrapper/FFTAJob";
 import NoiseGenerator from "../utils/NoiseGenerator";
 import { FFTARaceAbility, ABILITYTYPE } from "../DataWrapper/FFTARaceAbility";
+import { random, set } from "lodash";
 
 /**
  * Sets starting gold to a value.
@@ -80,7 +81,7 @@ export function setUnitData(
     });
   }
 
-  if (options.name === "NPC") {
+  if (options.masteredAbilities > 0 && options.name === "NPC") {
     let mastered = getEnemyMasteryAbilityIDs(
       unit,
       raceJobs.get(newJob.race)!,
@@ -249,9 +250,46 @@ function getValidLoadOut(
     loadout.push(shieldID + items[0].ITEMIDOFFSET); //+1 because item ids start at 1 not 0 NotLikeThis
   }
 
-  //fill empty item slots
-  while (loadout.length < 5) {
-    loadout.push(0);
+  //fill empty item slots with nothing if not randomized
+  if (!randomized) {
+    while (loadout.length < 5) {
+      if (!randomized) {
+        loadout.push(0);
+      }
+    }
+  } else {
+    const additionalItemTypes = [
+      ITEMTYPES.Helmet,
+      ITEMTYPES.Ribbon,
+      ITEMTYPES.Hat,
+      ITEMTYPES.Shoes,
+      ITEMTYPES.Armlet,
+      ITEMTYPES.Accessory,
+    ];
+
+    const allowedItemTypes = additionalItemTypes.filter((type) =>
+      job.isTypeAllowed(type)
+    );
+
+    while (loadout.length < 5) {
+      // Get a random item type
+      const selectedType = allowedItemTypes.splice(
+        rng.randomIntMax(allowedItemTypes.length - 1),
+        1
+      )[0];
+      // For the item type, get all items
+      const itemsForType = items.filter(
+        (item) => item.getType() === selectedType
+      );
+      // get a random item from all items
+      const selectedItem =
+        itemsForType[rng.randomIntMax(itemsForType.length - 1)];
+      // Push to loadout
+      loadout.push(
+        items.findIndex((item) => item.memory === selectedItem.memory) +
+          selectedItem.ITEMIDOFFSET
+      );
+    }
   }
   return loadout;
 }
@@ -300,7 +338,7 @@ function getJobMasteryAbilityIDs(
     unusedJobs = unusedJobs.filter((job) => firstJob.jobId != job.jobId);
   } else throw new Error("Job Mastery Error: First Job not found");
 
-  if (count >= 2) {
+  if (count >= 2 && unit.getAAbility() != 0x4d) {
     const secondJob = unusedJobs[rng.randomIntMax(unusedJobs.length - 1)];
     if (secondJob != undefined) {
       abilityIndicies = abilityIndicies.concat(secondJob.getAbilityIDs());
@@ -342,13 +380,14 @@ function getEnemyMasteryAbilityIDs(
   } else throw new Error("Job Mastery Error: First Job not found");
 
   // Get Unit's Secondary job
-  const secondJob = unusedJobs[rng.randomIntMax(unusedJobs.length - 1)];
-  if (secondJob != undefined) {
-    abilityIndicies = abilityIndicies.concat(secondJob.getAbilityIDs());
-    unit.setAAbility(secondJob.jobId);
-    unusedJobs = unusedJobs.filter((job) => secondJob.jobId != job.jobId);
-  } else throw new Error("Job Mastery Error: Second Job not found");
-
+  if (unit.getAAbility() != 0x4d) {
+    const secondJob = unusedJobs[rng.randomIntMax(unusedJobs.length - 1)];
+    if (secondJob != undefined) {
+      abilityIndicies = abilityIndicies.concat(secondJob.getAbilityIDs());
+      unit.setAAbility(secondJob.jobId);
+      unusedJobs = unusedJobs.filter((job) => secondJob.jobId != job.jobId);
+    } else throw new Error("Job Mastery Error: Second Job not found");
+  }
   abilityIndicies = abilityIndicies.filter(
     (abilityID) => rng.randomIntRange(1, 100) <= count
   );
