@@ -1077,7 +1077,6 @@ export class FFTAData {
    * Runs a set of hacks that cannot be skipped
    */
   runForcedHacks(options: RandomizerState) {
-    ForcedHacks.setQuickOptions(this.rom);
     ForcedHacks.ASMHacks(this.rom);
 
     if (options.abilitySettings.abilities != "normal") {
@@ -1091,6 +1090,12 @@ export class FFTAData {
       ForcedHacks.randomizeLocations(this.rom, this.rng);
       ForcedHacks.injectAllLocations(this.rom);
       ForcedHacks.stopClans(this.rom);
+    }
+    if (options.generalSettings.disableClans) {
+      ForcedHacks.stopClans(this.rom);
+    }
+    if (options.generalSettings.quickOptions) {
+      ForcedHacks.setQuickOptions(this.rom);
     }
   }
 }

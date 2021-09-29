@@ -16,6 +16,8 @@ const initialRandomizerOptions = {
     laws: "normal",
     startingGold: 5000,
     frostyMageBoost: false,
+    disableClans: false,
+    quickOptions: false,
     noJudgeTurn: false,
     mpRegen: "normal",
   },

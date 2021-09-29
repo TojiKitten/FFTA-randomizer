@@ -5,8 +5,16 @@ export const GeneralSettings = () => {
   const dispatch = useRandomizerUpdate();
   const state = useRandomizer();
   const { generalSettings } = state;
-  const { cutscenes, laws, noJudgeTurn, mpRegen, frostyMageBoost, raceMode } =
-    generalSettings;
+  const {
+    cutscenes,
+    laws,
+    disableClans,
+    quickOptions,
+    noJudgeTurn,
+    mpRegen,
+    frostyMageBoost,
+    raceMode,
+  } = generalSettings;
 
   const [cutSceneHelp, setcutSceneHelp] = React.useState("");
   React.useEffect(() => {
@@ -135,6 +143,37 @@ export const GeneralSettings = () => {
           <option value="normal">5 MP gained per turn</option>
           <option value="precentage">10% of Max MP gained per turn</option>
         </select>
+      </div>
+      <div className="generalSettingsOption">
+        <label htmlFor="disableClans">Disable Clans</label>
+        <input
+          id="disableClans"
+          type="checkbox"
+          checked={disableClans}
+          onChange={(event) => {
+            dispatch({
+              type: "generalSettings",
+              option: { disableClans: event.target.checked },
+            });
+          }}
+        />
+      </div>
+      <div className="generalSettingsOption has-help-text">
+        <label htmlFor="quickOptions">Quick Options</label>
+        <input
+          id="quickOptions"
+          type="checkbox"
+          checked={quickOptions}
+          onChange={(event) => {
+            dispatch({
+              type: "generalSettings",
+              option: { quickOptions: event.target.checked },
+            });
+          }}
+        />
+        <div className="help-text">
+          When enabled, changes default in game options to use quick options.
+        </div>
       </div>
       <div className="generalSettingsOption has-help-text">
         <label htmlFor="noJudgeOption">No Judge Turn</label>

@@ -36,6 +36,7 @@ export const MissionSettings = () => {
 
   const [showEnemyAbilities, setShowEnemyAbilities] = React.useState(false);
 
+  const validMissions = 119;
   // Update UI based on story setting option
   React.useEffect(() => {
     switch (storySetting) {
@@ -45,7 +46,7 @@ export const MissionSettings = () => {
         break;
       case "linear":
         setShowStoryLength(true);
-        setMaxStoryLength(125);
+        setMaxStoryLength(validMissions);
         setStoryHelp(
           "Only one mission is available in the pub, and completing it unlocks the next mission. The last mission will always be Royal Valley."
         );
@@ -56,7 +57,7 @@ export const MissionSettings = () => {
         break;
       case "branching":
         setShowStoryLength(true);
-        setMaxStoryLength(Math.floor(126 / 3));
+        setMaxStoryLength(Math.floor((validMissions - 1) / 3) + 1);
         setStoryHelp("This mode does not work.");
         dispatch({
           type: "missionSettings",
