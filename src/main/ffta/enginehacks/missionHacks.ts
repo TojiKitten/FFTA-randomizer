@@ -239,7 +239,7 @@ export function randomizeLinearStory(
     mission.setUnlockFlag3(0x00, 0x00, 0x00);
   });
 
-  const unsupportedMissions = ["dummy", "Another World", "Present Day"];
+  const unsupportedMissions = ["dummy", "Another World"];
 
   // Filter to all encounter missions
   const validMissions = missions.filter(
@@ -248,7 +248,8 @@ export function randomizeLinearStory(
       mission.displayName != "Royal Valley" &&
       mission.encounterMission === 1 &&
       mission.linkMission === 0 &&
-      mission.missionType != 0x0d01
+      mission.missionType != 0x0d &&
+      mission.displayName == "No Full HP"
   );
 
   // Create new "path" for the story
@@ -261,7 +262,7 @@ export function randomizeLinearStory(
     )[0];
 
     // Set the mission type to appear as purchasable in shop and selectable at location
-    selectedMission.missionType = 0x0a00;
+    selectedMission.missionType = 0x0a;
     // Set the extra flags to show on the location menu
     selectedMission.setMoreFlags(0x00);
 
@@ -288,7 +289,7 @@ export function randomizeLinearStory(
   const royalValley = missions.find(
     (mission) => mission.displayName === "Royal Valley"
   )!;
-  royalValley.missionType = 0x0a00;
+  royalValley.missionType = 0x0a;
   royalValley.setMoreFlags(0x00);
   setNewUnlockFlag(royalValley, newStory[newStory.length - 1].missionID);
   newStory.push(royalValley);
@@ -306,6 +307,7 @@ export function randomizeLinearStory(
     mission.price = 0;
     mission.itemReward1Hidden = 0;
     mission.itemReward2Hidden = 0;
+    console.log(mission.toString());
   });
 }
 
@@ -347,7 +349,7 @@ export function randomizeBranchingStory(
     alternateMissionID2: number
   ) => {
     // Set the mission type to appear as purchasable in shop and selectable at location
-    mission.missionType = 0x0a00;
+    mission.missionType = 0x0a;
     // Set the extra flags to show on the location menu
     mission.setMoreFlags(0x00);
     // Set the unlock of this mission to the previous mission, if it exists
@@ -382,7 +384,7 @@ export function randomizeBranchingStory(
       mission.displayName != "Royal Valley" &&
       mission.encounterMission === 1 &&
       mission.linkMission === 0 &&
-      mission.missionType != 0x0d01
+      mission.missionType << (8 + mission.missionRank) != 0x0d01
   );
 
   // Create new "path" for the story
@@ -446,7 +448,7 @@ export function randomizeBranchingStory(
   const royalValley = missions.find(
     (mission) => mission.displayName === "Royal Valley"
   )!;
-  royalValley.missionType = 0x0a00;
+  royalValley.missionType = 0x0a;
   royalValley.setMoreFlags(0x00);
   royalValley.setUnlockFlag1(0, 0, 0);
   royalValley.setUnlockFlag2(0, 0, 0);

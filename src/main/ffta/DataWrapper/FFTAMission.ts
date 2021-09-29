@@ -2,7 +2,7 @@ import { FFTAObject, ROMProperty } from "./FFTAObject";
 
 const enum OFFSET {
   ID = 0x00,
-  TYPE = 0x01, // 0B is regular encounter, 02 is dispatch maybe uses flags
+  TYPE = 0x02, // 0B is regular encounter, 02 is dispatch maybe uses flags
   RANK = 0x03, // 2 Bytes of combined info, bottom 3 bits are rank, next 3 are where city appears, next 1 is cancellations allowed
   // 0 anywhere, 1 Cyril, 2 Muscadet, 3 Baguba, 4 Nowhere, 5 Sprohm, 6 Cadoan, 7 nowhere
   UNLOCKFLAG1 = 0x05, // 3 Bytes (Bit Offset, Row Offset * 0x20, Value)
@@ -55,46 +55,46 @@ export class FFTAMission extends FFTAObject {
     return this.getProperty(OFFSET.ID, 2);
   }
 
-  get specialMission(): 0 | 1 {
-    return this.getFlag(OFFSET.TYPE, 2, 0x0) as 0 | 1;
+  set missionType(type: number) {
+    this.setProperty(OFFSET.TYPE, 1, type);
+  }
+  get missionType(): number {
+    return this.getProperty(OFFSET.TYPE, 1);
   }
 
   get storyMission(): 0 | 1 {
-    return this.getFlag(OFFSET.TYPE, 2, 0x08) as 0 | 1;
+    return this.getFlag(OFFSET.RANK, 2, 0x00) as 0 | 1;
+  }
+
+  get specialMission(): 0 | 1 {
+    return this.getFlag(OFFSET.TYPE, 1, 0x0) as 0 | 1;
   }
 
   set encounterMission(bit: 0 | 1) {
-    this.setFlag(OFFSET.TYPE, 2, 0xb, bit);
+    this.setFlag(OFFSET.TYPE, 1, 0x3, bit);
   }
   get encounterMission(): 0 | 1 {
-    return this.getFlag(OFFSET.TYPE, 2, 0xb) as 0 | 1;
+    return this.getFlag(OFFSET.TYPE, 1, 0x3) as 0 | 1;
   }
 
   get linkMission(): number {
-    return this.getFlag(OFFSET.TYPE, 2, 0xc);
+    return this.getFlag(OFFSET.TYPE, 1, 0x4);
   }
 
   get missionRank(): number {
-    return (this.getProperty(OFFSET.RANK, 2) & (7 << 4)) >> 4;
+    return (this.getProperty(OFFSET.RANK, 2) & (7 << 5)) >> 5;
   }
 
   get cityAppearance(): number {
-    return (this.getProperty(OFFSET.RANK, 2) & (7 << 7)) >> 7;
+    return (this.getProperty(OFFSET.RANK, 2) & (7 << 2)) >> 2;
   }
   set cityAppearance(cityID: number) {
-    const proposedValue = cityID << 7;
-    const currentValue = this.cityAppearance << 7;
+    const proposedValue = cityID << 2;
+    const currentValue = this.cityAppearance << 2;
     const newValue =
-      this.getProperty(OFFSET.RANK, 2) - currentValue + proposedValue;
+      this.getProperty(OFFSET.TYPE, 2) - currentValue + proposedValue;
 
-    this.setProperty(OFFSET.RANK, 2, newValue);
-  }
-
-  set missionType(type: number) {
-    this.setProperty(OFFSET.TYPE, 2, type);
-  }
-  get missionType(): number {
-    return this.getProperty(OFFSET.TYPE, 2);
+    this.setProperty(OFFSET.TYPE, 2, newValue);
   }
 
   private _pubVisibility: ROMProperty = {
@@ -348,6 +348,7 @@ export class FFTAMission extends FFTAObject {
     return `Mission Name: ${this.displayName} (#${this.missionID})
     Memory: ${this.memory.toString(16)}
     Item Reward 1: ${this.itemReward1.toString(16)}
-    Item Reward 2: ${this.itemReward2.toString(16)}`;
+    Item Reward 2: ${this.itemReward2.toString(16)}
+    `;
   };
 }

@@ -764,7 +764,25 @@ export class FFTAData {
           job: "thief",
           rngEquip: true,
           level: this.formations[5].units[1].getLevel(),
-          masteredAbilities: 75,
+          masteredAbilities: 0,
+          masterType: "abilities",
+        },
+        this.rng
+      );
+
+      StartingPartyHacks.setUnitData(
+        this.formations[25].units[0],
+        this.jobs,
+        this.items,
+        this.raceAbilities,
+        {
+          name: "NPC",
+          raceChangeable: false,
+          race: RACES.Bangaa,
+          job: "templar",
+          rngEquip: true,
+          level: this.formations[25].units[0].getLevel(),
+          masteredAbilities: 0,
           masterType: "abilities",
         },
         this.rng
@@ -1059,8 +1077,20 @@ export class FFTAData {
    * Runs a set of hacks that cannot be skipped
    */
   runForcedHacks(options: RandomizerState) {
+    ForcedHacks.setQuickOptions(this.rom);
+    ForcedHacks.ASMHacks(this.rom);
+
     if (options.abilitySettings.abilities != "normal") {
       ForcedHacks.animationFixRaw(this.rom);
+    }
+    if (options.jobSettings.jobRequirements != "normal") {
+      ForcedHacks.injectUnlockJobs(this.rom);
+    }
+    if (options.missionSettings.storySetting != "normal") {
+      this.rng.setPosition(8000);
+      ForcedHacks.randomizeLocations(this.rom, this.rng);
+      ForcedHacks.injectAllLocations(this.rom);
+      ForcedHacks.stopClans(this.rom);
     }
   }
 }
