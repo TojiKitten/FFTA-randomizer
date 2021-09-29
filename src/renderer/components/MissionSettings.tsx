@@ -248,6 +248,7 @@ export const MissionSettings = () => {
               option: {
                 randomEnemies: event.target.checked,
                 enemyAbilityPercentage: event.target.checked ? 50 : 0,
+                randomEnemyItems: event.target.checked,
               },
             });
           }}
@@ -282,6 +283,7 @@ export const MissionSettings = () => {
         <input
           id="randomEnemyItems"
           type="checkbox"
+          disabled={randomEnemies}
           checked={randomEnemyItems}
           onChange={(event) => {
             dispatch({
