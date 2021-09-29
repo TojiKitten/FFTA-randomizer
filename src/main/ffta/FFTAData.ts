@@ -680,9 +680,14 @@ export class FFTAData {
    * Updates each formation to randomize enemy loadouts
    * @param options - Randomizer UI selected options
    */
-  handleRandomEnemies(randomEnemies: boolean, abilityPercentage: number) {
-    if (randomEnemies) {
+  handleRandomEnemies(
+    randomEnemies: boolean,
+    abilityPercentage: number,
+    randomItems: boolean
+  ) {
+    if (randomEnemies || randomItems) {
       // Randomize non Guest, non monster enemies
+      const flatJobs = Array.from(this.jobs.values()).flat();
       for (var i = 3; i < this.formations.length; i++) {
         const formation = this.formations[i];
         formation.units
@@ -696,6 +701,10 @@ export class FFTAData {
                 ].jobId
           )
           .forEach((unit) => {
+            const currentJob = flatJobs.filter(
+              (job) => job.jobId === unit.getJob()
+            )[0];
+
             StartingPartyHacks.setUnitData(
               unit,
               this.jobs,
@@ -704,9 +713,16 @@ export class FFTAData {
               {
                 name: "NPC",
                 raceChangeable: true,
-                race: "random",
-                job: "random",
-                rngEquip: true,
+                race: randomEnemies
+                  ? unit.getAAbility() != 0x4d
+                    ? "random"
+                    : "human"
+                  : currentJob.race,
+                job: randomEnemies
+                  ? "random"
+                  : currentJob.displayName![0].toLowerCase() +
+                    currentJob.displayName!.substr(1).replaceAll(" ", ""),
+                rngEquip: randomItems,
                 level: unit.getLevel(),
                 masteredAbilities: abilityPercentage,
                 masterType: "abilities",
@@ -733,6 +749,9 @@ export class FFTAData {
       guests.forEach((unit) => {
         const { formation, position, race } = unit;
         const member = this.formations[formation].units[position];
+        const currentJob = flatJobs.filter(
+          (job) => job.jobId === member.getJob()
+        )[0];
         StartingPartyHacks.setUnitData(
           member,
           this.jobs,
@@ -742,8 +761,11 @@ export class FFTAData {
             name: "NPC",
             raceChangeable: false,
             race: race,
-            job: "random",
-            rngEquip: true,
+            job: randomEnemies
+              ? "random"
+              : currentJob.displayName![0].toLowerCase() +
+                currentJob.displayName!.substr(1).replaceAll(" ", ""),
+            rngEquip: randomItems,
             level: member.getLevel(),
             masteredAbilities: abilityPercentage,
             masterType: "abilities",
@@ -762,9 +784,27 @@ export class FFTAData {
           raceChangeable: false,
           race: RACES.Human,
           job: "thief",
-          rngEquip: true,
+          rngEquip: randomItems,
           level: this.formations[5].units[1].getLevel(),
-          masteredAbilities: 75,
+          masteredAbilities: 0,
+          masterType: "abilities",
+        },
+        this.rng
+      );
+
+      StartingPartyHacks.setUnitData(
+        this.formations[25].units[0],
+        this.jobs,
+        this.items,
+        this.raceAbilities,
+        {
+          name: "NPC",
+          raceChangeable: false,
+          race: RACES.Bangaa,
+          job: "templar",
+          rngEquip: randomItems,
+          level: this.formations[25].units[0].getLevel(),
+          masteredAbilities: 0,
           masterType: "abilities",
         },
         this.rng
@@ -1059,8 +1099,25 @@ export class FFTAData {
    * Runs a set of hacks that cannot be skipped
    */
   runForcedHacks(options: RandomizerState) {
+    ForcedHacks.ASMHacks(this.rom);
+
     if (options.abilitySettings.abilities != "normal") {
       ForcedHacks.animationFixRaw(this.rom);
+    }
+    if (options.jobSettings.jobRequirements != "normal") {
+      ForcedHacks.injectUnlockJobs(this.rom);
+    }
+    if (options.missionSettings.storySetting != "normal") {
+      this.rng.setPosition(8000);
+      ForcedHacks.randomizeLocations(this.rom, this.rng);
+      ForcedHacks.injectAllLocations(this.rom);
+      ForcedHacks.stopClans(this.rom);
+    }
+    if (options.generalSettings.disableClans) {
+      ForcedHacks.stopClans(this.rom);
+    }
+    if (options.generalSettings.quickOptions) {
+      ForcedHacks.setQuickOptions(this.rom);
     }
   }
 }

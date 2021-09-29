@@ -16,6 +16,8 @@ const initialRandomizerOptions = {
     laws: "normal",
     startingGold: 5000,
     frostyMageBoost: false,
+    disableClans: false,
+    quickOptions: false,
     noJudgeTurn: false,
     mpRegen: "normal",
   },
@@ -29,7 +31,8 @@ const initialRandomizerOptions = {
     apBoost: -1,
     gilReward: -1,
     randomEnemies: false,
-    enemyAbilityPercentage: 50,
+    enemyAbilityPercentage: 0,
+    randomEnemyItems: false,
   },
   partySettings: {
     partyRNGEnabled: false,
