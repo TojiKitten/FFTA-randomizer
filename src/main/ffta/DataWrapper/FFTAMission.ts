@@ -86,15 +86,15 @@ export class FFTAMission extends FFTAObject {
   }
 
   get cityAppearance(): number {
-    return (this.getProperty(OFFSET.RANK, 2) & (7 << 2)) >> 2;
+    return (this.getProperty(OFFSET.RANK, 2) & (7 << 8)) >> 8;
   }
   set cityAppearance(cityID: number) {
-    const proposedValue = cityID << 2;
-    const currentValue = this.cityAppearance << 2;
+    const proposedValue = cityID << 8;
+    const currentValue = this.cityAppearance << 8;
     const newValue =
-      this.getProperty(OFFSET.TYPE, 2) - currentValue + proposedValue;
+      this.getProperty(OFFSET.RANK, 2) - currentValue + proposedValue;
 
-    this.setProperty(OFFSET.TYPE, 2, newValue);
+    this.setProperty(OFFSET.RANK, 2, newValue);
   }
 
   private _pubVisibility: ROMProperty = {

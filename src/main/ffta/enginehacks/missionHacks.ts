@@ -204,18 +204,6 @@ export function hideRewardPreviews(missions: Array<FFTAMission>) {
   });
 }
 
-export function unlockAllStoryMissions(missions: Array<FFTAMission>) {
-  missions
-    .filter((mission) => mission.missionID >= 3 && mission.missionID <= 24)
-    .forEach((mission) => {
-      mission.setUnlockFlag1(0x3b, 0x04, 1);
-      mission.setUnlockFlag2(0x00, 0x00, 0);
-      mission.setUnlockFlag3(0x00, 0x00, 0);
-      mission.missionType = 0x0b; // Makes all misions regular encounters
-      mission.setMoreFlags(0x00); // Makes all missions appear in pub
-    });
-}
-
 // Helper function to set the mission's prereq to a given mission
 const setNewUnlockFlag = (mission: FFTAMission, previousMissionID: number) => {
   mission.setUnlockFlag1(
@@ -248,8 +236,7 @@ export function randomizeLinearStory(
       mission.displayName != "Royal Valley" &&
       mission.encounterMission === 1 &&
       mission.linkMission === 0 &&
-      mission.missionType != 0x0d &&
-      mission.displayName == "No Full HP"
+      mission.missionType != 0x0d
   );
 
   // Create new "path" for the story
@@ -307,7 +294,6 @@ export function randomizeLinearStory(
     mission.price = 0;
     mission.itemReward1Hidden = 0;
     mission.itemReward2Hidden = 0;
-    console.log(mission.toString());
   });
 }
 
