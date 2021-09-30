@@ -29,10 +29,15 @@ const enum OFFSET {
 
 const enum TYPEFLAG {
   SPECIAL = 0x0,
-  CLANENCOUNTER = 0x1,
-  SELECTABLE = 0x2,
+  ENCOUNTERTYPE = 0x1,
   ENCOUNTER = 0x3,
   LINK = 0x4,
+}
+
+const enum ENCOUNTERTYPE {
+  CLAN = 0x0,
+  NORMAL = 0x1,
+  WALKON = 0x2,
 }
 
 const enum RANKOFFSET {
@@ -75,7 +80,10 @@ export class FFTAMission extends FFTAObject {
   }
 
   toString = (): string => {
-    return `Mission Name: ${this.displayName} (#${this.missionID})
+    return `
+    Mission Name: ${this.displayName} (#${this.missionID})
+    Type: ${this.missionType.toString(16)}
+    Rank: ${this.missionRank}
     Memory: ${this.memory.toString(16)}
     Item Reward 1: ${this.itemReward1.toString(16)}
     Item Reward 2: ${this.itemReward2.toString(16)}
@@ -96,7 +104,7 @@ export class FFTAMission extends FFTAObject {
   }
 
   private _missionType: ROMProperty = {
-    byteOffset: OFFSET.ID,
+    byteOffset: OFFSET.TYPE,
     byteLength: 1,
     displayName: "Could not retrieve.",
     value: 0,
@@ -121,6 +129,7 @@ export class FFTAMission extends FFTAObject {
   }
 
   get encounterMission(): boolean {
+    //console.log(this._missionType.value.toString(2));
     return ((this._missionType.value >> TYPEFLAG.ENCOUNTER) & 0x1) === 0x1
       ? true
       : false;
@@ -132,32 +141,20 @@ export class FFTAMission extends FFTAObject {
       (value << TYPEFLAG.ENCOUNTER);
   }
 
-  get clanMission(): boolean {
-    return ((this._missionType.value >> TYPEFLAG.CLANENCOUNTER) & 0x1) === 0x1
+  get encounterType(): boolean {
+    return ((this._missionType.value >> TYPEFLAG.ENCOUNTERTYPE) & 0x2) === 0x1
       ? true
       : false;
   }
-  set clanMission(allowed: boolean) {
+  set encounterType(allowed: boolean) {
     const value = allowed ? 1 : 0;
     this._missionType.value =
-      (this._missionType.value & ~(1 << TYPEFLAG.CLANENCOUNTER)) |
-      (value << TYPEFLAG.CLANENCOUNTER);
-  }
-
-  get selectableMission(): boolean {
-    return ((this._missionType.value >> TYPEFLAG.SELECTABLE) & 0x1) === 0x1
-      ? true
-      : false;
-  }
-  set selectableMission(allowed: boolean) {
-    const value = allowed ? 1 : 0;
-    this._missionType.value =
-      (this._missionType.value & ~(1 << TYPEFLAG.SELECTABLE)) |
-      (value << TYPEFLAG.SELECTABLE);
+      (this._missionType.value & ~(2 << TYPEFLAG.ENCOUNTERTYPE)) |
+      (value << TYPEFLAG.ENCOUNTERTYPE);
   }
 
   get linkMission(): boolean {
-    return ((this._missionType.value >> TYPEFLAG.ENCOUNTER) & 0x1) === 0x1
+    return ((this._missionType.value >> TYPEFLAG.LINK) & 0x1) === 0x1
       ? true
       : false;
   }

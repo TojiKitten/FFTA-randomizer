@@ -1,4 +1,4 @@
-import { FFTAObject, isROMProperty, ROMProperty } from "./FFTAObject";
+import { FFTAObject, ROMProperty } from "./FFTAObject";
 
 const enum OFFSET {
   TYPE = 0x00,
@@ -84,9 +84,9 @@ export class FFTAUnit extends FFTAObject {
     const abilityByte = OFFSET.UNITABILITIES + Math.floor(offset / 8);
     const abilityBit = offset % 8;
     const mask = 0x1 << abilityBit;
-    const set: ROMProperty = Object.values(this)
-      .filter(isROMProperty)
-      .find((itemProperty) => itemProperty.byteOffset === abilityByte);
+    const set: ROMProperty = this.getROMProperties().find(
+      (itemProperty) => itemProperty.byteOffset === abilityByte
+    );
     set.value = (set.value & ~mask) | (masteredBit << abilityBit);
   }
 

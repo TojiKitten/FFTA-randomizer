@@ -196,13 +196,14 @@ export function randomizeLinearStory(
   const unsupportedMissions = ["dummy", "Another World"];
 
   // Filter to all encounter missions
-  const validMissions = missions.filter((mission) => {
+  const validMissions = missions.filter((mission, n) => {
     return (
       !unsupportedMissions.includes(mission.displayName!) &&
       mission.displayName != "Royal Valley" &&
       mission.encounterMission === true &&
       mission.linkMission === false &&
-      mission.missionType != 0x0d
+      mission.missionRank > 0 &&
+      mission.missionLocation != 0
     );
   });
 

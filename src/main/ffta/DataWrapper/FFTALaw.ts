@@ -1,4 +1,4 @@
-import { FFTAObject, ROMProperty, isROMProperty } from "./FFTAObject";
+import { FFTAObject, ROMProperty } from "./FFTAObject";
 
 const enum OFFSET {}
 
@@ -33,15 +33,14 @@ export class FFTALawSet extends FFTAObject {
   }
 
   setLaw(itemID: number, offset: number) {
-    Object.values(this)
-      .filter(isROMProperty)
-      .find((itemProperty) => itemProperty.byteOffset === offset * 2).value =
-      itemID;
+    this.getROMProperties().find(
+      (itemProperty) => itemProperty.byteOffset === offset * 2
+    ).value = itemID;
   }
   getLaw(offset: number) {
-    return Object.values(this)
-      .filter(isROMProperty)
-      .find((itemProperty) => itemProperty.byteOffset === offset * 2).value;
+    return this.getROMProperties().find(
+      (itemProperty) => itemProperty.byteOffset === offset * 2
+    ).value;
   }
   private _law1: ROMProperty = {
     byteOffset: 0,

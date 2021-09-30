@@ -1,4 +1,4 @@
-import { FFTAObject, ROMProperty, isROMProperty } from "./FFTAObject";
+import { FFTAObject, ROMProperty } from "./FFTAObject";
 
 const enum OFFSET {
   NAME = 0x0,
@@ -521,15 +521,14 @@ export class FFTARewardItemSet extends FFTAObject {
   }
 
   setItem(itemID: number, offset: number) {
-    Object.values(this)
-      .filter(isROMProperty)
-      .find((itemProperty) => itemProperty.byteOffset === offset * 2).value =
-      itemID;
+    this.getROMProperties().find(
+      (itemProperty) => itemProperty.byteOffset === offset * 2
+    ).value = itemID;
   }
   getItem(offset: number) {
-    return Object.values(this)
-      .filter(isROMProperty)
-      .find((itemProperty) => itemProperty.byteOffset === offset * 2).value;
+    return this.getROMProperties().find(
+      (itemProperty) => itemProperty.byteOffset === offset * 2
+    ).value;
   }
   private _item1: ROMProperty = {
     byteOffset: 0,

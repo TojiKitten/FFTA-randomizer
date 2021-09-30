@@ -117,7 +117,7 @@ function abilityReplace(
   let newRaceAbilities: Array<FFTARaceAbility> = [];
 
   // Randomize each ability in the passed in list
-  raceAbilities.forEach((ability) => {
+  raceAbilities.forEach((ability, n) => {
     // Iterate through all abilities and filter to matching ability types
     // Removes duplicates
     // Shuffled case, sortedAbilities gets smaller and smaller
@@ -131,13 +131,10 @@ function abilityReplace(
     let name = selectedAbility.displayName ? selectedAbility.displayName : "";
 
     // Create a clone of the new ability, set its memory to the ability to replace, and update the name
-    let newAbility = Object.create(
-      Object.getPrototypeOf(selectedAbility),
-      Object.getOwnPropertyDescriptors(selectedAbility)
-    );
-    newAbility.displayName = name;
-    newAbility.memory = ability.memory;
+    let newAbility = new FFTARaceAbility(ability.memory, name);
+    newAbility.copy(selectedAbility);
     newRaceAbilities.push(newAbility);
+    newAbility.apCost = 0;
 
     // If shuffling abilities, remove the selected ability from the list
     // Uses memory address for duplicate case

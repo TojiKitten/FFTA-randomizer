@@ -8,12 +8,6 @@ export type ROMProperty = {
   value: number;
 };
 
-export function isROMProperty<ROMProperty>(
-  argument: ROMProperty | undefined
-): argument is ROMProperty {
-  return argument !== undefined;
-}
-
 /**
  * Represents a piece of information in FFTA.
  * @see memory - The memory address of an object
@@ -94,32 +88,38 @@ export class FFTAObject {
   };
 
   load = (rom: Uint8Array) => {
-    Object.values(this)
-      .filter(isROMProperty)
-      .forEach((property) => {
-        this.loadProperty(property, rom);
-      });
+    this.getROMProperties().forEach((property) => {
+      this.loadProperty(property, rom);
+    });
   };
 
   write = (rom: Uint8Array) => {
-    Object.values(this)
-      .filter(isROMProperty)
-      .forEach((property) => {
-        this.writeProperty(property, rom);
+    this.getROMProperties().forEach((property) => {
+      this.writeProperty(property, rom);
+    });
+  };
+
+  getROMProperties = () => {
+    return Object.entries(this)
+      .filter((entry) => {
+        return entry[0].includes("_");
+      })
+      .map((entry) => {
+        return entry[1];
       });
   };
 
   copy = (fftaObject: FFTAObject) => {
-    Object.values(this)
-      .filter(isROMProperty)
-      .forEach((property: ROMProperty) => {
-        const matchingProperty = Object.values(fftaObject)
-          .filter(isROMProperty)
-          .find(
-            (itemProperty) => itemProperty.byteOffset === property.byteOffset
-          );
-        property.value = matchingProperty.value;
-      });
+    const sourceProperties = this.getROMProperties();
+    const targetProperties = fftaObject.getROMProperties();
+
+    sourceProperties.forEach((property: ROMProperty) => {
+      const matchingProperty = targetProperties.find(
+        (itemProperty: ROMProperty) =>
+          itemProperty.byteOffset === property.byteOffset
+      );
+      property.value = matchingProperty.value;
+    });
   };
 
   // /**

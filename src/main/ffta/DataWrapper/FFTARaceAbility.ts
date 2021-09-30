@@ -29,9 +29,11 @@ export class FFTARaceAbility extends FFTAObject {
    * @param name - The name of an object
    * @param properties - The buffer holding the information of an object
    */
-  constructor(memory: number, name: string, properties: Uint8Array) {
+  constructor(memory: number, name: string, properties?: Uint8Array) {
     super(memory, name);
-    this.load(properties);
+    if (properties) {
+      this.load(properties);
+    }
   }
 
   private _nameID: ROMProperty = {
