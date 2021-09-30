@@ -42,7 +42,7 @@ const enum ENCOUNTERTYPE {
 
 const enum RANKOFFSET {
   STORY = 0x0,
-  RANK = 0x5,
+  RANK = 0x4,
   CITYPICKUP = 0x8,
 }
 
@@ -85,6 +85,13 @@ export class FFTAMission extends FFTAObject {
     Type: ${this.missionType.toString(16)}
     Rank: ${this.missionRank}
     Memory: ${this.memory.toString(16)}
+    Unlock 1: ${
+      this._unlockFlag1Offset.value.toString(16) +
+      " " +
+      this._unlockFlag1Block.value.toString(16) +
+      " " +
+      this._unlockFlag1Value.value.toString(16)
+    }
     Item Reward 1: ${this.itemReward1.toString(16)}
     Item Reward 2: ${this.itemReward2.toString(16)}
     `;
@@ -179,7 +186,7 @@ export class FFTAMission extends FFTAObject {
   set storyMission(allowed: boolean) {
     const value = allowed ? 1 : 0;
     this._missionType.value =
-      (this._missionType.value & ~(1 << RANKOFFSET.STORY)) |
+      (this._rank.value & ~(1 << RANKOFFSET.STORY)) |
       (value << RANKOFFSET.STORY);
   }
   get missionRank(): number {
@@ -187,7 +194,7 @@ export class FFTAMission extends FFTAObject {
   }
   set missionRank(rank: number) {
     this._rank.value =
-      (this._missionType.value & ~(7 << RANKOFFSET.RANK)) |
+      (this._rank.value & ~(0x7 << RANKOFFSET.RANK)) |
       (rank << RANKOFFSET.RANK);
   }
   get cityAppearance(): number {
@@ -195,7 +202,7 @@ export class FFTAMission extends FFTAObject {
   }
   set cityAppearance(rank: number) {
     this._rank.value =
-      (this._missionType.value & ~(7 << RANKOFFSET.CITYPICKUP)) |
+      (this._rank.value & ~(0x7 << RANKOFFSET.CITYPICKUP)) |
       (rank << RANKOFFSET.CITYPICKUP);
   }
 

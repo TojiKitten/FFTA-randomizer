@@ -250,7 +250,7 @@ export function randomizeLinearStory(
   newStory.push(royalValley);
 
   // Fix certain things about the missions
-  newStory.forEach((mission) => {
+  newStory.forEach((mission, n) => {
     mission.recruit = 0x00;
     mission.monthVisibile = "Any";
     mission.daysVisible = 1;

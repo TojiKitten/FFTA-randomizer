@@ -115,7 +115,7 @@ export const GeneralSettings = () => {
         <div className="help-text">{lawHelp}</div>
       </div>
       <div className="generalSettingsOption">
-        <label htmlFor="goldOption">Starting Gold</label>
+        <label htmlFor="goldOption">Starting Gil</label>
         <input
           id="goldOption"
           type="number"

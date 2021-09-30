@@ -92,6 +92,7 @@ interface ItemAbility {
  */
 export class FFTAItem extends FFTAObject {
   readonly ITEMIDOFFSET: number = 1;
+  itemID: number = -1;
   itemAbilities: Array<ItemAbility>;
 
   /**
@@ -100,9 +101,15 @@ export class FFTAItem extends FFTAObject {
    * @param itemName - The name of the ability
    * @param properties - A buffer starting from the address in the ROM
    */
-  constructor(memory: number, itemName: string, properties: Uint8Array) {
+  constructor(
+    memory: number,
+    itemName: string,
+    itemID: number,
+    properties?: Uint8Array
+  ) {
     super(memory, itemName);
-    this.load(properties);
+    this.itemID = itemID;
+    if (properties) this.load(properties);
   }
 
   /**

@@ -94,13 +94,9 @@ function createNewItemArray(items: Array<FFTAItem>) {
 
   // Create new items to return
   items.forEach((item) => {
-    newItems.push(
-      Object.create(
-        Object.getPrototypeOf(item),
-        Object.getOwnPropertyDescriptors(item)
-      )
-    );
+    newItems.push(new FFTAItem(item.memory, item.displayName!, item.itemID));
     const addedItem = newItems[newItems.length - 1];
+    addedItem.copy(item);
     addedItem.itemAbilities = item.itemAbilities;
     addedItem.allowed = item.allowed;
   });
