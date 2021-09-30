@@ -1,3 +1,5 @@
+import { first } from "lodash";
+
 const charTable = require("./charLookup.json");
 
 /**
@@ -59,11 +61,7 @@ export function convertWordUint8Array(
   var thirdByte = littleEndian ? value[1] : value[2];
   var fourthByte = littleEndian ? value[0] : value[3];
 
-  return (
-    (firstByte << 0x8) |
-    (secondByte << 0x16) |
-    ((thirdByte << 0x8) | fourthByte)
-  );
+  return (firstByte << 24) + (secondByte << 16) + (thirdByte << 8) + fourthByte;
 }
 
 /**

@@ -10,18 +10,6 @@ const enum OFFSET {
  * An {@link FFTAObject} that represents an ability in the game that is referenced by one or many races.
  */
 export class FFTAAbility extends FFTAObject {
-  readonly nameID: ROMProperty = {
-    byteOffset: OFFSET.NAME,
-    byteLength: 2,
-    displayName: "",
-    value: 0,
-  };
-  readonly descriptionID: ROMProperty = {
-    byteOffset: OFFSET.DESCRIPTION,
-    byteLength: 2,
-    displayName: "Could not retrieve.",
-    value: 0,
-  };
   /**
    * The constructor for an Ability
    * @param memory - The address of the ROM
@@ -29,6 +17,32 @@ export class FFTAAbility extends FFTAObject {
    * @param properties - A buffer starting from the address in the ROM
    */
   constructor(memory: number, name: string, properties: Uint8Array) {
-    super(memory, properties, name);
+    super(memory, name);
+    this.load(properties);
+  }
+  private _nameID: ROMProperty = {
+    byteOffset: OFFSET.NAME,
+    byteLength: 2,
+    displayName: "",
+    value: 0,
+  };
+  get nameID() {
+    return this._nameID.value;
+  }
+  set nameID(id: number) {
+    this._nameID.value = id;
+  }
+
+  private _descriptionID: ROMProperty = {
+    byteOffset: OFFSET.DESCRIPTION,
+    byteLength: 2,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  get descriptionID() {
+    return this._descriptionID.value;
+  }
+  set descriptionID(id: number) {
+    this._descriptionID.value = id;
   }
 }

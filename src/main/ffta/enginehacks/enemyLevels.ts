@@ -19,13 +19,13 @@ export function lerpStoryMissionLevels(
   // Interpolate the max level for all Story Missions
   for (var i = 3; i < 33; i++) {
     formations[i].units.forEach((unit) => {
-      unit.setLevel(Math.ceil(lerp(1, liGrimLevel, i)));
+      unit.level = Math.ceil(lerp(1, liGrimLevel, i));
     });
   }
   // Set remaining missions to scale
   for (var i = 33; i < formations.length; i++) {
     formations[i].units.forEach((unit) => {
-      unit.setLevel(0);
+      unit.level = 0;
     });
   }
 }
@@ -40,7 +40,7 @@ export function averageMissionLevels(formations: Array<FFTAFormation>) {
     // Don't apply this to starting party
     if (i !== 0) {
       formation.units.forEach((unit) => {
-        unit.setLevel(0);
+        unit.level = 0;
       });
     }
   });
@@ -57,7 +57,7 @@ export function highestMissionLevels(fftaData: FFTAData) {
     // Don't apply this to starting party
     if (i !== 0) {
       formation.units.forEach((unit) => {
-        unit.setLevel(0);
+        unit.level = 0;
       });
     }
   });
