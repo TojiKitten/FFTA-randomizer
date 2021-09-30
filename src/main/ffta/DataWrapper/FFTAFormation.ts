@@ -1,4 +1,4 @@
-import { FFTAObject } from "./FFTAObject";
+import { FFTAObject, ROMProperty } from "./FFTAObject";
 import { FFTAUnit } from "./FFTAUnit";
 import * as FFTAUtils from "../utils/FFTAUtils";
 
@@ -33,7 +33,8 @@ export class FFTAFormation extends FFTAObject {
    * @param properties - A buffer starting from the address in the ROM
    */
   constructor(memory: number, properties: Uint8Array) {
-    super(memory, properties, undefined);
+    super(memory, undefined);
+    this.load(properties);
 
     this.unitStart = FFTAUtils.getLittleEndianAddress(
       properties.slice(OFFSET.MEMBERSADDRESS, OFFSET.MEMBERSADDRESS + 4)
@@ -48,16 +49,38 @@ export class FFTAFormation extends FFTAObject {
    * @param unitBuffer - A buffer holding all of the FFTAUnits
    */
   loadUnits(unitBuffer: Uint8Array) {
-    let unitAddress = FFTAUtils.getLittleEndianAddress(
-      this.properties.slice(OFFSET.MEMBERSADDRESS, OFFSET.MEMBERSADDRESS + 3)
-    );
-
-    for (var i = 0; i < this.properties[OFFSET.MEMBERSSIZE]; i++) {
+    for (var i = 0; i < this.membersCount; i++) {
       let newUnit = new FFTAUnit(
-        unitAddress + UNITSIZE * i,
+        this.membersOffset + UNITSIZE * i,
         unitBuffer.slice(UNITSIZE * i, UNITSIZE * (i + 1))
       );
       this.units.push(newUnit);
     }
+  }
+
+  private _membersCount: ROMProperty = {
+    byteOffset: OFFSET.MEMBERSSIZE,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  get membersCount() {
+    return this._membersCount.value;
+  }
+  set membersCount(count: number) {
+    this._membersCount.value = count;
+  }
+
+  private _membersAddress: ROMProperty = {
+    byteOffset: OFFSET.MEMBERSADDRESS,
+    byteLength: 4,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  get membersOffset() {
+    return this._membersAddress.value & 0xffffff;
+  }
+  set membersOffset(offset: number) {
+    this._membersAddress.value = 0x08000000 | offset;
   }
 }

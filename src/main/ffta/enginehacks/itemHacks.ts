@@ -11,9 +11,9 @@ export function toggleAllShopItems(items: Array<FFTAItem>, allowed: boolean) {
   // Set all items to the value of allowed
   let newItems: Array<FFTAItem> = createNewItemArray(items);
   newItems.forEach((item) => {
-    item.setTier1(allowed ? 1 : 0);
-    item.setTier2(allowed ? 1 : 0);
-    item.setTier3(allowed ? 1 : 0);
+    item.tier1 = allowed;
+    item.tier2 = allowed;
+    item.tier3 = allowed;
   });
   return newItems;
 }
@@ -34,9 +34,9 @@ export function toggleRandomShopItems(
   newItems.forEach((item) => {
     let allowed = rng.randomIntRange(1, 100) <= randomChance;
     allowed = item.allowed ? allowed : false;
-    item.setTier1(allowed ? 1 : 0);
-    item.setTier2(allowed ? 1 : 0);
-    item.setTier3(allowed ? 1 : 0);
+    item.tier1 = allowed;
+    item.tier2 = allowed;
+    item.tier3 = allowed;
     item.balanceItemPrice();
   });
   return newItems;
@@ -58,7 +58,7 @@ export function toggleLimitedShopItems(
   for (var iter = ITEMTYPES.Sword; iter <= ITEMTYPES.Accessory; iter++) {
     // Filter by type
     let itemsForType: Array<FFTAItem> = newItems.filter(
-      (item) => item.getType() === iter && item.allowed
+      (item) => item.itemType === iter && item.allowed
     );
 
     // Declare min for cases where items in the type is small
@@ -78,11 +78,11 @@ export function toggleLimitedShopItems(
     // For every item, enable the randomly selected items, and disable all other items
     itemsForType.forEach((item) => {
       // If the name of the current item is in the random name list, allowed = true, else false
-      let allowed = randomizedItems.has(item.memory) ? 1 : 0;
+      let allowed = randomizedItems.has(item.memory) ? true : false;
 
-      item.setTier1(allowed ? 1 : 0);
-      item.setTier2(allowed ? 1 : 0);
-      item.setTier3(allowed ? 1 : 0);
+      item.tier1 = allowed;
+      item.tier2 = allowed;
+      item.tier3 = allowed;
       item.balanceItemPrice();
     });
   }
@@ -95,10 +95,13 @@ function createNewItemArray(items: Array<FFTAItem>) {
   // Create new items to return
   items.forEach((item) => {
     newItems.push(
-      new FFTAItem(item.memory, item.displayName!, item.properties)
+      Object.create(
+        Object.getPrototypeOf(item),
+        Object.getOwnPropertyDescriptors(item)
+      )
     );
     const addedItem = newItems[newItems.length - 1];
-    addedItem.setItemAbilities(item.getItemAbilities());
+    addedItem.itemAbilities = item.itemAbilities;
     addedItem.allowed = item.allowed;
   });
 

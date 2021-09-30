@@ -25,7 +25,7 @@ export function percentageMPRegen(rom: Uint8Array) {
 export function unlockAllJobs(jobs: Map<string, Array<FFTAJob>>) {
   for (let jobsElement of jobs.values()) {
     jobsElement.forEach((job) => {
-      job.setRequirements(0x0);
+      job.requirements = 0x0;
     });
   }
 }
@@ -37,7 +37,7 @@ export function unlockAllJobs(jobs: Map<string, Array<FFTAJob>>) {
 export function lockAllJobs(jobs: Map<string, Array<FFTAJob>>) {
   for (let jobsElement of jobs.values()) {
     jobsElement.forEach((job) => {
-      job.setRequirements(0x20);
+      job.requirements = 0x20;
     });
   }
 }
@@ -117,22 +117,24 @@ function abilityReplace(
   let newRaceAbilities: Array<FFTARaceAbility> = [];
 
   // Randomize each ability in the passed in list
-  raceAbilities.forEach((ability) => {
+  raceAbilities.forEach((ability, n) => {
     // Iterate through all abilities and filter to matching ability types
     // Removes duplicates
     // Shuffled case, sortedAbilities gets smaller and smaller
     const type = sortedAbilities.filter(
-      (iter, i) => iter.type.value === ability.type.value
+      (iter, i) => iter.type === ability.type
     );
 
     // Get a random valid ability and its information
     let abilityIndex = rng.randomIntMax(type.length - 1);
     let selectedAbility = type[abilityIndex];
     let name = selectedAbility.displayName ? selectedAbility.displayName : "";
-    // Create a new ability and add it to the new list
-    newRaceAbilities.push(
-      new FFTARaceAbility(ability.memory, name, selectedAbility.properties)
-    );
+
+    // Create a clone of the new ability, set its memory to the ability to replace, and update the name
+    let newAbility = new FFTARaceAbility(ability.memory, name);
+    newAbility.copy(selectedAbility);
+    newRaceAbilities.push(newAbility);
+    newAbility.apCost = 0;
 
     // If shuffling abilities, remove the selected ability from the list
     // Uses memory address for duplicate case

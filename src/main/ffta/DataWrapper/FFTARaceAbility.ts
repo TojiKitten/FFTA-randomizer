@@ -23,28 +23,59 @@ export const enum ABILITYTYPE {
  * An {@link FFTAObject} representing an ability learned by a race.
  */
 export class FFTARaceAbility extends FFTAObject {
-  readonly nameID: ROMProperty = {
+  /**
+   * Constructor for an ability learned by a race
+   * @param memory - The memory address of an object
+   * @param name - The name of an object
+   * @param properties - The buffer holding the information of an object
+   */
+  constructor(memory: number, name: string, properties?: Uint8Array) {
+    super(memory, name);
+    if (properties) {
+      this.load(properties);
+    }
+  }
+
+  private _nameID: ROMProperty = {
     byteOffset: OFFSET.NAME,
     byteLength: 2,
     displayName: "",
     value: 0,
   };
+  get nameID() {
+    return this._nameID.value;
+  }
+  set nameID(id: number) {
+    this._nameID.value = id;
+  }
 
-  readonly descriptionID: ROMProperty = {
+  private _descriptionID: ROMProperty = {
     byteOffset: OFFSET.DESCRIPTION,
     byteLength: 2,
     displayName: "Could not retrieve.",
     value: 0,
   };
+  get descriptionID() {
+    return this._descriptionID.value;
+  }
+  set descriptionID(id: number) {
+    this._descriptionID.value = id;
+  }
 
-  readonly abilityID: ROMProperty = {
+  private _abilityID: ROMProperty = {
     byteOffset: OFFSET.ABILITYID,
     byteLength: 2,
     displayName: "Could not retrieve.",
     value: 0,
   };
+  get abilityID() {
+    return this._abilityID.value;
+  }
+  set abilityID(id: number) {
+    this._abilityID.value = id;
+  }
 
-  readonly type: ROMProperty = {
+  private _type: ROMProperty = {
     byteOffset: OFFSET.TYPE,
     byteLength: 1,
     get displayName() {
@@ -72,43 +103,23 @@ export class FFTARaceAbility extends FFTAObject {
     },
     value: 0,
   };
+  get type() {
+    return this._type.value;
+  }
+  set type(id: number) {
+    this._type.value = id;
+  }
 
-  readonly apCost: ROMProperty = {
+  private _apCost: ROMProperty = {
     byteOffset: OFFSET.APCOST,
     byteLength: 1,
     displayName: "Could not retrieve.",
     value: 0,
   };
-
-  /**
-   * Constructor for an ability learned by a race
-   * @param memory - The memory address of an object
-   * @param name - The name of an object
-   * @param rom - The buffer holding the information of an object
-   */
-  constructor(memory: number, name: string, rom: Uint8Array) {
-    super(memory, rom, name);
-
-    const { nameID, descriptionID, abilityID, type, apCost } = this;
-
-    this.loadProperty(nameID, rom);
-    this.loadProperty(descriptionID, rom);
-    this.loadProperty(abilityID, rom);
-    this.loadProperty(type, rom);
-    this.loadProperty(apCost, rom);
+  get apCost() {
+    return this._apCost.value;
   }
-
-  write(rom: Uint8Array) {
-    const properties: Array<ROMProperty> = [
-      this.nameID,
-      this.descriptionID,
-      this.abilityID,
-      this.type,
-      this.apCost,
-    ];
-
-    properties.forEach((property) => {
-      this.writeProperty(property, rom);
-    });
+  set apCost(id: number) {
+    this._apCost.value = id;
   }
 }

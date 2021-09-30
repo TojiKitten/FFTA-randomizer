@@ -27,6 +27,33 @@ const enum OFFSET {
   MISSIONLOCATION = 0x45, // Used for encounters and loading cut scenes
 }
 
+const enum TYPEFLAG {
+  SPECIAL = 0x0,
+  ENCOUNTERTYPE = 0x1,
+  ENCOUNTER = 0x3,
+  LINK = 0x4,
+}
+
+const enum ENCOUNTERTYPE {
+  CLAN = 0x0,
+  NORMAL = 0x1,
+  WALKON = 0x2,
+}
+
+const enum RANKOFFSET {
+  STORY = 0x0,
+  RANK = 0x5,
+  CITYPICKUP = 0x8,
+}
+
+const enum DISPLAYFLAG {
+  ITEM1HIDDEN = 0x6,
+  ITEM2HIDDEN = 0x7,
+  LAWCARD1HIDDEN = 0x8,
+  LAWCARD2HIDDEN = 0x9,
+  HIDEONMENU = 0xa,
+}
+
 const enum MISSIONTYPE {
   CLANSTORY = 0x09,
   NORMALENCOUNTER = 0x0a,
@@ -48,53 +75,128 @@ export class FFTAMission extends FFTAObject {
    * @param displayName - The name of an object
    */
   constructor(memory: number, name: string, properties: Uint8Array) {
-    super(memory, properties, name);
+    super(memory, name);
+    this.load(properties);
   }
 
-  get missionID(): number {
-    return this.getProperty(OFFSET.ID, 2);
+  toString = (): string => {
+    return `
+    Mission Name: ${this.displayName} (#${this.missionID})
+    Type: ${this.missionType.toString(16)}
+    Rank: ${this.missionRank}
+    Memory: ${this.memory.toString(16)}
+    Item Reward 1: ${this.itemReward1.toString(16)}
+    Item Reward 2: ${this.itemReward2.toString(16)}
+    `;
+  };
+
+  private _missionID: ROMProperty = {
+    byteOffset: OFFSET.ID,
+    byteLength: 2,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  get missionID() {
+    return this._missionID.value;
+  }
+  set missionID(id: number) {
+    this._missionID.value = id;
   }
 
-  set missionType(type: number) {
-    this.setProperty(OFFSET.TYPE, 1, type);
+  private _missionType: ROMProperty = {
+    byteOffset: OFFSET.TYPE,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  get missionType() {
+    return this._missionType.value;
   }
-  get missionType(): number {
-    return this.getProperty(OFFSET.TYPE, 1);
-  }
-
-  get storyMission(): 0 | 1 {
-    return this.getFlag(OFFSET.RANK, 2, 0x00) as 0 | 1;
-  }
-
-  get specialMission(): 0 | 1 {
-    return this.getFlag(OFFSET.TYPE, 1, 0x0) as 0 | 1;
+  set missionType(value: number) {
+    this._missionType.value = value;
   }
 
-  set encounterMission(bit: 0 | 1) {
-    this.setFlag(OFFSET.TYPE, 1, 0x3, bit);
+  get specialMission(): boolean {
+    return ((this._missionType.value >> TYPEFLAG.SPECIAL) & 0x1) === 0x1
+      ? true
+      : false;
   }
-  get encounterMission(): 0 | 1 {
-    return this.getFlag(OFFSET.TYPE, 1, 0x3) as 0 | 1;
+  set specialMission(allowed: boolean) {
+    const value = allowed ? 1 : 0;
+    this._missionType.value =
+      (this._missionType.value & ~(1 << TYPEFLAG.SPECIAL)) |
+      (value << TYPEFLAG.SPECIAL);
   }
 
-  get linkMission(): number {
-    return this.getFlag(OFFSET.TYPE, 1, 0x4);
+  get encounterMission(): boolean {
+    //console.log(this._missionType.value.toString(2));
+    return ((this._missionType.value >> TYPEFLAG.ENCOUNTER) & 0x1) === 0x1
+      ? true
+      : false;
+  }
+  set encounterMission(allowed: boolean) {
+    const value = allowed ? 1 : 0;
+    this._missionType.value =
+      (this._missionType.value & ~(1 << TYPEFLAG.ENCOUNTER)) |
+      (value << TYPEFLAG.ENCOUNTER);
   }
 
+  get encounterType(): boolean {
+    return ((this._missionType.value >> TYPEFLAG.ENCOUNTERTYPE) & 0x2) === 0x1
+      ? true
+      : false;
+  }
+  set encounterType(allowed: boolean) {
+    const value = allowed ? 1 : 0;
+    this._missionType.value =
+      (this._missionType.value & ~(2 << TYPEFLAG.ENCOUNTERTYPE)) |
+      (value << TYPEFLAG.ENCOUNTERTYPE);
+  }
+
+  get linkMission(): boolean {
+    return ((this._missionType.value >> TYPEFLAG.LINK) & 0x1) === 0x1
+      ? true
+      : false;
+  }
+  set linkMission(allowed: boolean) {
+    const value = allowed ? 1 : 0;
+    this._missionType.value =
+      (this._missionType.value & ~(1 << TYPEFLAG.LINK)) |
+      (value << TYPEFLAG.LINK);
+  }
+
+  private _rank: ROMProperty = {
+    byteOffset: OFFSET.RANK,
+    byteLength: 2,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  get storyMission(): boolean {
+    return ((this._rank.value >> RANKOFFSET.STORY) & 0x1) === 0x1
+      ? true
+      : false;
+  }
+  set storyMission(allowed: boolean) {
+    const value = allowed ? 1 : 0;
+    this._missionType.value =
+      (this._missionType.value & ~(1 << RANKOFFSET.STORY)) |
+      (value << RANKOFFSET.STORY);
+  }
   get missionRank(): number {
-    return (this.getProperty(OFFSET.RANK, 2) & (7 << 5)) >> 5;
+    return (this._rank.value >> RANKOFFSET.RANK) & 0x7;
   }
-
+  set missionRank(rank: number) {
+    this._rank.value =
+      (this._missionType.value & ~(7 << RANKOFFSET.RANK)) |
+      (rank << RANKOFFSET.RANK);
+  }
   get cityAppearance(): number {
-    return (this.getProperty(OFFSET.RANK, 2) & (7 << 8)) >> 8;
+    return (this._rank.value >> RANKOFFSET.CITYPICKUP) & 0x7;
   }
-  set cityAppearance(cityID: number) {
-    const proposedValue = cityID << 8;
-    const currentValue = this.cityAppearance << 8;
-    const newValue =
-      this.getProperty(OFFSET.RANK, 2) - currentValue + proposedValue;
-
-    this.setProperty(OFFSET.RANK, 2, newValue);
+  set cityAppearance(rank: number) {
+    this._rank.value =
+      (this._missionType.value & ~(7 << RANKOFFSET.CITYPICKUP)) |
+      (rank << RANKOFFSET.CITYPICKUP);
   }
 
   private _pubVisibility: ROMProperty = {
@@ -104,7 +206,7 @@ export class FFTAMission extends FFTAObject {
     value: 0,
   };
   set daysVisible(days: number) {
-    days = Math.min(0xf8 >> 3, Math.max(0, days));
+    days = Math.min(0x1f, Math.max(0, days));
     this._pubVisibility.value = (this._pubVisibility.value & 0x7) + (days << 3);
   }
   get daysVisible(): number {
@@ -169,67 +271,122 @@ export class FFTAMission extends FFTAObject {
     return (this._daysAvailable.value >> 3) & ((1 << 8) - 1);
   }
 
-  set itemReward1(itemID: number) {
-    this.setProperty(OFFSET.ITEMREWARD1, 2, itemID);
+  private _itemReward1: ROMProperty = {
+    byteOffset: OFFSET.ITEMREWARD1,
+    byteLength: 2,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  set itemReward1(id: number) {
+    this._itemReward1.value = id;
   }
   get itemReward1(): number {
-    return this.getProperty(OFFSET.ITEMREWARD1, 2);
+    return this._itemReward1.value;
   }
 
-  set itemReward2(itemID: number) {
-    this.setProperty(OFFSET.ITEMREWARD2, 2, itemID);
+  private _itemReward2: ROMProperty = {
+    byteOffset: OFFSET.ITEMREWARD2,
+    byteLength: 2,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  set itemReward2(id: number) {
+    this._itemReward2.value = id;
   }
   get itemReward2(): number {
-    return this.getProperty(OFFSET.ITEMREWARD2, 2);
+    return this._itemReward2.value;
   }
 
+  private _gilReward: ROMProperty = {
+    byteOffset: OFFSET.GILREWARD,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
   set gilReward(amount: number) {
-    this.setProperty(OFFSET.GILREWARD, 1, amount);
+    this._gilReward.value = amount;
   }
   get gilReward(): number {
-    return this.getProperty(OFFSET.GILREWARD, 1);
+    return this._gilReward.value;
   }
 
-  set apReward(ap: number) {
-    this.setProperty(OFFSET.AP, 1, ap);
+  private _apReward: ROMProperty = {
+    byteOffset: OFFSET.AP,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  set apReward(amount: number) {
+    this._apReward.value = amount;
   }
   get apReward(): number {
-    return this.getProperty(OFFSET.AP, 1);
+    return this._apReward.value;
   }
 
+  private _recruit: ROMProperty = {
+    byteOffset: OFFSET.RECRUIT,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
   set recruit(id: number) {
-    this.setProperty(OFFSET.RECRUIT, 1, id);
+    this._recruit.value = id;
   }
   get recruit(): number {
-    return this.getProperty(OFFSET.RECRUIT, 1);
+    return this._recruit.value;
   }
 
+  private _requiredItem1: ROMProperty = {
+    byteOffset: OFFSET.REQITEM1,
+    byteLength: 2,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
   set requiredItem1(id: number) {
-    this.setProperty(OFFSET.REQITEM1, 2, id);
+    this._requiredItem1.value = id;
   }
   get requiredItem1(): number {
-    return this.getProperty(OFFSET.REQITEM1, 2);
+    return this._requiredItem1.value;
   }
 
+  private _requiredItem2: ROMProperty = {
+    byteOffset: OFFSET.REQITEM2,
+    byteLength: 2,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
   set requiredItem2(id: number) {
-    this.setProperty(OFFSET.REQITEM2, 2, id);
+    this._requiredItem2.value = id;
   }
   get requiredItem2(): number {
-    return this.getProperty(OFFSET.REQITEM2, 2);
+    return this._requiredItem2.value;
   }
 
-  set requiredJob(id: number) {
-    this.setProperty(OFFSET.REQITEM2, 2, id);
+  /*
+  private _requiredJob: ROMProperty = {
+    byteOffset: ??,
+    byteLength: ??,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  set requiredItem2(id: number) {
+    this._requiredJob.value = id;
   }
-  get requiredJob(): number {
-    return this.getProperty(OFFSET.REQITEM2, 1);
-  }
+  get requiredItem2(): number {
+    return this._requiredJob.value;
+  }*/
 
+  private _price: ROMProperty = {
+    byteOffset: OFFSET.PRICE,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
   set price(amount: number) {
-    this.setProperty(OFFSET.PRICE, 1, Math.min(0xff, amount / 300));
+    this._price.value = Math.floor(Math.min(0xff, amount / 300));
   }
   get price(): number {
-    return this.getProperty(OFFSET.PRICE, 1) * 300;
+    return this._price.value * 300;
   }
 
   private _timeoutDays: ROMProperty = {
@@ -246,48 +403,106 @@ export class FFTAMission extends FFTAObject {
     return this._timeoutDays.value;
   }
 
-  set itemReward1Hidden(bit: 0 | 1) {
-    this.setFlag(OFFSET.MISSIONDISPLAY, 2, 0x06, bit);
+  private _missionDisplay: ROMProperty = {
+    byteOffset: OFFSET.MISSIONDISPLAY,
+    byteLength: 2,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  get itemReward1Hidden(): boolean {
+    return ((this._missionDisplay.value >> DISPLAYFLAG.ITEM1HIDDEN) & 0x1) ===
+      0x1
+      ? true
+      : false;
   }
-  get itemReward1Hidden(): 0 | 1 {
-    return this.getFlag(OFFSET.MISSIONDISPLAY, 2, 0x06) as 0 | 1;
+  set itemReward1Hidden(allowed: boolean) {
+    const value = allowed ? 1 : 0;
+    this._missionDisplay.value =
+      (this._missionDisplay.value & ~(1 << DISPLAYFLAG.ITEM1HIDDEN)) |
+      (value << DISPLAYFLAG.ITEM1HIDDEN);
+  }
+  get itemReward2Hidden(): boolean {
+    return ((this._missionDisplay.value >> DISPLAYFLAG.ITEM2HIDDEN) & 0x1) ===
+      0x1
+      ? true
+      : false;
+  }
+  set itemReward2Hidden(allowed: boolean) {
+    const value = allowed ? 1 : 0;
+    this._missionDisplay.value =
+      (this._missionDisplay.value & ~(1 << DISPLAYFLAG.ITEM2HIDDEN)) |
+      (value << DISPLAYFLAG.ITEM2HIDDEN);
+  }
+  get lawCard1Hidden(): boolean {
+    return ((this._missionDisplay.value >> DISPLAYFLAG.LAWCARD1HIDDEN) &
+      0x1) ===
+      0x1
+      ? true
+      : false;
+  }
+  set lawCard1Hidden(allowed: boolean) {
+    const value = allowed ? 1 : 0;
+    this._missionDisplay.value =
+      (this._missionDisplay.value & ~(1 << DISPLAYFLAG.LAWCARD1HIDDEN)) |
+      (value << DISPLAYFLAG.LAWCARD1HIDDEN);
+  }
+  get lawCard2Hidden(): boolean {
+    return ((this._missionDisplay.value >> DISPLAYFLAG.LAWCARD2HIDDEN) &
+      0x1) ===
+      0x1
+      ? true
+      : false;
+  }
+  set lawCard2Hidden(allowed: boolean) {
+    const value = allowed ? 1 : 0;
+    this._missionDisplay.value =
+      (this._missionDisplay.value & ~(1 << DISPLAYFLAG.LAWCARD2HIDDEN)) |
+      (value << DISPLAYFLAG.LAWCARD2HIDDEN);
+  }
+  get hideOnLocationMenu(): boolean {
+    return ((this._missionDisplay.value >> DISPLAYFLAG.HIDEONMENU) & 0x1) ===
+      0x1
+      ? true
+      : false;
+  }
+  set hideOnLocationMenu(allowed: boolean) {
+    const value = allowed ? 1 : 0;
+    this._missionDisplay.value =
+      (this._missionDisplay.value & ~(1 << DISPLAYFLAG.HIDEONMENU)) |
+      (value << DISPLAYFLAG.HIDEONMENU);
   }
 
-  set itemReward2Hidden(bit: 0 | 1) {
-    this.setFlag(OFFSET.MISSIONDISPLAY, 2, 0x07, bit);
-  }
-  get itemReward2Hidden(): 0 | 1 {
-    return this.getFlag(OFFSET.MISSIONDISPLAY, 2, 0x07) as 0 | 1;
-  }
-
-  set lawCard1Hidden(bit: 0 | 1) {
-    this.setFlag(OFFSET.MISSIONDISPLAY, 2, 0x08, bit);
-  }
-  get lawCard1Hidden(): 0 | 1 {
-    return this.getFlag(OFFSET.MISSIONDISPLAY, 2, 0x08) as 0 | 1;
-  }
-
-  set lawCard2Hidden(bit: 0 | 1) {
-    this.setFlag(OFFSET.MISSIONDISPLAY, 2, 0x09, bit);
-  }
-  get lawCard2Hidden(): 0 | 1 {
-    return this.getFlag(OFFSET.MISSIONDISPLAY, 2, 0x09) as 0 | 1;
-  }
-
-  set hideOnLocationMenu(bit: 0 | 1) {
-    this.setFlag(OFFSET.MISSIONDISPLAY, 2, 0x0a, bit);
-  }
-  get hideOnLocationMenu(): 0 | 1 {
-    return this.getFlag(OFFSET.MISSIONDISPLAY, 2, 0x0a) as 0 | 1;
-  }
-
+  private _missionLocation: ROMProperty = {
+    byteOffset: OFFSET.MISSIONLOCATION,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
   get missionLocation(): number {
-    return this.getProperty(OFFSET.MISSIONLOCATION, 1);
+    return this._missionLocation.value;
   }
   set missionLocation(locationID: number) {
-    this.setProperty(OFFSET.MISSIONLOCATION, 1, locationID);
+    this._missionLocation.value = locationID;
   }
 
+  private _unlockFlag1Offset: ROMProperty = {
+    byteOffset: OFFSET.UNLOCKFLAG1,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  private _unlockFlag1Block: ROMProperty = {
+    byteOffset: OFFSET.UNLOCKFLAG1 + 1,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  private _unlockFlag1Value: ROMProperty = {
+    byteOffset: OFFSET.UNLOCKFLAG1 + 2,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
   /**
    * Sets the information for the first flag to check if a mission is in rotation for the pub.
    * @param bitOffset - The offset 0-255 of the bit to check
@@ -295,11 +510,29 @@ export class FFTAMission extends FFTAObject {
    * @param value - The bit value to match at runtime to be considered unlocked
    */
   setUnlockFlag1(bitOffset: number, blockOffset: number, value: 0 | 1) {
-    this.setProperty(OFFSET.UNLOCKFLAG1, 1, bitOffset);
-    this.setProperty(OFFSET.UNLOCKFLAG1 + 1, 1, blockOffset);
-    this.setProperty(OFFSET.UNLOCKFLAG1 + 2, 1, value);
+    this._unlockFlag1Offset.value = bitOffset;
+    this._unlockFlag1Block.value = blockOffset;
+    this._unlockFlag1Value.value = value;
   }
 
+  private _unlockFlag2Offset: ROMProperty = {
+    byteOffset: OFFSET.UNLOCKFLAG2,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  private _unlockFlag2Block: ROMProperty = {
+    byteOffset: OFFSET.UNLOCKFLAG2 + 1,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  private _unlockFlag2Value: ROMProperty = {
+    byteOffset: OFFSET.UNLOCKFLAG2 + 2,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
   /**
    * Sets the information for the second flag to check if a mission is in rotation for the pub.
    * @param bitOffset - The offset 0-255 of the bit to check
@@ -307,11 +540,29 @@ export class FFTAMission extends FFTAObject {
    * @param value - The bit value to match at runtime to be considered unlocked
    */
   setUnlockFlag2(bitOffset: number, blockOffset: number, value: 0 | 1) {
-    this.setProperty(OFFSET.UNLOCKFLAG2, 1, bitOffset);
-    this.setProperty(OFFSET.UNLOCKFLAG2 + 1, 1, blockOffset);
-    this.setProperty(OFFSET.UNLOCKFLAG2 + 2, 1, value);
+    this._unlockFlag2Offset.value = bitOffset;
+    this._unlockFlag2Block.value = blockOffset;
+    this._unlockFlag2Value.value = value;
   }
 
+  private _unlockFlag3Offset: ROMProperty = {
+    byteOffset: OFFSET.UNLOCKFLAG3,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  private _unlockFlag3Block: ROMProperty = {
+    byteOffset: OFFSET.UNLOCKFLAG3 + 1,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  private _unlockFlag3Value: ROMProperty = {
+    byteOffset: OFFSET.UNLOCKFLAG3 + 2,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
   /**
    * Sets the information for the third flag to check if a mission is in rotation for the pub.
    * @param bitOffset - The offset 0-255 of the bit to check
@@ -319,36 +570,21 @@ export class FFTAMission extends FFTAObject {
    * @param value - The bit value to match at runtime to be considered unlocked
    */
   setUnlockFlag3(bitOffset: number, blockOffset: number, value: 0 | 1) {
-    this.setProperty(OFFSET.UNLOCKFLAG3, 1, bitOffset);
-    this.setProperty(OFFSET.UNLOCKFLAG3 + 1, 1, blockOffset);
-    this.setProperty(OFFSET.UNLOCKFLAG3 + 2, 1, value);
+    this._unlockFlag3Offset.value = bitOffset;
+    this._unlockFlag3Block.value = blockOffset;
+    this._unlockFlag3Value.value = value;
   }
 
-  /**
-   * Sets More Flags
-   * @param value - The value to set, unsure what flags live here
-   */
-  setMoreFlags(value: number) {
-    this.setProperty(OFFSET.MOREFLAGS, 1, value);
-  }
-
-  write(rom: Uint8Array) {
-    const properties: Array<ROMProperty> = [
-      this._pubVisibility,
-      this._daysAvailable,
-      this._timeoutDays,
-    ];
-
-    properties.forEach((property) => {
-      this.writeProperty(property, rom);
-    });
-  }
-
-  toString = (): string => {
-    return `Mission Name: ${this.displayName} (#${this.missionID})
-    Memory: ${this.memory.toString(16)}
-    Item Reward 1: ${this.itemReward1.toString(16)}
-    Item Reward 2: ${this.itemReward2.toString(16)}
-    `;
+  private _moreFlags: ROMProperty = {
+    byteOffset: OFFSET.MOREFLAGS,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
   };
+  get moreFlags() {
+    return this._moreFlags.value;
+  }
+  set moreFlags(value: number) {
+    this._moreFlags.value = value;
+  }
 }

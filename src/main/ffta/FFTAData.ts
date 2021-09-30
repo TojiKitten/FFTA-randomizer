@@ -17,6 +17,7 @@ import {
   JobSettingsState,
   RandomizerState,
 } from "_/renderer/components/RandomizerProvider";
+import { FFTAUnit } from "./DataWrapper/FFTAUnit";
 
 export enum RACES {
   Human = "human",
@@ -236,44 +237,40 @@ export class FFTAData {
    */
   writeData(): void {
     this.items.forEach((item) => {
-      this.rom.set(item.properties, item.memory);
+      item.write(this.rom);
     });
 
     this.formations.forEach((formation) => {
-      this.rom.set(formation.properties, formation.memory);
+      formation.write(this.rom);
       formation.units.forEach((unit) => {
-        this.rom.set(unit.properties, unit.memory);
+        unit.write(this.rom);
       });
     });
 
     this.missions.forEach((mission) => {
-      this.rom.set(mission.properties, mission.memory);
       mission.write(this.rom);
     });
 
     for (let raceAbilitiesElement of this.raceAbilities.values()) {
       raceAbilitiesElement.forEach((raceAbility) => {
-        this.rom.set(raceAbility.properties, raceAbility.memory);
+        raceAbility.write(this.rom);
       });
     }
 
     this.abilities.forEach((ability) => {
-      this.rom.set(ability.properties, ability.memory);
+      ability.write(this.rom);
     });
 
     for (let jobsElement of this.jobs.values()) {
       jobsElement.forEach((job) => {
-        this.rom.set(job.properties, job.memory);
         job.write(this.rom);
       });
     }
-
     this.lawSets.forEach((lawSet) => {
-      this.rom.set(lawSet.properties, lawSet.memory);
+      lawSet.write(this.rom);
     });
-
     this.rewardItemSets.forEach((rewardSet) => {
-      this.rom.set(rewardSet.properties, rewardSet.memory);
+      rewardSet.write(this.rom);
     });
   }
 
@@ -434,8 +431,7 @@ export class FFTAData {
       0x02 - 0x14 are pairs of Job ID, Ability ID 
       */
       let itemAbilitiesSize = 0x14;
-      let abilityOffset =
-        0x520080 + newItem.getAbilitySet() * itemAbilitiesSize;
+      let abilityOffset = 0x520080 + newItem.abilitySet * itemAbilitiesSize;
       newItem.updateItemAbilities(
         this.rom.slice(abilityOffset, abilityOffset + itemAbilitiesSize)
       );
@@ -576,7 +572,7 @@ export class FFTAData {
         );
 
         let allowedMemory =
-          allowedWeaponAddress + allowedWeaponSize * newJob.getAllowedWeapons();
+          allowedWeaponAddress + allowedWeaponSize * newJob.allowedWeaponsID;
         newJob.allowedWeapons = this.rom.slice(
           allowedMemory,
           allowedMemory + allowedWeaponSize
@@ -693,16 +689,16 @@ export class FFTAData {
         formation.units
           .filter(
             (unit) =>
-              unit.getType() === 1 &&
-              unit.getJob() >= this.jobs.get(RACES.Human)![0].jobId &&
-              unit.getJob() <=
+              unit.type === 1 &&
+              unit.jobID >= this.jobs.get(RACES.Human)![0].jobId &&
+              unit.jobID <=
                 this.jobs.get(RACES.Moogle)![
                   this.jobs.get(RACES.Moogle)!.length - 1
                 ].jobId
           )
           .forEach((unit) => {
             const currentJob = flatJobs.filter(
-              (job) => job.jobId === unit.getJob()
+              (job) => job.jobId === unit.jobID
             )[0];
 
             StartingPartyHacks.setUnitData(
@@ -714,7 +710,7 @@ export class FFTAData {
                 name: "NPC",
                 raceChangeable: true,
                 race: randomEnemies
-                  ? unit.getAAbility() != 0x4d
+                  ? unit.AAbilityID != 0x4d
                     ? "random"
                     : "human"
                   : currentJob.race,
@@ -723,7 +719,7 @@ export class FFTAData {
                   : currentJob.displayName![0].toLowerCase() +
                     currentJob.displayName!.substr(1).replaceAll(" ", ""),
                 rngEquip: randomItems,
-                level: unit.getLevel(),
+                level: unit.level,
                 masteredAbilities: abilityPercentage,
                 masterType: "abilities",
               },
@@ -750,7 +746,7 @@ export class FFTAData {
         const { formation, position, race } = unit;
         const member = this.formations[formation].units[position];
         const currentJob = flatJobs.filter(
-          (job) => job.jobId === member.getJob()
+          (job) => job.jobId === member.jobID
         )[0];
         StartingPartyHacks.setUnitData(
           member,
@@ -766,7 +762,7 @@ export class FFTAData {
               : currentJob.displayName![0].toLowerCase() +
                 currentJob.displayName!.substr(1).replaceAll(" ", ""),
             rngEquip: randomItems,
-            level: member.getLevel(),
+            level: member.level,
             masteredAbilities: abilityPercentage,
             masterType: "abilities",
           },
@@ -785,7 +781,7 @@ export class FFTAData {
           race: RACES.Human,
           job: "thief",
           rngEquip: randomItems,
-          level: this.formations[5].units[1].getLevel(),
+          level: this.formations[5].units[1].level,
           masteredAbilities: 0,
           masterType: "abilities",
         },
@@ -803,7 +799,7 @@ export class FFTAData {
           race: RACES.Bangaa,
           job: "templar",
           rngEquip: randomItems,
-          level: this.formations[25].units[0].getLevel(),
+          level: this.formations[25].units[0].level,
           masteredAbilities: 0,
           masterType: "abilities",
         },
@@ -909,7 +905,7 @@ export class FFTAData {
         MissionHacks.randomizeLinearStory(this.missions, length, this.rng);
         break;
       case "branching":
-        MissionHacks.randomizeBranchingStory(this.missions, length, this.rng);
+        //MissionHacks.randomizeBranchingStory(this.missions, length, this.rng);
         break;
       default:
         throw new Error("Reward case: " + mode + " unhandled!");
@@ -1044,8 +1040,10 @@ export class FFTAData {
       });
 
       // Set Monty to match Guest Monty
-      this.formations[3].units[2].properties = new Uint8Array(
-        this.formations[0].units[1].properties
+      const monty = this.formations[0].units[1];
+      this.formations[3].units[2] = Object.create(
+        Object.getPrototypeOf(monty),
+        Object.getOwnPropertyDescriptors(monty)
       );
     }
   }

@@ -4,8 +4,7 @@ import FFTAData from "../FFTAData";
 import { FFTAFormation } from "../DataWrapper/FFTAFormation";
 import { FFTALawSet } from "../DataWrapper/FFTALaw";
 import NoiseGenerator from "../utils/NoiseGenerator";
-import FFTAItem, { FFTARewardItemSet } from "../DataWrapper/FFTAItem";
-import { first } from "lodash";
+import { FFTAItem, FFTARewardItemSet } from "../DataWrapper/FFTAItem";
 
 /**
  * Sets the story missions interpolate between a minium and maximum value.
@@ -19,13 +18,13 @@ export function lerpStoryMissionLevels(
   // Interpolate the max level for all Story Missions
   for (var i = 3; i < 33; i++) {
     formations[i].units.forEach((unit) => {
-      unit.setLevel(Math.ceil(liGrimLevel * (i / 33)));
+      unit.level = Math.ceil(liGrimLevel * (i / 33));
     });
   }
   // Set remaining missions to scale
   for (var i = 33; i < formations.length; i++) {
     formations[i].units.forEach((unit) => {
-      unit.setLevel(0);
+      unit.level = 0;
     });
   }
 }
@@ -40,7 +39,7 @@ export function averageMissionLevels(formations: Array<FFTAFormation>) {
     // Don't apply this to starting party
     if (i !== 0) {
       formation.units.forEach((unit) => {
-        unit.setLevel(0);
+        unit.level = 0;
       });
     }
   });
@@ -57,7 +56,7 @@ export function highestMissionLevels(fftaData: FFTAData) {
     // Don't apply this to starting party
     if (i !== 0) {
       formation.units.forEach((unit) => {
-        unit.setLevel(0);
+        unit.level = 0;
       });
     }
   });
@@ -90,89 +89,61 @@ export function noJudgeTurn(rom: Uint8Array) {
 /**
  * Changes laws to appear in a different order and set.
  * @param lawSets - An array of all law sets
- * @param noiseGenerator - The {@link NoiseGenerator} for the randomizer.
+ * @param rng - The {@link NoiseGenerator} for the randomizer.
  */
-export function shuffleLaws(
-  lawSets: Array<FFTALawSet>,
-  noiseGenerator: NoiseGenerator
-) {
+export function shuffleLaws(lawSets: Array<FFTALawSet>, rng: NoiseGenerator) {
   const numberLaws = 20;
-  const lawSize = 2;
   let allLaws: Array<number> = [];
 
   // Get all laws into one array
   lawSets.forEach((set) => {
     for (var i = 0; i < numberLaws; i++) {
-      let offset = lawSize * i;
-      allLaws.push(
-        FFTAUtils.convertShortUint8Array(
-          set.properties.slice(offset, offset + 2),
-          true
-        )
-      );
+      allLaws.push(set.getLaw(i));
     }
   });
 
-  // Sort the array randomly
-  allLaws.sort((a, b) => {
-    return noiseGenerator.randomBit() === 1 ? 1 : -1;
-  });
-
-  // For every law, write it back to the correct space
-  allLaws.forEach((law, i) => {
-    let newLaw = FFTAUtils.getShortUint8Array(allLaws[i], true);
-    lawSets[Math.floor(i / numberLaws)].properties.set(
-      newLaw,
-      (i * lawSize) % (numberLaws * lawSize)
-    );
+  // Set each law to a random law from the pool
+  lawSets.forEach((set) => {
+    for (var i = 0; i < numberLaws; i++) {
+      set.setLaw(allLaws.splice(rng.randomIntMax(allLaws.length - 1), 1)[0], i);
+    }
   });
 }
 
 /**
  * Changes mission rewards to appear in different sets.
  * @param rewardSets - An array of all reward sets
- * @param noiseGenerator - The {@link NoiseGenerator} for the randomizer
+ * @param rng - The {@link NoiseGenerator} for the randomizer
  */
 export function shuffleRewards(
   rewardSets: Array<FFTARewardItemSet>,
-  noiseGenerator: NoiseGenerator
+  rng: NoiseGenerator
 ) {
   const numberRewards = 20;
-  const rewardSize = 2;
   let allRewards: Array<number> = [];
 
   // Get all reward items into one array
   rewardSets.forEach((set) => {
     for (var i = 0; i < numberRewards; i++) {
-      let offset = rewardSize * i;
-      allRewards.push(
-        FFTAUtils.convertShortUint8Array(
-          set.properties.slice(offset, offset + 2),
-          true
-        )
-      );
+      allRewards.push(set.getItem(i));
     }
   });
 
-  // Sort the array randomly
-  allRewards.sort((a, b) => {
-    return noiseGenerator.randomBit() == 1 ? 1 : -1;
-  });
-
-  // For every reward item, write it back to the correct space
-  allRewards.forEach((reward, i) => {
-    let newLaw = FFTAUtils.getShortUint8Array(allRewards[i], true);
-    rewardSets[Math.floor(i / numberRewards)].properties.set(
-      newLaw,
-      (i * rewardSize) % (numberRewards * rewardSize)
-    );
+  // Set each item to a random item from the pool
+  rewardSets.forEach((set) => {
+    for (var i = 0; i < numberRewards; i++) {
+      set.setItem(
+        allRewards.splice(rng.randomIntMax(allRewards.length - 1), 1)[0],
+        i
+      );
+    }
   });
 }
 
 /**
  * Changes mission rewards to random items.
  * @param rewardSets - An array of all reward sets
- * @param noiseGenerator - The {@link NoiseGenerator} for the randomizer
+ * @param rng - The {@link NoiseGenerator} for the randomizer
  */
 export function randomRewards(
   rewardSets: Array<FFTARewardItemSet>,
@@ -186,21 +157,16 @@ export function randomRewards(
     const allowedItems = items.filter((item) => item.allowed);
 
     for (var i = 0; i < numberRewards; i++) {
-      let offset = rewardSize * i;
       let randomItemID = rng.randomIntRange(1, allowedItems.length);
-      let randomItemUint8Array = FFTAUtils.getShortUint8Array(
-        randomItemID,
-        true
-      );
-      set.properties.set(randomItemUint8Array, offset);
+      set.setItem(randomItemID, i);
     }
   });
 }
 
 export function hideRewardPreviews(missions: Array<FFTAMission>) {
   missions.forEach((mission) => {
-    if (mission.itemReward1 != 0x00) mission.itemReward1Hidden = 1;
-    if (mission.itemReward2 != 0x00) mission.itemReward2Hidden = 1;
+    if (mission.itemReward1 != 0x00) mission.itemReward1Hidden = true;
+    if (mission.itemReward2 != 0x00) mission.itemReward2Hidden = true;
   });
 }
 
@@ -230,14 +196,16 @@ export function randomizeLinearStory(
   const unsupportedMissions = ["dummy", "Another World"];
 
   // Filter to all encounter missions
-  const validMissions = missions.filter(
-    (mission) =>
+  const validMissions = missions.filter((mission, n) => {
+    return (
       !unsupportedMissions.includes(mission.displayName!) &&
       mission.displayName != "Royal Valley" &&
-      mission.encounterMission === 1 &&
-      mission.linkMission === 0 &&
-      mission.missionType != 0x0d
-  );
+      mission.encounterMission === true &&
+      mission.linkMission === false &&
+      mission.missionRank > 0 &&
+      mission.missionLocation != 0
+    );
+  });
 
   // Create new "path" for the story
   let newStory: Array<FFTAMission> = [];
@@ -251,7 +219,7 @@ export function randomizeLinearStory(
     // Set the mission type to appear as purchasable in shop and selectable at location
     selectedMission.missionType = 0x0a;
     // Set the extra flags to show on the location menu
-    selectedMission.setMoreFlags(0x00);
+    selectedMission.moreFlags = 0x00;
 
     // Give two new random tier rewards
     selectedMission.itemReward1 = 0xfff0 + rng.randomIntRange(1, 7);
@@ -277,7 +245,7 @@ export function randomizeLinearStory(
     (mission) => mission.displayName === "Royal Valley"
   )!;
   royalValley.missionType = 0x0a;
-  royalValley.setMoreFlags(0x00);
+  royalValley.moreFlags = 0x00;
   setNewUnlockFlag(royalValley, newStory[newStory.length - 1].missionID);
   newStory.push(royalValley);
 
@@ -292,11 +260,13 @@ export function randomizeLinearStory(
     mission.requiredItem2 = 0x0000;
     mission.cityAppearance = 0;
     mission.price = 0;
-    mission.itemReward1Hidden = 0;
-    mission.itemReward2Hidden = 0;
+    mission.itemReward1Hidden = false;
+    mission.itemReward2Hidden = false;
   });
 }
 
+/*
+NOT CURRENTLY WORKING
 export function randomizeBranchingStory(
   missions: Array<FFTAMission>,
   storyLength: number,
@@ -452,7 +422,7 @@ export function randomizeBranchingStory(
     mission.price = 0;
     mission.cityAppearance = 0;
   });
-}
+}*/
 
 export function setStaticRewards(
   missions: Array<FFTAMission>,
@@ -463,19 +433,13 @@ export function setStaticRewards(
     let { itemReward1, itemReward2 } = mission;
     if (((itemReward1 >> 8) & 0xff) === 0xff) {
       const rewardSet = rewardSets[itemReward1 & 0xf];
-      const randomIndex = rng.randomIntMax(19) * 2;
-      mission.itemReward1 = FFTAUtils.convertShortUint8Array(
-        rewardSet.properties.slice(randomIndex, randomIndex + 2),
-        true
-      );
+      const randomIndex = rng.randomIntMax(19);
+      mission.itemReward1 = rewardSet.getItem(randomIndex);
     }
     if (((itemReward2 >> 8) & 0xff) === 0xff) {
       const rewardSet = rewardSets[itemReward2 & 0xf];
-      const randomIndex = rng.randomIntMax(19) * 2;
-      mission.itemReward2 = FFTAUtils.convertShortUint8Array(
-        rewardSet.properties.slice(randomIndex, randomIndex + 2),
-        true
-      );
+      const randomIndex = rng.randomIntMax(19);
+      mission.itemReward2 = rewardSet.getItem(randomIndex);
     }
   });
 }

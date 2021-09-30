@@ -1,4 +1,4 @@
-import { FFTAObject } from "./FFTAObject";
+import { FFTAObject, ROMProperty } from "./FFTAObject";
 
 const enum OFFSET {
   TYPE = 0x00,
@@ -26,55 +26,8 @@ export class FFTAUnit extends FFTAObject {
    * @param properties - The buffer holding the information of an object
    */
   constructor(memory: number, properties: Uint8Array) {
-    super(memory, properties, undefined);
-  }
-
-  /**
-   * @returns The job type of a unit.
-   */
-  getType() {
-    return this.getProperty(OFFSET.TYPE, 1);
-  }
-
-  /**
-   * Sets the job of a unit to the specified id.
-   * @param jobID -The id of the job to set
-   */
-  setJob(jobID: number) {
-    this.setProperty(OFFSET.UNITJOB, 1, jobID);
-  }
-
-  /**
-   * @returns The job id of a unit.
-   */
-  getJob() {
-    return this.getProperty(OFFSET.UNITJOB, 1);
-  }
-
-  /**
-   * Sets the A Ability of a unit.
-   * @param setID - The ID of the A Ability set
-   */
-  setAAbility(setID: number) {
-    this.setProperty(OFFSET.UNITABILITY, 1, setID);
-  }
-  getAAbility(): number {
-    return this.getProperty(OFFSET.UNITABILITY, 1);
-  }
-
-  /**
-   * Sets the level of a unit.
-   * @param level - The level to set
-   */
-  setLevel(level: number) {
-    this.setProperty(OFFSET.UNITLEVEL, 1, level);
-  }
-
-  /**
-   * @returns The level of the unit.
-   */
-  getLevel(): number {
-    return this.getProperty(OFFSET.UNITLEVEL, 1);
+    super(memory, undefined);
+    this.load(properties);
   }
 
   /**
@@ -83,9 +36,41 @@ export class FFTAUnit extends FFTAObject {
    * @param slot - The item slot to set
    */
   setItem(itemID: number, slot: number) {
-    if (slot < 5) {
-      let offset = OFFSET.UNITITEM1 + slot * 2;
-      this.setProperty(offset, 2, itemID);
+    switch (slot) {
+      case 0:
+        this._item1.value = itemID;
+        break;
+      case 1:
+        this._item2.value = itemID;
+        break;
+      case 2:
+        this._item3.value = itemID;
+        break;
+      case 3:
+        this._item4.value = itemID;
+        break;
+      case 4:
+        this._item5.value = itemID;
+        break;
+    }
+  }
+  /**
+   * Gets the item id of the slot to a specified.
+   * @param slot - The item slot to set
+   * @returns itemID - The id of the item
+   */
+  getItem(slot: number) {
+    switch (slot) {
+      case 0:
+        return this._item1.value;
+      case 1:
+        return this._item2.value;
+      case 2:
+        return this._item3.value;
+      case 3:
+        return this._item4.value;
+      case 4:
+        return this._item5.value;
     }
   }
 
@@ -95,30 +80,247 @@ export class FFTAUnit extends FFTAObject {
    * @param mastered - The bit to set
    */
   setMasterAbility(offset: number, mastered: boolean) {
-    let masteredBit = mastered ? 1 : 0;
-    let abilityByte = OFFSET.UNITABILITIES + Math.floor(offset / 8);
-    let abilityBit = offset % 8;
-    let mask = 0x1 << abilityBit;
-
-    let newFlags = new Uint8Array([
-      (this.properties[abilityByte] & ~mask) | (masteredBit << abilityBit),
-    ]);
-    this.properties.set(newFlags, abilityByte);
+    const masteredBit = mastered ? 1 : 0;
+    const abilityByte = OFFSET.UNITABILITIES + Math.floor(offset / 8);
+    const abilityBit = offset % 8;
+    const mask = 0x1 << abilityBit;
+    const set: ROMProperty = this.getROMProperties().find(
+      (itemProperty) => itemProperty.byteOffset === abilityByte
+    );
+    set.value = (set.value & ~mask) | (masteredBit << abilityBit);
   }
 
-  /**
-   * Sets the Reaction Ability of a unit.
-   * @param abilityID - The level to set
-   */
-  setReaction(abilityID: number) {
-    this.setProperty(OFFSET.UNITREACTION, 1, abilityID);
+  private _type: ROMProperty = {
+    byteOffset: OFFSET.TYPE,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  get type() {
+    return this._type.value;
+  }
+  set type(id: number) {
+    this._type.value = id;
   }
 
-  /**
-   * Sets the Support Ability of a unit.
-   * @param abilityID - The level to set
-   */
-  setSupport(abilityID: number) {
-    this.setProperty(OFFSET.UNITSUPPORT, 1, abilityID);
+  private _jobID: ROMProperty = {
+    byteOffset: OFFSET.UNITJOB,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  get jobID() {
+    return this._jobID.value;
   }
+  set jobID(id: number) {
+    this._jobID.value = id;
+  }
+
+  private _AAbilityID: ROMProperty = {
+    byteOffset: OFFSET.UNITABILITY,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  get AAbilityID() {
+    return this._AAbilityID.value;
+  }
+  set AAbilityID(id: number) {
+    this._AAbilityID.value = id;
+  }
+
+  private _level: ROMProperty = {
+    byteOffset: OFFSET.UNITLEVEL,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  get level() {
+    return this._level.value;
+  }
+  set level(id: number) {
+    this._level.value = id;
+  }
+
+  private _item1: ROMProperty = {
+    byteOffset: OFFSET.UNITITEM1,
+    byteLength: 2,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+
+  private _item2: ROMProperty = {
+    byteOffset: OFFSET.UNITITEM2,
+    byteLength: 2,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+
+  private _item3: ROMProperty = {
+    byteOffset: OFFSET.UNITITEM3,
+    byteLength: 2,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+
+  private _item4: ROMProperty = {
+    byteOffset: OFFSET.UNITITEM4,
+    byteLength: 2,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+
+  private _item5: ROMProperty = {
+    byteOffset: OFFSET.UNITITEM5,
+    byteLength: 2,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+
+  private _reaction: ROMProperty = {
+    byteOffset: OFFSET.UNITREACTION,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  get reaction() {
+    return this._reaction.value;
+  }
+  set reaction(id: number) {
+    this._reaction.value = id;
+  }
+
+  private _support: ROMProperty = {
+    byteOffset: OFFSET.UNITSUPPORT,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  get support() {
+    return this._support.value;
+  }
+  set support(id: number) {
+    this._support.value = id;
+  }
+
+  private _masteredSet1: ROMProperty = {
+    byteOffset: OFFSET.UNITABILITIES,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  private _masteredSet2: ROMProperty = {
+    byteOffset: OFFSET.UNITABILITIES + 1,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  private _masteredSet3: ROMProperty = {
+    byteOffset: OFFSET.UNITABILITIES + 2,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  private _masteredSet4: ROMProperty = {
+    byteOffset: OFFSET.UNITABILITIES + 3,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  private _masteredSet5: ROMProperty = {
+    byteOffset: OFFSET.UNITABILITIES + 4,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  private _masteredSet6: ROMProperty = {
+    byteOffset: OFFSET.UNITABILITIES + 5,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  private _masteredSet7: ROMProperty = {
+    byteOffset: OFFSET.UNITABILITIES + 6,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  private _masteredSet8: ROMProperty = {
+    byteOffset: OFFSET.UNITABILITIES + 7,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  private _masteredSet9: ROMProperty = {
+    byteOffset: OFFSET.UNITABILITIES + 8,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  private _masteredSet10: ROMProperty = {
+    byteOffset: OFFSET.UNITABILITIES + 9,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  private _masteredSet11: ROMProperty = {
+    byteOffset: OFFSET.UNITABILITIES + 10,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  private _masteredSet12: ROMProperty = {
+    byteOffset: OFFSET.UNITABILITIES + 11,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  private _masteredSet13: ROMProperty = {
+    byteOffset: OFFSET.UNITABILITIES + 12,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  private _masteredSet14: ROMProperty = {
+    byteOffset: OFFSET.UNITABILITIES + 13,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  private _masteredSet15: ROMProperty = {
+    byteOffset: OFFSET.UNITABILITIES + 14,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  private _masteredSet16: ROMProperty = {
+    byteOffset: OFFSET.UNITABILITIES + 15,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  private _masteredSet17: ROMProperty = {
+    byteOffset: OFFSET.UNITABILITIES + 16,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  private _masteredSet18: ROMProperty = {
+    byteOffset: OFFSET.UNITABILITIES + 17,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  private _masteredSet19: ROMProperty = {
+    byteOffset: OFFSET.UNITABILITIES + 18,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  private _masteredSet20: ROMProperty = {
+    byteOffset: OFFSET.UNITABILITIES + 19,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
 }

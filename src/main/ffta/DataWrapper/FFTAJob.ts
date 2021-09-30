@@ -44,6 +44,63 @@ export class FFTAJob extends FFTAObject {
   abilityLimit: number;
   race: string;
 
+  /**
+   * Constructor of a Job
+   * @param memory - The address of the ROM
+   * @param id - The number used to reference the job
+   * @param name - The name of the job
+   * @param properties - A buffer starting from the address in the ROM
+   */
+  constructor(
+    memory: number,
+    id: number,
+    name: string,
+    race: string,
+    properties: Uint8Array
+  ) {
+    super(memory, name);
+    this.load(properties);
+    this.jobId = id;
+    this.race = race;
+  }
+
+  /**
+   * Returns lightweight information for the job
+   */
+  getJobInfo(): JobLite {
+    return {
+      displayName: this.displayName!,
+      id: this.jobId,
+      race: this.race,
+    };
+  }
+
+  /**
+   *
+   * @returns An array containing the ability ID's for the job.
+   */
+  getAbilityIDs() {
+    const firstAbility = this.firstAbilityID;
+    const lastAbility = this.lastAbilityID;
+    return Array.from(
+      {
+        length: lastAbility + 1 - firstAbility,
+      },
+      (_, iter) => firstAbility - 1 + iter
+    );
+  }
+
+  /**
+   * Checks if a given item type is allowed to be equipped.
+   * @param type - The item type to check
+   * @see ITEMTYPES
+   * @returns True if the item type is allowed for this job
+   */
+  isTypeAllowed(type: ITEMTYPES) {
+    type -= 1; // Accounts for wrong offset
+    return this.allowedWeapons[Math.floor(type / 8)] & (0x1 << type % 8);
+  }
+
   private _hpGrowth: ROMProperty = {
     byteOffset: OFFSET.HPGROWTH,
     byteLength: 1,
@@ -219,120 +276,55 @@ export class FFTAJob extends FFTAObject {
     this._resistanceBase.value = Math.min(base, 255) << 4;
   }
 
-  /**
-   * Constructor of a Job
-   * @param memory - The address of the ROM
-   * @param id - The number used to reference the job
-   * @param name - The name of the job
-   * @param properties - A buffer starting from the address in the ROM
-   */
-  constructor(
-    memory: number,
-    id: number,
-    name: string,
-    race: string,
-    properties: Uint8Array
-  ) {
-    super(memory, properties, name);
-    this.jobId = id;
-    this.race = race;
-    this.loadProperty(this._hpBase, properties);
-    this.loadProperty(this._hpGrowth, properties);
-    this.loadProperty(this._mpBase, properties);
-    this.loadProperty(this._mpGrowth, properties);
-    this.loadProperty(this._speedBase, properties);
-    this.loadProperty(this._speedGrowth, properties);
-    this.loadProperty(this._attackBase, properties);
-    this.loadProperty(this._attackGrowth, properties);
-    this.loadProperty(this._defenseBase, properties);
-    this.loadProperty(this._defenseGrowth, properties);
-    this.loadProperty(this._powerBase, properties);
-    this.loadProperty(this._powerGrowth, properties);
-    this.loadProperty(this._resistanceBase, properties);
-    this.loadProperty(this._resistanceGrowth, properties);
+  private _allowedWeaponsID: ROMProperty = {
+    byteOffset: OFFSET.ALLOWEDWEAPONS,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  get allowedWeaponsID() {
+    return this._allowedWeaponsID.value;
+  }
+  set allowedWeaponsID(id: number) {
+    this._allowedWeaponsID.value = id;
   }
 
-  /**
-   * Returns lightweight information for the job
-   */
-  getJobInfo(): JobLite {
-    return {
-      displayName: this.displayName!,
-      id: this.jobId,
-      race: this.race,
-    };
+  private _requirements: ROMProperty = {
+    byteOffset: OFFSET.REQUIREMENTS,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  get requirements() {
+    return this._requirements.value;
+  }
+  set requirements(id: number) {
+    this._requirements.value = id;
   }
 
-  /**
-   * Sets the BYTE holding the ID of the requirements to unlock this job.
-   * @param requirementsID - The ID to set
-   */
-  setRequirements(requirementsID: number) {
-    this.setProperty(OFFSET.REQUIREMENTS, 1, requirementsID);
+  private _firstAbilityID: ROMProperty = {
+    byteOffset: OFFSET.FIRSTABILITY,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  get firstAbilityID() {
+    return this._firstAbilityID.value;
+  }
+  set firstAbilityID(id: number) {
+    this._firstAbilityID.value = id;
   }
 
-  /**
-   * Gets the BYTE holding the ID of the set of allowed weapons for this job.
-   * @returns - The ID of the set
-   */
-  getAllowedWeapons() {
-    return this.properties[OFFSET.ALLOWEDWEAPONS];
+  private _lastAbilityID: ROMProperty = {
+    byteOffset: OFFSET.LASTABILITY,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  get lastAbilityID() {
+    return this._lastAbilityID.value;
   }
-
-  /**
-   *
-   * @returns The race string of the job
-   */
-  getRace() {
-    return this.race;
-  }
-
-  /**
-   *
-   * @returns An array containing the ability ID's for the job.
-   */
-  getAbilityIDs() {
-    const firstAbility = this.getProperty(OFFSET.FIRSTABILITY, 1);
-    const lastAbility = this.getProperty(OFFSET.LASTABILITY, 1);
-    return Array.from(
-      {
-        length: lastAbility + 1 - firstAbility,
-      },
-      (_, iter) => firstAbility - 1 + iter
-    );
-  }
-
-  /**
-   * Checks if a given item type is allowed to be equipped.
-   * @param type - The item type to check
-   * @see ITEMTYPES
-   * @returns True if the item type is allowed for this job
-   */
-  isTypeAllowed(type: ITEMTYPES) {
-    type -= 1; // Accounts for wrong offset
-    return this.allowedWeapons[Math.floor(type / 8)] & (0x1 << type % 8);
-  }
-
-  write(rom: Uint8Array) {
-    const properties: Array<ROMProperty> = [
-      this._hpGrowth,
-      this._hpBase,
-      this._mpGrowth,
-      this._mpBase,
-      this._speedBase,
-      this._speedGrowth,
-      this._attackGrowth,
-      this._attackBase,
-      this._defenseGrowth,
-      this._defenseBase,
-      this._powerBase,
-      this._powerGrowth,
-      this._resistanceBase,
-      this._resistanceGrowth,
-    ];
-
-    properties.forEach((property) => {
-      this.writeProperty(property, rom);
-    });
+  set lastAbilityID(id: number) {
+    this._lastAbilityID.value = id;
   }
 }
