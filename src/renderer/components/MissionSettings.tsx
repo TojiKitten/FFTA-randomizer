@@ -18,9 +18,9 @@ export const MissionSettings = () => {
     randomEnemyItems,
     storyLength,
   } = state.missionSettings;
-
+  const validMissions = 122; // Update UI based on story setting option
   const [showStoryLength, setShowStoryLength] = React.useState(false);
-  const [maxStoryLength, setMaxStoryLength] = React.useState(126);
+  const [maxStoryLength, setMaxStoryLength] = React.useState(validMissions);
   const [storyHelp, setStoryHelp] = React.useState("");
 
   const [levelModifierText, setLevelModifierText] =
@@ -37,8 +37,6 @@ export const MissionSettings = () => {
 
   const [showEnemyAbilities, setShowEnemyAbilities] = React.useState(false);
 
-  const validMissions = 119;
-  // Update UI based on story setting option
   React.useEffect(() => {
     switch (storySetting) {
       case "normal":
@@ -183,7 +181,7 @@ export const MissionSettings = () => {
             type="Range"
             min="2"
             max={maxStoryLength.toString()}
-            value={storyLength}
+            value={storyLength.toString()}
             onChange={(event) => {
               const { value } = event.target;
               dispatch({
@@ -329,11 +327,10 @@ export const MissionSettings = () => {
       <div className="missionSettingsOption">
         <label htmlFor="gilReward">Universal Gil Reward</label>
         <input
-          id="apOption"
+          id="gilReward"
           type="Range"
           min="-1"
           max="255"
-          step="1"
           value={gilReward}
           onChange={(event) => {
             const gilValue = parseInt(event.target.value);

@@ -23,12 +23,12 @@ const enum OFFSET {
   PRICE = 0x3e,
   TIMEOUTDAYS = 0x40,
   MISSIONDISPLAY = 0x41, // Hide Item 1, Hide Item 2, ?? ?? // Repeatable, ??, ??, No Cancel
-  MOREFLAGS = 0x42, // ???, Hide from OW Menu, ??? Law 2, ??? Law 1
+  // ???, Hide from OW Menu, ??? Law 2, ??? Law 1
   MISSIONLOCATION = 0x45, // Used for encounters and loading cut scenes
 }
 
 const enum TYPEFLAG {
-  SPECIAL = 0x0,
+  STORY = 0x0,
   ENCOUNTERTYPE = 0x1,
   ENCOUNTER = 0x3,
   LINK = 0x4,
@@ -41,12 +41,14 @@ const enum ENCOUNTERTYPE {
 }
 
 const enum RANKOFFSET {
-  STORY = 0x0,
   RANK = 0x4,
+  ELITE = 0x07,
   CITYPICKUP = 0x8,
 }
 
 const enum DISPLAYFLAG {
+  CANCEL = 0x0,
+  REPEATABLE = 0x3,
   ITEM1HIDDEN = 0x6,
   ITEM2HIDDEN = 0x7,
   LAWCARD1HIDDEN = 0x8,
@@ -123,20 +125,19 @@ export class FFTAMission extends FFTAObject {
     this._missionType.value = value;
   }
 
-  get specialMission(): boolean {
-    return ((this._missionType.value >> TYPEFLAG.SPECIAL) & 0x1) === 0x1
+  get storyMission(): boolean {
+    return ((this._missionType.value >> TYPEFLAG.STORY) & 0x1) === 0x1
       ? true
       : false;
   }
-  set specialMission(allowed: boolean) {
+  set storyMission(allowed: boolean) {
     const value = allowed ? 1 : 0;
     this._missionType.value =
-      (this._missionType.value & ~(1 << TYPEFLAG.SPECIAL)) |
-      (value << TYPEFLAG.SPECIAL);
+      (this._missionType.value & ~(1 << TYPEFLAG.STORY)) |
+      (value << TYPEFLAG.STORY);
   }
 
   get encounterMission(): boolean {
-    //console.log(this._missionType.value.toString(2));
     return ((this._missionType.value >> TYPEFLAG.ENCOUNTER) & 0x1) === 0x1
       ? true
       : false;
@@ -148,16 +149,13 @@ export class FFTAMission extends FFTAObject {
       (value << TYPEFLAG.ENCOUNTER);
   }
 
-  get encounterType(): boolean {
-    return ((this._missionType.value >> TYPEFLAG.ENCOUNTERTYPE) & 0x2) === 0x1
-      ? true
-      : false;
+  get encounterType(): number {
+    return (this._missionType.value >> TYPEFLAG.ENCOUNTERTYPE) & 0x2;
   }
-  set encounterType(allowed: boolean) {
-    const value = allowed ? 1 : 0;
+  set encounterType(type: number) {
     this._missionType.value =
       (this._missionType.value & ~(2 << TYPEFLAG.ENCOUNTERTYPE)) |
-      (value << TYPEFLAG.ENCOUNTERTYPE);
+      (type << TYPEFLAG.ENCOUNTERTYPE);
   }
 
   get linkMission(): boolean {
@@ -178,16 +176,16 @@ export class FFTAMission extends FFTAObject {
     displayName: "Could not retrieve.",
     value: 0,
   };
-  get storyMission(): boolean {
-    return ((this._rank.value >> RANKOFFSET.STORY) & 0x1) === 0x1
+  get eliteMission(): boolean {
+    return ((this._rank.value >> RANKOFFSET.ELITE) & 0x1) === 0x1
       ? true
       : false;
   }
-  set storyMission(allowed: boolean) {
+  set eliteMission(allowed: boolean) {
     const value = allowed ? 1 : 0;
-    this._missionType.value =
-      (this._rank.value & ~(1 << RANKOFFSET.STORY)) |
-      (value << RANKOFFSET.STORY);
+    this._rank.value =
+      (this._rank.value & ~(1 << RANKOFFSET.ELITE)) |
+      (value << RANKOFFSET.ELITE);
   }
   get missionRank(): number {
     return (this._rank.value >> RANKOFFSET.RANK) & 0x7;
@@ -214,7 +212,8 @@ export class FFTAMission extends FFTAObject {
   };
   set daysVisible(days: number) {
     days = Math.min(0x1f, Math.max(0, days));
-    this._pubVisibility.value = (this._pubVisibility.value & 0x7) + (days << 3);
+    this._pubVisibility.value =
+      (this._pubVisibility.value & ~(0x1f << 3)) | (days << 3);
   }
   get daysVisible(): number {
     return this._pubVisibility.value >> 3;
@@ -241,7 +240,7 @@ export class FFTAMission extends FFTAObject {
         monthValue = 5;
         break;
     }
-    this._pubVisibility.value = (this._pubVisibility.value & 0xf1) + monthValue;
+    this._pubVisibility.value = (this._pubVisibility.value & ~0x7) | monthValue;
   }
   get monthVisibile(): FFTAMonth | "Any" {
     const monthValue = this._pubVisibility.value & 0x7;
@@ -416,6 +415,30 @@ export class FFTAMission extends FFTAObject {
     displayName: "Could not retrieve.",
     value: 0,
   };
+  get cancelable(): boolean {
+    return ((this._missionDisplay.value >> DISPLAYFLAG.CANCEL) & 0x1) === 0x1
+      ? true
+      : false;
+  }
+  set cancelable(allowed: boolean) {
+    const value = allowed ? 1 : 0;
+    this._missionDisplay.value =
+      (this._missionDisplay.value & ~(1 << DISPLAYFLAG.CANCEL)) |
+      (value << DISPLAYFLAG.CANCEL);
+  }
+  get repeatable(): boolean {
+    return ((this._missionDisplay.value >> DISPLAYFLAG.REPEATABLE) & 0x1) ===
+      0x1
+      ? true
+      : false;
+  }
+  set repeatable(allowed: boolean) {
+    const value = allowed ? 1 : 0;
+    this._missionDisplay.value =
+      (this._missionDisplay.value & ~(1 << DISPLAYFLAG.REPEATABLE)) |
+      (value << DISPLAYFLAG.REPEATABLE);
+  }
+
   get itemReward1Hidden(): boolean {
     return ((this._missionDisplay.value >> DISPLAYFLAG.ITEM1HIDDEN) & 0x1) ===
       0x1
@@ -580,18 +603,5 @@ export class FFTAMission extends FFTAObject {
     this._unlockFlag3Offset.value = bitOffset;
     this._unlockFlag3Block.value = blockOffset;
     this._unlockFlag3Value.value = value;
-  }
-
-  private _moreFlags: ROMProperty = {
-    byteOffset: OFFSET.MOREFLAGS,
-    byteLength: 1,
-    displayName: "Could not retrieve.",
-    value: 0,
-  };
-  get moreFlags() {
-    return this._moreFlags.value;
-  }
-  set moreFlags(value: number) {
-    this._moreFlags.value = value;
   }
 }
