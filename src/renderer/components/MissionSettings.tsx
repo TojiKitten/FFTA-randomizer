@@ -18,7 +18,7 @@ export const MissionSettings = () => {
     randomEnemyItems,
     storyLength,
   } = state.missionSettings;
-  const validMissions = 122; // Update UI based on story setting option
+  const validMissions = 123; // Update UI based on story setting option
   const [showStoryLength, setShowStoryLength] = React.useState(false);
   const [maxStoryLength, setMaxStoryLength] = React.useState(validMissions);
   const [storyHelp, setStoryHelp] = React.useState("");
