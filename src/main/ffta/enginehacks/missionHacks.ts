@@ -193,7 +193,13 @@ export function randomizeLinearStory(
     mission.setUnlockFlag3(0x00, 0x00, 0x00);
   });
 
-  const unsupportedMissions = ["dummy", "Another World"];
+  const unsupportedMissions = [
+    "dummy",
+    "Another World",
+    "Snowball Fight",
+    "Memories",
+    "Decision Time",
+  ];
 
   // Filter to all encounter missions
   const validMissions = missions.filter((mission, n) => {
@@ -207,6 +213,7 @@ export function randomizeLinearStory(
     );
   });
 
+  storyLength = validMissions.length + 1;
   // Create new "path" for the story
   let newStory: Array<FFTAMission> = [];
   for (var i = 0; i < storyLength - 1; i++) {
@@ -215,11 +222,6 @@ export function randomizeLinearStory(
       rng.randomIntMax(validMissions.length - 1),
       1
     )[0];
-
-    // Set the mission type to appear as purchasable in shop and selectable at location
-    selectedMission.missionType = 0x0a;
-    // Set the extra flags to show on the location menu
-    selectedMission.moreFlags = 0x00;
 
     // Give two new random tier rewards
     selectedMission.itemReward1 = 0xfff0 + rng.randomIntRange(1, 7);
@@ -244,24 +246,31 @@ export function randomizeLinearStory(
   const royalValley = missions.find(
     (mission) => mission.displayName === "Royal Valley"
   )!;
-  royalValley.missionType = 0x0a;
-  royalValley.moreFlags = 0x00;
+
   setNewUnlockFlag(royalValley, newStory[newStory.length - 1].missionID);
   newStory.push(royalValley);
 
   // Fix certain things about the missions
-  newStory.forEach((mission) => {
-    mission.recruit = 0x00;
-    mission.monthVisibile = "Any";
-    mission.daysVisible = 1;
-    mission.timeoutDays = 0;
+  newStory.forEach((mission, n) => {
+    //mission.missionType = 0x0a;
+    const specialRecruits = [0x98, 0x9e, 0x9a, 0x96];
+    if (!specialRecruits.includes(mission.recruit)) mission.recruit = 0x00;
     mission.daysAvaiblable = 0;
     mission.requiredItem1 = 0x0000;
     mission.requiredItem2 = 0x0000;
-    mission.cityAppearance = 0;
     mission.price = 0;
     mission.itemReward1Hidden = false;
     mission.itemReward2Hidden = false;
+    mission.encounterType = 0x01;
+    mission.storyMission = false;
+    mission.repeatable = false;
+    mission.cancelable = true;
+    mission.eliteMission = false;
+    mission.monthVisibile = "Any";
+    mission.daysVisible = 1;
+    mission.timeoutDays = 0;
+    mission.cityAppearance = 0;
+    mission.hideOnLocationMenu = false;
   });
 }
 

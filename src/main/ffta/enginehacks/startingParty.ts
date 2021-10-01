@@ -212,11 +212,8 @@ function getValidLoadOut(
   }
 
   //find valid weapon from validweapons array and find the correct index for full item array
-  let subWeaponID = rng.randomIntMax(validWeapons.length - 1);
-  let weaponID = items.findIndex(
-    (element) => element === validWeapons[subWeaponID]
-  );
-  loadout.push(weaponID + items[0].ITEMIDOFFSET); //+1 because item ids start at 1 not 0 NotLikeThis
+  let weaponID = rng.randomIntMax(validWeapons.length - 1);
+  loadout.push(validWeapons[weaponID].itemID);
 
   const FEMALEONLY = [
     "Cachusha",
@@ -224,6 +221,7 @@ function getValidLoadOut(
     "Ribbon",
     "Minerva Plate",
     "Rubber Suit",
+    "Tiara",
   ];
 
   //find valid armor from validArmors array and find the correct index for full item array
@@ -231,21 +229,14 @@ function getValidLoadOut(
   validArmor = validArmor.filter(
     (armor) => !FEMALEONLY.includes(armor.displayName!)
   );
-  let subArmorID = rng.randomIntMax(validArmor.length - 1);
+  let armorID = rng.randomIntMax(validArmor.length - 1);
+  loadout.push(validArmor[armorID].itemID);
 
-  let armorID = items.findIndex(
-    (element) => element === validArmor[subArmorID]
-  );
-  loadout.push(armorID + items[0].ITEMIDOFFSET); //+1 because item ids start at 1 not 0 NotLikeThis
-
-  if (
-    validWeapons[subWeaponID].worn == 1 &&
-    job.isTypeAllowed(ITEMTYPES.Shield)
-  ) {
+  if (validWeapons[weaponID].worn == 1 && job.isTypeAllowed(ITEMTYPES.Shield)) {
     let shieldID = items.findIndex(
       (item) => item.itemType === ITEMTYPES.Shield
     );
-    loadout.push(shieldID + items[0].ITEMIDOFFSET); //+1 because item ids start at 1 not 0 NotLikeThis
+    loadout.push(items[shieldID].itemID);
   }
 
   //fill empty item slots with nothing if not randomized
@@ -277,16 +268,13 @@ function getValidLoadOut(
       )[0];
       // For the item type, get all items
       const itemsForType = items.filter(
-        (item) => item.itemType === selectedType
+        (item) => item.itemType === selectedType && item.allowed
       );
       // get a random item from all items
       const selectedItem =
         itemsForType[rng.randomIntMax(itemsForType.length - 1)];
       // Push to loadout
-      loadout.push(
-        items.findIndex((item) => item.memory === selectedItem.memory) +
-          selectedItem.ITEMIDOFFSET
-      );
+      loadout.push(selectedItem.itemID);
     }
   }
   return loadout;

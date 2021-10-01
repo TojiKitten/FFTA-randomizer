@@ -420,6 +420,7 @@ export class FFTAData {
       let newItem = new FFTAItem(
         memory,
         this.itemJobNames[(this.rom[memory + 1] << 8) | this.rom[memory]],
+        i + 1,
         this.rom.slice(memory, memory + dataType.byteSize)
       );
       items.push(newItem);
