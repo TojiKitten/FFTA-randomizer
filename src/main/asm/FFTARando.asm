@@ -1,3 +1,8 @@
+/* 
+// This file is included in the randomizer as a reference. 
+// https://github.com/Kingcom/armips was used to assembler the instructions, which was then used as a diff to include in the randomizer.
+*/
+
 .open "FFTA_Randomized.gba","FFTA_Randomized_ASM.gba",0x08000000
 .gba
 
