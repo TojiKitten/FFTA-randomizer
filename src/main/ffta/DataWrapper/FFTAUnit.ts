@@ -80,6 +80,7 @@ export class FFTAUnit extends FFTAObject {
    * @param mastered - The bit to set
    */
   setMasterAbility(offset: number, mastered: boolean) {
+    offset = Math.max(0, Math.min(offset, 0x14 * 8));
     const masteredBit = mastered ? 1 : 0;
     const abilityByte = OFFSET.UNITABILITIES + Math.floor(offset / 8);
     const abilityBit = offset % 8;
