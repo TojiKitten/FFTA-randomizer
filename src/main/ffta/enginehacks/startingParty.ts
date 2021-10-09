@@ -80,7 +80,14 @@ export function setUnitData(
     });
   }
 
-  if (options.masteredAbilities > 0 && options.name === "NPC") {
+  if (options.name === "NPC") {
+    for (var i = 0; i < 0x8c; i++) {
+      unit.setMasterAbility(i, false);
+    }
+    unit.reaction = 0;
+    unit.support = 0;
+    unit.AAbilityID = 0;
+
     let mastered = getEnemyMasteryAbilityIDs(
       unit,
       raceJobs.get(newJob.race)!,
@@ -366,6 +373,7 @@ function getEnemyMasteryAbilityIDs(
   } else throw new Error("Job Mastery Error: First Job not found");
 
   // Get Unit's Secondary job
+  // 0x4d prevents us from changing judge missions
   if (unit.AAbilityID != 0x4d) {
     const secondJob = unusedJobs[rng.randomIntMax(unusedJobs.length - 1)];
     if (secondJob != undefined) {

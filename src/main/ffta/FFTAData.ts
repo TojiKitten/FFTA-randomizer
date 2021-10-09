@@ -783,7 +783,7 @@ export class FFTAData {
           job: "thief",
           rngEquip: randomItems,
           level: this.formations[5].units[1].level,
-          masteredAbilities: 0,
+          masteredAbilities: abilityPercentage,
           masterType: "abilities",
         },
         this.rng
@@ -801,7 +801,7 @@ export class FFTAData {
           job: "templar",
           rngEquip: randomItems,
           level: this.formations[25].units[0].level,
-          masteredAbilities: 0,
+          masteredAbilities: abilityPercentage,
           masterType: "abilities",
         },
         this.rng
