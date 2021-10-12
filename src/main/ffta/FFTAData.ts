@@ -1082,15 +1082,23 @@ export class FFTAData {
   handleRaceMode(raceMode: boolean) {
     if (raceMode) {
       this.rng.setPosition(3000);
+
+      // Set mission items to be fixed from their pool instead of random
       MissionHacks.setStaticRewards(
         this.missions,
         this.rewardItemSets,
         this.rng
       );
+
+      // Set jobs to have fixed stat growths
+      // Add flat value to the base stat
       JobHacks.setStaticJobGrowth(
         Array.from(this.jobs.values()).flat(),
         this.rng
       );
+
+      // Disable "Descent" for Li Grim
+      this.formations[32].units[0].setMasterAbility(6, false);
     }
   }
 
