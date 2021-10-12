@@ -86,7 +86,8 @@ export function setUnitData(
     }
     unit.reaction = 0;
     unit.support = 0;
-    unit.AAbilityID = 0;
+    // Clear out A Ability unless it is "Blank Card"
+    if (unit.AAbilityID != 0x4d) unit.AAbilityID = 0;
 
     let mastered = getEnemyMasteryAbilityIDs(
       unit,
@@ -256,7 +257,6 @@ function getValidLoadOut(
   } else {
     const additionalItemTypes = [
       ITEMTYPES.Helmet,
-      ITEMTYPES.Ribbon,
       ITEMTYPES.Hat,
       ITEMTYPES.Shoes,
       ITEMTYPES.Armlet,
@@ -373,7 +373,7 @@ function getEnemyMasteryAbilityIDs(
   } else throw new Error("Job Mastery Error: First Job not found");
 
   // Get Unit's Secondary job
-  // 0x4d prevents us from changing judge missions
+  // 0x4d prevents us from changing "Blank Card"
   if (unit.AAbilityID != 0x4d) {
     const secondJob = unusedJobs[rng.randomIntMax(unusedJobs.length - 1)];
     if (secondJob != undefined) {
