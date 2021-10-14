@@ -113,3 +113,15 @@ In addition, 0x0854D1A0 is the full address in reference to GBA architecture.
 We have to drop the "08", which is why it gets left off in this method.*/
   return (address[2] << 16) | (address[1] << 8) | address[0];
 }
+
+export function joinUint8Array(arrays: Array<Uint8Array>) {
+  let newArray = new Uint8Array();
+
+  arrays.forEach((array) => {
+    let tempArray = new Uint8Array(newArray.length + array.length);
+    tempArray.set(newArray);
+    tempArray.set(array, newArray.length);
+    newArray = tempArray;
+  });
+  return newArray;
+}

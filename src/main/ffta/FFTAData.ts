@@ -12,6 +12,7 @@ import * as StartingPartyHacks from "./enginehacks/startingParty";
 import * as JobHacks from "./enginehacks/jobHacks";
 import * as ItemHacks from "./enginehacks/itemHacks";
 import * as ForcedHacks from "./enginehacks/forcedHacks";
+import * as AnimationHacks from "./enginehacks/animationHacks";
 import NoiseGenerator from "./utils/NoiseGenerator";
 import {
   JobSettingsState,
@@ -214,6 +215,9 @@ export class FFTAData {
     this.lawSets = this.initializeLawSets();
     this.rewardItemSets = this.initializeRewardItemSets();
     this.rng = new NoiseGenerator();
+
+    // Testing Only, remove before commit
+    AnimationHacks.firstPass(this);
   }
 
   /**
