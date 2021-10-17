@@ -44,7 +44,7 @@ export const JobSettings = () => {
         break;
       case "shuffled":
         setAbilityHelp(
-          "Abilities are randomized and are limited to the same number of occurrences as they normally appear. Example: Absolutely one job will learn Double Sword."
+          "Abilities are randomized and are limited to the same number of occurrences as they normally appear. Banned abilities are rerolled before shuffling. Example: Absolutely one job will learn Double Sword."
         );
         break;
     }
@@ -72,7 +72,7 @@ export const JobSettings = () => {
           <div className="help-text">{abilityHelp}</div>
         </div>
       </div>
-      {abilities === "random" && (
+      {abilities != "normal" && (
         <div className="abilityOption">
           <label htmlFor="abilitySearch">Search</label>
           <input
@@ -84,7 +84,7 @@ export const JobSettings = () => {
         </div>
       )}
       <div className="abilityOptions">
-        {abilities === "random" &&
+        {abilities != "normal" &&
           abilityNames
             ?.filter((ability: string) =>
               ability.toLowerCase().includes(searchName.toLowerCase())
