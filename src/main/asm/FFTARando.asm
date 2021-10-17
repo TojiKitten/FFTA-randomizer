@@ -50,7 +50,7 @@ freeSpace equ 0x08A39920
                     mov r0,r6
                     bl discoverJob
                     add r6,r6,1
-                    cmp r6,0x2E
+                    cmp r6,0x2F
                     blt jobLoop
             discoverEnd:
                 .align 8
