@@ -4,7 +4,6 @@ import { FFTAItem, ITEMTYPES } from "../DataWrapper/FFTAItem";
 import { FFTAJob } from "../DataWrapper/FFTAJob";
 import NoiseGenerator from "../utils/NoiseGenerator";
 import { FFTARaceAbility, ABILITYTYPE } from "../DataWrapper/FFTARaceAbility";
-import { first } from "lodash";
 
 /**
  * Sets starting gold to a value.
