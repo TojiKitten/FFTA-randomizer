@@ -60,12 +60,19 @@ export function changeRaceAbilities(
   // For randomized case, abilities that appear multiple times are more likely to appear
   // Examples: Fire, Shield Bearer, Counter, Bow Combo
   let abilityRecord = flattenRaceMapAbilities(raceAbilities);
-  abilityRecord.find((ability) => ability.displayName === "Knife")!.allowed =
-    false;
-  abilityRecord.find(
+
+  // Always ban Knife and Limit Glove, since they are not learned normally
+  let knife = abilityRecord.find((ability) => ability.displayName === "Knife");
+  if (knife) knife.allowed = false;
+  let limitGlove = abilityRecord.find(
     (ability) => ability.displayName === "Limit Glove"
-  )!.allowed = false;
+  );
+  if (limitGlove) limitGlove.allowed = false;
+
+  // Remove banned abilities from the pool
   abilityRecord = abilityRecord.filter((ability) => ability.allowed);
+
+  // If shuffled, replace banned abilities in the pool with allowed abilities
   if (shuffled) {
     let bannedAbilities = flattenRaceMapAbilities(raceAbilities).filter(
       (ability) => !ability.allowed
