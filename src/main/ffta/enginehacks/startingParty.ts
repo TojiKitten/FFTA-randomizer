@@ -70,6 +70,7 @@ export function setUnitData(
         mastered = getJobMasteryAbilityIDs(
           unit,
           raceJobs.get(newJob.race)!,
+          raceAbilities.get(newJob.race)!,
           options.masteredAbilities,
           rng
         );
@@ -273,9 +274,12 @@ function getValidLoadOut(
         rng.randomIntMax(allowedItemTypes.length - 1),
         1
       )[0];
-      // For the item type, get all items
+      // For the item type, get all items that are allowed and not in viera only
       const itemsForType = items.filter(
-        (item) => item.itemType === selectedType && item.allowed
+        (item) =>
+          item.itemType === selectedType &&
+          item.allowed &&
+          !FEMALEONLY.includes(item.displayName!)
       );
       // get a random item from all items
       const selectedItem =
@@ -316,6 +320,7 @@ function getRandomAbilityIDs(
 function getJobMasteryAbilityIDs(
   unit: FFTAUnit,
   raceJobs: Array<FFTAJob>,
+  raceAbilities: Array<FFTARaceAbility>,
   count: number,
   rng: NoiseGenerator
 ): Array<number> {
@@ -327,14 +332,27 @@ function getJobMasteryAbilityIDs(
   // Master Unit's job
   const firstJob = raceJobs.find((job) => job.jobId === unit.jobID);
   if (firstJob != undefined) {
-    abilityIndicies = abilityIndicies.concat(firstJob.getAbilityIDs());
+    // Add non duplicate A-Abilities
+    abilityIndicies = abilityIndicies.concat(
+      removeDuplicateIndicies(firstJob.getAbilityIDs(), raceAbilities, [
+        ABILITYTYPE.ACTION0,
+        ABILITYTYPE.ACTION1,
+        ABILITYTYPE.ACTION2,
+      ])
+    );
     unusedJobs = unusedJobs.filter((job) => firstJob.jobId != job.jobId);
   } else throw new Error("Job Mastery Error: First Job not found");
 
   if (count >= 2 && unit.AAbilityID != 0x4d) {
     const secondJob = unusedJobs[rng.randomIntMax(unusedJobs.length - 1)];
     if (secondJob != undefined) {
-      abilityIndicies = abilityIndicies.concat(secondJob.getAbilityIDs());
+      abilityIndicies = abilityIndicies.concat(
+        removeDuplicateIndicies(secondJob.getAbilityIDs(), raceAbilities, [
+          ABILITYTYPE.ACTION0,
+          ABILITYTYPE.ACTION1,
+          ABILITYTYPE.ACTION2,
+        ])
+      );
       unit.AAbilityID = secondJob.jobId;
       unusedJobs = unusedJobs.filter((job) => secondJob.jobId != job.jobId);
     } else throw new Error("Job Mastery Error: Second Job not found");
@@ -344,15 +362,64 @@ function getJobMasteryAbilityIDs(
     for (var i = 2; i < count; i++) {
       const additionalJob = unusedJobs[rng.randomIntMax(unusedJobs.length - 1)];
       if (additionalJob != undefined) {
-        abilityIndicies = abilityIndicies.concat(additionalJob.getAbilityIDs());
+        abilityIndicies = abilityIndicies.concat(
+          removeDuplicateIndicies(
+            additionalJob.getAbilityIDs(),
+            raceAbilities,
+            [ABILITYTYPE.ACTION0, ABILITYTYPE.ACTION1, ABILITYTYPE.ACTION2]
+          )
+        );
         unusedJobs = unusedJobs.filter(
           (job) => additionalJob.jobId != job.jobId
         );
       } else throw new Error("Job Mastery Error: Second Job not found");
     }
   }
-
+  abilityIndicies = removeDuplicateIndicies(abilityIndicies, raceAbilities, [
+    ABILITYTYPE.SUPPORT,
+    ABILITYTYPE.REACTION,
+    ABILITYTYPE.COMBO,
+  ]);
   return abilityIndicies;
+}
+
+/**
+ *
+ * @param abilityIndicies The list of ability indicies to check
+ * @param raceAbilities The abilities for the race
+ * @param types The types to check for duplicates
+ * @returns The list of ability indicies that are not duplicates of the passed in types. Abilities that are not duplicate checked are not removed.
+ */
+function removeDuplicateIndicies(
+  abilityIndicies: Array<number>,
+  raceAbilities: Array<FFTARaceAbility>,
+  types: Array<number>
+) {
+  // Remove duplicates for convenience
+  let potentialMastered = abilityIndicies.map((index) => {
+    return raceAbilities[index];
+  });
+
+  let nonDuplicate: Array<number> = [];
+
+  abilityIndicies.forEach((index, n) => {
+    // Push index if we aren't checking the type
+    if (types && !types.includes(potentialMastered[n].type)) {
+      nonDuplicate.push(index);
+    }
+    // Otherwise, check to see if this ability appears later in the list
+    else {
+      const remainingAbilities = potentialMastered.slice(n + 1);
+      const remainingAbilityNames = remainingAbilities.map((ability) => {
+        return ability.displayName!;
+      });
+      if (!remainingAbilityNames.includes(potentialMastered[n].displayName!)) {
+        nonDuplicate.push(index);
+      }
+    }
+  });
+
+  return nonDuplicate;
 }
 
 function getEnemyMasteryAbilityIDs(

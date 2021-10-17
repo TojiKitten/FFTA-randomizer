@@ -61,13 +61,15 @@ export function changeRaceAbilities(
   // Examples: Fire, Shield Bearer, Counter, Bow Combo
   let abilityRecord = flattenRaceMapAbilities(raceAbilities);
 
-  // Always ban Knife and Limit Glove, since they are not learned normally
+  // Always ban Knife, Limit Glove, and Item, since they are not learned normally
   let knife = abilityRecord.find((ability) => ability.displayName === "Knife");
   if (knife) knife.allowed = false;
   let limitGlove = abilityRecord.find(
     (ability) => ability.displayName === "Limit Glove"
   );
   if (limitGlove) limitGlove.allowed = false;
+  let item = abilityRecord.find((ability) => ability.displayName === "Item");
+  if (item) item.allowed = false;
 
   // Remove banned abilities from the pool
   abilityRecord = abilityRecord.filter((ability) => ability.allowed);
@@ -176,7 +178,7 @@ function abilityReplace(
     let newAbility = new FFTARaceAbility(ability.memory, name);
     newAbility.copy(selectedAbility);
     newRaceAbilities.push(newAbility);
-    newAbility.apCost = 0;
+    newAbility.apCost = selectedAbility.apCost;
 
     // If shuffling abilities, remove the selected ability from the list
     // Uses memory address for duplicate case
