@@ -336,8 +336,6 @@ function getJobMasteryAbilityIDs(
     abilityIndicies = abilityIndicies.concat(
       removeDuplicateIndicies(firstJob.getAbilityIDs(), raceAbilities, [
         ABILITYTYPE.ACTION0,
-        ABILITYTYPE.ACTION1,
-        ABILITYTYPE.ACTION2,
       ])
     );
     unusedJobs = unusedJobs.filter((job) => firstJob.jobId != job.jobId);
@@ -349,8 +347,6 @@ function getJobMasteryAbilityIDs(
       abilityIndicies = abilityIndicies.concat(
         removeDuplicateIndicies(secondJob.getAbilityIDs(), raceAbilities, [
           ABILITYTYPE.ACTION0,
-          ABILITYTYPE.ACTION1,
-          ABILITYTYPE.ACTION2,
         ])
       );
       unit.AAbilityID = secondJob.jobId;
@@ -366,7 +362,7 @@ function getJobMasteryAbilityIDs(
           removeDuplicateIndicies(
             additionalJob.getAbilityIDs(),
             raceAbilities,
-            [ABILITYTYPE.ACTION0, ABILITYTYPE.ACTION1, ABILITYTYPE.ACTION2]
+            [ABILITYTYPE.ACTION0]
           )
         );
         unusedJobs = unusedJobs.filter(
@@ -395,14 +391,17 @@ function removeDuplicateIndicies(
   raceAbilities: Array<FFTARaceAbility>,
   types: Array<number>
 ) {
+  const validAbilities = abilityIndicies.filter((abilityIndex) => {
+    if (raceAbilities[abilityIndex]) return abilityIndex;
+  });
   // Remove duplicates for convenience
-  let potentialMastered = abilityIndicies.map((index) => {
+  let potentialMastered = validAbilities.map((index) => {
     return raceAbilities[index];
   });
 
   let nonDuplicate: Array<number> = [];
 
-  abilityIndicies.forEach((index, n) => {
+  validAbilities.forEach((index, n) => {
     // Push index if we aren't checking the type
     if (types && !types.includes(potentialMastered[n].type)) {
       nonDuplicate.push(index);
@@ -411,8 +410,9 @@ function removeDuplicateIndicies(
     else {
       const remainingAbilities = potentialMastered.slice(n + 1);
       const remainingAbilityNames = remainingAbilities.map((ability) => {
-        return ability.displayName!;
+        if (ability) return ability.displayName!;
       });
+
       if (!remainingAbilityNames.includes(potentialMastered[n].displayName!)) {
         nonDuplicate.push(index);
       }
