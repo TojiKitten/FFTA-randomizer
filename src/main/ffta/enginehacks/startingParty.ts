@@ -1,4 +1,4 @@
-import { getShortUint8Array } from "../utils/FFTAUtils";
+import { getShortUint8Array, getWordUint8Array } from "../utils/FFTAUtils";
 import { FFTAUnit } from "../DataWrapper/FFTAUnit";
 import { FFTAItem, ITEMTYPES } from "../DataWrapper/FFTAItem";
 import { FFTAJob } from "../DataWrapper/FFTAJob";
@@ -11,7 +11,7 @@ import { FFTARaceAbility, ABILITYTYPE } from "../DataWrapper/FFTARaceAbility";
  * @param gold - The gold to start with
  */
 export function setStartingGold(rom: Uint8Array, gold: number) {
-  rom.set(getShortUint8Array(gold, true), 0x986c);
+  rom.set(getWordUint8Array(gold, true), 0x986c);
 }
 
 /**
