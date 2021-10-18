@@ -58,7 +58,6 @@ export function firstPass(fftaData: FFTAData) {
   for (var i = 0; i < supportedCharacters; i++) {
     const supportedCharacter = allSprites[i];
     if (Object.entries(supportedCharacter).length < 42) continue;
-    console.log(Object.entries(supportedCharacter).length);
 
     const characterFrames = Object.entries(supportedCharacter).sort((a, b) => {
       return parseInt(a[0], 16) > parseInt(b[0], 16) ? 1 : -1;

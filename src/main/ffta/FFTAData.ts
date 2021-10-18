@@ -1114,6 +1114,7 @@ export class FFTAData {
 
     if (options.abilitySettings.abilities != "normal") {
       ForcedHacks.animationFixRaw(this.rom);
+      ForcedHacks.injectWeaponFix(this.rom);
     }
     if (options.jobSettings.jobRequirements != "normal") {
       ForcedHacks.injectUnlockJobs(this.rom);
