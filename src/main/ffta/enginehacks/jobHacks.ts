@@ -60,6 +60,7 @@ export function changeRaceAbilities(
   // For randomized case, abilities that appear multiple times are more likely to appear
   // Examples: Fire, Shield Bearer, Counter, Bow Combo
   let abilityRecord = flattenRaceMapAbilities(raceAbilities);
+  const totalAbilities = abilityRecord.length;
 
   // Remove banned abilities from the pool
   abilityRecord = abilityRecord.filter((ability) => ability.allowed);
@@ -75,26 +76,28 @@ export function changeRaceAbilities(
     // Find a random ability matching the type in Ability Record
     // Replace the banned ability with the random ability and push to abilityRecord
     bannedAbilities.forEach((bannedAbility) => {
-      if (bannedAbility.type != ABILITYTYPE.ACTION2) {
-        const abilType = bannedAbility.type;
-        const typeArray = abilityRecord.filter(
-          (iter, i) => iter.type === abilType && iter.allowed
-        );
+      const abilType = bannedAbility.type;
+      const typeArray = abilityRecord.filter(
+        (iter, i) => iter.type === abilType && iter.allowed
+      );
 
-        // Get a random valid ability and its information
-        const abilityIndex = rng.randomIntMax(typeArray.length - 1);
-        const selectedAbility = typeArray[abilityIndex];
-        const name = selectedAbility.displayName
-          ? selectedAbility.displayName
-          : "";
-        // Create a clone of the new ability, set its memory to the ability to replace, and update the name
-        let newAbility = new FFTARaceAbility(bannedAbility.memory, name);
-        newAbility.copy(selectedAbility);
-        additionalAbilities.push(newAbility);
-      }
+      // Get a random valid ability and its information
+      const abilityIndex = rng.randomIntMax(typeArray.length - 1);
+      const selectedAbility = typeArray[abilityIndex];
+      const name = selectedAbility.displayName
+        ? selectedAbility.displayName
+        : "";
+      // Create a clone of the new ability, set its memory to the ability to replace, and update the name
+      let newAbility = new FFTARaceAbility(bannedAbility.memory, name);
+      newAbility.copy(selectedAbility);
+      additionalAbilities.push(newAbility);
     });
     // Push all new abilities to the ability record
     abilityRecord.push(...additionalAbilities);
+  }
+
+  if (totalAbilities != abilityRecord.length) {
+    throw new Error("Number of Abilities not the same before replacement");
   }
 
   // Set up a new map with new abilities to return
@@ -109,6 +112,10 @@ export function changeRaceAbilities(
     );
     newMap.set(key, randomizedAbilities);
     abilityRecord = newSortedAbilities;
+  }
+
+  if (totalAbilities != flattenRaceMapAbilities(newMap).length) {
+    throw new Error("Number of Abilities not the same after replacement");
   }
 
   return newMap;
@@ -180,6 +187,8 @@ function abilityReplace(
         if (globalIndex === -1) throw new Error("Couldn't find ability index");
         sortedAbilities.splice(globalIndex, 1);
       }
+    } else {
+      newRaceAbilities.push(ability);
     }
   });
   return {

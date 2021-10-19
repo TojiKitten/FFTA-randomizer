@@ -391,17 +391,13 @@ function removeDuplicateIndicies(
   raceAbilities: Array<FFTARaceAbility>,
   types: Array<number>
 ) {
-  const validAbilities = abilityIndicies.filter((abilityIndex) => {
-    if (raceAbilities[abilityIndex]) return abilityIndex;
-  });
-  // Remove duplicates for convenience
-  let potentialMastered = validAbilities.map((index) => {
+  let potentialMastered = abilityIndicies.map((index) => {
     return raceAbilities[index];
   });
 
   let nonDuplicate: Array<number> = [];
 
-  validAbilities.forEach((index, n) => {
+  abilityIndicies.forEach((index, n) => {
     // Push index if we aren't checking the type
     if (types && !types.includes(potentialMastered[n].type)) {
       nonDuplicate.push(index);
@@ -409,11 +405,13 @@ function removeDuplicateIndicies(
     // Otherwise, check to see if this ability appears later in the list
     else {
       const remainingAbilities = potentialMastered.slice(n + 1);
-      const remainingAbilityNames = remainingAbilities.map((ability) => {
-        if (ability) return ability.displayName!;
-      });
+      const remainingAbilityNames = remainingAbilities.map(
+        (ability: FFTARaceAbility) => {
+          if (ability) return ability.displayName;
+        }
+      );
 
-      if (!remainingAbilityNames.includes(potentialMastered[n].displayName!)) {
+      if (!remainingAbilityNames.includes(potentialMastered[n].displayName)) {
         nonDuplicate.push(index);
       }
     }
