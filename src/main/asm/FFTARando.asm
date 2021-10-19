@@ -8,6 +8,34 @@
 
 freeSpace equ 0x08A39920
 
+// Inject Animation AnimationHelpers 
+// Start of Leonarth's animation fix Engine Hacks ASM at https://github.com/LeonarthCG/FFTA_Engine_Hacks
+.org 0x080988B0
+    helper1Inject:
+        ldr r3,=WeaponRedirect+1
+        bx r3
+        .pool
+
+.org 0x08021004
+    helper2Inject:
+        ldr r3,=AnimationHelper+1
+        bx r3
+        .pool
+
+
+.org 0x0809767C
+    helper3Inject:
+        ldr r3,=SpecialHelper1+1
+        bx r3
+        .pool
+
+.org 0x08097734
+    helper4Inject:
+        ldr r3,=SpecialHelper2+1
+        bx r3
+        .pool   
+// End Animation Helper Inject
+
 // Inject the unlock jobs hack where they're initialized
 .org 0x080C9342
     jobInject:
@@ -108,6 +136,149 @@ freeSpace equ 0x08A39920
                     .byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20, 21, 22,23,24,25,26,27,28,29
                 .endarea
                 .align 4
+        // Start of Leonarth's animation fix Engine Hacks ASM at https://github.com/LeonarthCG/FFTA_Engine_Hacks
+        AnimationHelpers:
+            WeaponRedirect:
+                cmp r1,0x50
+                blt weaponSkip
+                cmp r1,0x78
+                bhi weaponSkip
+                push r4
+                mov r4,0x1
+                lsl r4,0xD
+                orr r1,r4 // Animation ID | 0x2000
+                pop r4
+                
+                weaponSkip:
+                    ldr r3,=0x80975DC
+                    mov lr,r3
+                    mov r3,1
+                    bl lr
+
+                weaponRedirectEnd:
+                    ldr r3,=0x80988B8
+                    mov lr,r3
+                    cmp r5,0x0
+                    bl lr
+            SpecialHelper1:
+                cmp	r5,0xEC
+                blo	special1Skip
+                ldr	r3,=0x1FFF
+                cmp	r5,r3
+                bhi	special1Skip
+                sub	r5,0xEC
+                lsl	r5,0x2
+                add	r5,0xEC
+
+                special1Skip:
+                    add	r2,r5,r2
+                    str	r2,[sp,0x4]
+                    mov	r2,0x0
+                    str	r2,[sp,0x8]
+
+                ldr	r3,=0x8097685
+                bx	r3
+                .pool
+            SpecialHelper2:
+                mov	r8,r0
+                mov	r6,0x1
+                lsl	r0,r4,0x18
+                asr	r0,r0,0x18
+
+                cmp	r7,0xEC
+                blo	special2Skip
+                ldr	r3,=0x1FFF
+                cmp	r7,r3
+                bhi	special2Skip
+                sub	r7,0xEC
+                lsl	r7,2
+                add	r7,0xEC
+
+                special2Skip:
+                    add	r7,r0
+                    mov	r4,r5
+                    add	r4,0x4C
+                    ldr	r0,[r5,0x40]
+
+                ldr	r3,=0x8097745
+                bx	r3
+                .pool
+
+            weaponAnimationTable equ 0x08a39c40
+            specialAnimationTable equ weaponAnimationTable+4 // To be implemented, calculate based on supported units
+            AnimationHelper:
+                push lr
+                push r4,r5
+                mov	r5,r0
+                mov	r2,r1
+                ldr	r1,=0x8390E44
+                lsl	r0,0x2
+                add	r0,r1
+                ldr	r3,[r0]
+                mov	r0,0x3
+
+                ldr	r4,=0x1FFF
+                cmp	r2,r4
+                bhi	custom
+                cmp	r2,0xEC
+                bhs	specialAnimation
+                b	regular
+                custom:
+                    and	r2,r4
+                    mov	r4,0x50
+                    ldr	r3,=weaponAnimationTable
+                    lsl	r5,0x2
+                    ldr	r3,[r3,r5]
+                    and	r0,r2
+                    sub	r2,r4
+                    b	aftercustom
+                specialAnimation:
+                    and	r0,r2
+                    sub	r2,0xEC
+                    ldr	r3,=specialAnimationTable
+                    lsl	r5,0x2
+                    ldr	r3,[r3,r5]
+                    b	aftercustom
+                regular:
+                    and	r0,r2
+                aftercustom:
+                    cmp	r0,0x2
+                    bhi	goto8021030
+                    cmp	r0,0x1
+                    blo	goto8021030
+
+                mov	r1,0x4
+                neg	r1,r1
+                and	r1,r2
+                lsl	r0,r1,0x1
+                add	r0,r1
+                lsl	r0,0x1
+                add	r0,0xC
+                mov	r2,0xC
+                b	EndAnimationHelper
+
+                goto8021030:
+                    mov	r1,0x4
+                    neg	r1,r1
+                    and	r1,r2
+                    lsl	r0,r1,0x1
+                    add	r0,r1
+                    lsl	r0,0x1
+                    mov	r2,0x0
+
+                EndAnimationHelper:
+                    add	r0,r3
+                    //if no animation, standing animation
+                    ldr	r1,[r0]
+                    cmp	r1,0x0
+                    bne	hasAnimation
+                    add	r0,r3,r2
+                    hasAnimation:
+                    pop	r4,r5
+                    pop	r1
+                    bx	r1
+            .pool
+             // End animation helpers
 
 
 .close
