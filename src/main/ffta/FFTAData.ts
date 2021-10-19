@@ -215,9 +215,6 @@ export class FFTAData {
     this.lawSets = this.initializeLawSets();
     this.rewardItemSets = this.initializeRewardItemSets();
     this.rng = new NoiseGenerator();
-
-    // Testing Only, remove before commit
-    AnimationHacks.firstPass(this);
   }
 
   /**
@@ -1115,6 +1112,7 @@ export class FFTAData {
     if (options.abilitySettings.abilities != "normal") {
       ForcedHacks.animationFixRaw(this.rom);
       ForcedHacks.injectAnimationFixes(this.rom);
+      AnimationHacks.createWeaponAnimations(this);
     }
     if (options.jobSettings.jobRequirements != "normal") {
       ForcedHacks.injectUnlockJobs(this.rom);

@@ -22,9 +22,14 @@ type KeyFrame = {
   short5: number;
 };
 
-export function firstPass(fftaData: FFTAData) {
+/**
+ * Creates standardized animations for all jobs based on existing key frame information
+ * @param fftaData Object to create animations for
+ */
+export function createWeaponAnimations(fftaData: FFTAData) {
   let allSprites: Array<any> = [];
 
+  // Get all of the animations for all pointers
   fftaData.animations.forEach((animation) => {
     let spriteSheetLocations = {};
     animation
@@ -55,17 +60,22 @@ export function firstPass(fftaData: FFTAData) {
     allSprites.push(spriteSheetLocations);
   });
 
+  // For every supported character, create new weapon animations for them based on existing key frames
   for (var i = 0; i < supportedCharacters; i++) {
     const supportedCharacter = allSprites[i];
+
+    // If the character does not have enough animations, skip them
     if (Object.entries(supportedCharacter).length < 42) continue;
 
+    // Sort animations by offset
     const characterFrames = Object.entries(supportedCharacter).sort((a, b) => {
       return parseInt(a[0], 16) > parseInt(b[0], 16) ? 1 : -1;
     });
 
+    // Create new pointers and animations based on existing key frames
+    // Offsets 0,2,4
     const newWeapon0Pointer =
       0x08000000 + animationsTable + i * animationLength;
-    // Offsets 0,2,4
     let newWeapon0 = buildAnimation([
       {
         offset: parseInt(characterFrames[20][0], 16),
@@ -201,9 +211,8 @@ export function firstPass(fftaData: FFTAData) {
       },
     ]);
 
-    const newWeapon1Pointer = newWeapon0Pointer + newWeapon0.length;
-
     // Offsets 1,3,5
+    const newWeapon1Pointer = newWeapon0Pointer + newWeapon0.length;
     let newWeapon1 = buildAnimation([
       {
         offset: parseInt(characterFrames[21][0], 16),
@@ -361,8 +370,8 @@ export function firstPass(fftaData: FFTAData) {
       },
     ]);
 
-    const newWeapon2Pointer = newWeapon1Pointer + newWeapon1.length;
     // Offsets 6,8
+    const newWeapon2Pointer = newWeapon1Pointer + newWeapon1.length;
     let newWeapon2 = buildAnimation([
       {
         offset: parseInt(characterFrames[20][0], 16),
@@ -509,8 +518,8 @@ export function firstPass(fftaData: FFTAData) {
       },
     ]);
 
-    const newWeapon3Pointer = newWeapon2Pointer + newWeapon2.length;
     // Offsets 7,9
+    const newWeapon3Pointer = newWeapon2Pointer + newWeapon2.length;
     let newWeapon3 = buildAnimation([
       {
         offset: parseInt(characterFrames[21][0], 16),
@@ -657,8 +666,8 @@ export function firstPass(fftaData: FFTAData) {
       },
     ]);
 
-    const newWeapon4Pointer = newWeapon3Pointer + newWeapon3.length;
     // Offset 10
+    const newWeapon4Pointer = newWeapon3Pointer + newWeapon3.length;
     let newWeapon4 = buildAnimation([
       {
         offset: parseInt(characterFrames[20][0], 16),
@@ -805,8 +814,8 @@ export function firstPass(fftaData: FFTAData) {
       },
     ]);
 
-    const newWeapon5Pointer = newWeapon4Pointer + newWeapon4.length;
     // Offset 11
+    const newWeapon5Pointer = newWeapon4Pointer + newWeapon4.length;
     let newWeapon5 = buildAnimation([
       {
         offset: parseInt(characterFrames[21][0], 16),
@@ -953,8 +962,8 @@ export function firstPass(fftaData: FFTAData) {
       },
     ]);
 
-    const newWeapon6Pointer = newWeapon5Pointer + newWeapon5.length;
     // Offsets 12, 14, 16
+    const newWeapon6Pointer = newWeapon5Pointer + newWeapon5.length;
     let newWeapon6 = buildAnimation([
       {
         offset: parseInt(characterFrames[26][0], 16),
@@ -1068,8 +1077,8 @@ export function firstPass(fftaData: FFTAData) {
       },
     ]);
 
-    const newWeapon7Pointer = newWeapon6Pointer + newWeapon6.length;
     // Offsets 13, 15, 17
+    const newWeapon7Pointer = newWeapon6Pointer + newWeapon6.length;
     let newWeapon7 = buildAnimation([
       {
         offset: parseInt(characterFrames[27][0], 16),
@@ -1172,8 +1181,8 @@ export function firstPass(fftaData: FFTAData) {
       },
     ]);
 
-    const newWeapon8Pointer = newWeapon7Pointer + newWeapon7.length;
     // Offsets 18, 19
+    const newWeapon8Pointer = newWeapon7Pointer + newWeapon7.length;
     let newWeapon8 = buildAnimation([
       {
         offset: parseInt(characterFrames[20][0], 16),
@@ -1309,8 +1318,8 @@ export function firstPass(fftaData: FFTAData) {
       },
     ]);
 
-    const newWeapon9Pointer = newWeapon8Pointer + newWeapon8.length;
     // Offset 19, 21
+    const newWeapon9Pointer = newWeapon8Pointer + newWeapon8.length;
     let newWeapon9 = buildAnimation([
       {
         offset: parseInt(characterFrames[21][0], 16),
@@ -1457,8 +1466,8 @@ export function firstPass(fftaData: FFTAData) {
       },
     ]);
 
-    const newWeapon10Pointer = newWeapon9Pointer + newWeapon9.length;
     // Offsets 22
+    const newWeapon10Pointer = newWeapon9Pointer + newWeapon9.length;
     let newWeapon10 = buildAnimation([
       {
         offset: parseInt(characterFrames[20][0], 16),
@@ -1594,8 +1603,8 @@ export function firstPass(fftaData: FFTAData) {
       },
     ]);
 
-    const newWeapon11Pointer = newWeapon10Pointer + newWeapon10.length;
     // Offset 23
+    const newWeapon11Pointer = newWeapon10Pointer + newWeapon10.length;
     let newWeapon11 = buildAnimation([
       {
         offset: parseInt(characterFrames[21][0], 16),
@@ -1753,7 +1762,7 @@ export function firstPass(fftaData: FFTAData) {
       },
     ]);
 
-    // Add pointer to first animation pointer
+    // Add pointer to the weapon animation pointer table
     fftaData.rom.set(
       FFTAUtils.getWordUint8Array(
         0x08000000 + weaponAnimationPointers + i * weaponAnimations,
@@ -1762,6 +1771,7 @@ export function firstPass(fftaData: FFTAData) {
       characterWeaponAnimationPointers + i * 4
     );
 
+    // Add all weapon animation pointers to the table
     const animationPointersWrite = FFTAUtils.joinUint8Array([
       FFTAUtils.getWordUint8Array(newWeapon0Pointer, true),
       new Uint8Array(4),
@@ -1836,13 +1846,12 @@ export function firstPass(fftaData: FFTAData) {
       new Uint8Array(4),
       new Uint8Array(4),
     ]);
-
-    // Add all weapon animation pointers to the table
     fftaData.rom.set(
       animationPointersWrite,
       weaponAnimationPointers + i * weaponAnimations
     );
 
+    // Add all weapon animations to the table
     const animationBlock = FFTAUtils.joinUint8Array([
       newWeapon0,
       newWeapon1,
@@ -1857,17 +1866,22 @@ export function firstPass(fftaData: FFTAData) {
       newWeapon10,
       newWeapon11,
     ]);
-
-    // Add all animations to the table
     fftaData.rom.set(animationBlock, animationsTable + i * animationLength);
   }
 }
 
+/**
+ * Helper function to build animations
+ * @param keyFrames The key frame information to use for each key frame of animation
+ * @returns Uint8Array of the animation
+ */
 function buildAnimation(keyFrames: Array<KeyFrame>) {
   let animation = new Uint8Array(
     FFTAUtils.getWordUint8Array(keyFrames.length, true)
   );
 
+  // For each key frame, format the information as a Uint8Array
+  // Join it to the animation
   keyFrames.forEach((frame: KeyFrame) => {
     const offset = new Uint8Array(
       FFTAUtils.getWordUint8Array(frame.offset, true)
@@ -1902,6 +1916,7 @@ function buildAnimation(keyFrames: Array<KeyFrame>) {
     ]);
   });
 
+  // Align the information by 4 to null terminate
   const alignment = 4 - (animation.length % 4);
   if (alignment != 4) {
     animation = FFTAUtils.joinUint8Array([
