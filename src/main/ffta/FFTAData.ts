@@ -12,6 +12,7 @@ import * as StartingPartyHacks from "./enginehacks/startingParty";
 import * as JobHacks from "./enginehacks/jobHacks";
 import * as ItemHacks from "./enginehacks/itemHacks";
 import * as ForcedHacks from "./enginehacks/forcedHacks";
+import * as AnimationHacks from "./enginehacks/animationHacks";
 import NoiseGenerator from "./utils/NoiseGenerator";
 import {
   JobSettingsState,
@@ -1110,6 +1111,8 @@ export class FFTAData {
 
     if (options.abilitySettings.abilities != "normal") {
       ForcedHacks.animationFixRaw(this.rom);
+      ForcedHacks.injectAnimationFixes(this.rom);
+      AnimationHacks.createWeaponAnimations(this);
     }
     if (options.jobSettings.jobRequirements != "normal") {
       ForcedHacks.injectUnlockJobs(this.rom);

@@ -1,4 +1,4 @@
-import { getShortUint8Array } from "../utils/FFTAUtils";
+import { getShortUint8Array, getWordUint8Array } from "../utils/FFTAUtils";
 import { FFTAUnit } from "../DataWrapper/FFTAUnit";
 import { FFTAItem, ITEMTYPES } from "../DataWrapper/FFTAItem";
 import { FFTAJob } from "../DataWrapper/FFTAJob";
@@ -11,7 +11,7 @@ import { FFTARaceAbility, ABILITYTYPE } from "../DataWrapper/FFTARaceAbility";
  * @param gold - The gold to start with
  */
 export function setStartingGold(rom: Uint8Array, gold: number) {
-  rom.set(getShortUint8Array(gold, true), 0x986c);
+  rom.set(getWordUint8Array(gold, true), 0x986c);
 }
 
 /**
@@ -336,8 +336,6 @@ function getJobMasteryAbilityIDs(
     abilityIndicies = abilityIndicies.concat(
       removeDuplicateIndicies(firstJob.getAbilityIDs(), raceAbilities, [
         ABILITYTYPE.ACTION0,
-        ABILITYTYPE.ACTION1,
-        ABILITYTYPE.ACTION2,
       ])
     );
     unusedJobs = unusedJobs.filter((job) => firstJob.jobId != job.jobId);
@@ -349,8 +347,6 @@ function getJobMasteryAbilityIDs(
       abilityIndicies = abilityIndicies.concat(
         removeDuplicateIndicies(secondJob.getAbilityIDs(), raceAbilities, [
           ABILITYTYPE.ACTION0,
-          ABILITYTYPE.ACTION1,
-          ABILITYTYPE.ACTION2,
         ])
       );
       unit.AAbilityID = secondJob.jobId;
@@ -366,7 +362,7 @@ function getJobMasteryAbilityIDs(
           removeDuplicateIndicies(
             additionalJob.getAbilityIDs(),
             raceAbilities,
-            [ABILITYTYPE.ACTION0, ABILITYTYPE.ACTION1, ABILITYTYPE.ACTION2]
+            [ABILITYTYPE.ACTION0]
           )
         );
         unusedJobs = unusedJobs.filter(
@@ -395,7 +391,6 @@ function removeDuplicateIndicies(
   raceAbilities: Array<FFTARaceAbility>,
   types: Array<number>
 ) {
-  // Remove duplicates for convenience
   let potentialMastered = abilityIndicies.map((index) => {
     return raceAbilities[index];
   });
@@ -410,10 +405,13 @@ function removeDuplicateIndicies(
     // Otherwise, check to see if this ability appears later in the list
     else {
       const remainingAbilities = potentialMastered.slice(n + 1);
-      const remainingAbilityNames = remainingAbilities.map((ability) => {
-        return ability.displayName!;
-      });
-      if (!remainingAbilityNames.includes(potentialMastered[n].displayName!)) {
+      const remainingAbilityNames = remainingAbilities.map(
+        (ability: FFTARaceAbility) => {
+          if (ability) return ability.displayName;
+        }
+      );
+
+      if (!remainingAbilityNames.includes(potentialMastered[n].displayName)) {
         nonDuplicate.push(index);
       }
     }

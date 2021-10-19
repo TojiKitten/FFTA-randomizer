@@ -1,4 +1,4 @@
-import { FFTARaceAbility } from "../DataWrapper/FFTARaceAbility";
+import { ABILITYTYPE, FFTARaceAbility } from "../DataWrapper/FFTARaceAbility";
 import { FFTAJob } from "../DataWrapper/FFTAJob";
 import NoiseGenerator from "../utils/NoiseGenerator";
 
@@ -60,16 +60,7 @@ export function changeRaceAbilities(
   // For randomized case, abilities that appear multiple times are more likely to appear
   // Examples: Fire, Shield Bearer, Counter, Bow Combo
   let abilityRecord = flattenRaceMapAbilities(raceAbilities);
-
-  // Always ban Knife, Limit Glove, and Item, since they are not learned normally
-  let knife = abilityRecord.find((ability) => ability.displayName === "Knife");
-  if (knife) knife.allowed = false;
-  let limitGlove = abilityRecord.find(
-    (ability) => ability.displayName === "Limit Glove"
-  );
-  if (limitGlove) limitGlove.allowed = false;
-  let item = abilityRecord.find((ability) => ability.displayName === "Item");
-  if (item) item.allowed = false;
+  const totalAbilities = abilityRecord.length;
 
   // Remove banned abilities from the pool
   abilityRecord = abilityRecord.filter((ability) => ability.allowed);
@@ -86,9 +77,8 @@ export function changeRaceAbilities(
     // Replace the banned ability with the random ability and push to abilityRecord
     bannedAbilities.forEach((bannedAbility) => {
       const abilType = bannedAbility.type;
-
       const typeArray = abilityRecord.filter(
-        (iter, i) => iter.type === abilType
+        (iter, i) => iter.type === abilType && iter.allowed
       );
 
       // Get a random valid ability and its information
@@ -97,7 +87,6 @@ export function changeRaceAbilities(
       const name = selectedAbility.displayName
         ? selectedAbility.displayName
         : "";
-
       // Create a clone of the new ability, set its memory to the ability to replace, and update the name
       let newAbility = new FFTARaceAbility(bannedAbility.memory, name);
       newAbility.copy(selectedAbility);
@@ -105,6 +94,10 @@ export function changeRaceAbilities(
     });
     // Push all new abilities to the ability record
     abilityRecord.push(...additionalAbilities);
+  }
+
+  if (totalAbilities != abilityRecord.length) {
+    throw new Error("Number of Abilities not the same before replacement");
   }
 
   // Set up a new map with new abilities to return
@@ -119,6 +112,10 @@ export function changeRaceAbilities(
     );
     newMap.set(key, randomizedAbilities);
     abilityRecord = newSortedAbilities;
+  }
+
+  if (totalAbilities != flattenRaceMapAbilities(newMap).length) {
+    throw new Error("Number of Abilities not the same after replacement");
   }
 
   return newMap;
@@ -169,25 +166,29 @@ function abilityReplace(
       (iter, i) => iter.type === ability.type
     );
 
-    // Get a random valid ability and its information
-    let abilityIndex = rng.randomIntMax(type.length - 1);
-    let selectedAbility = type[abilityIndex];
-    let name = selectedAbility.displayName ? selectedAbility.displayName : "";
+    if (ability.type != ABILITYTYPE.ACTION2) {
+      // Get a random valid ability and its information
+      let abilityIndex = rng.randomIntMax(type.length - 1);
+      let selectedAbility = type[abilityIndex];
+      let name = selectedAbility.displayName ? selectedAbility.displayName : "";
 
-    // Create a clone of the new ability, set its memory to the ability to replace, and update the name
-    let newAbility = new FFTARaceAbility(ability.memory, name);
-    newAbility.copy(selectedAbility);
-    newRaceAbilities.push(newAbility);
-    newAbility.apCost = selectedAbility.apCost;
+      // Create a clone of the new ability, set its memory to the ability to replace, and update the name
+      let newAbility = new FFTARaceAbility(ability.memory, name);
+      newAbility.copy(selectedAbility);
+      newRaceAbilities.push(newAbility);
+      newAbility.apCost = selectedAbility.apCost;
 
-    // If shuffling abilities, remove the selected ability from the list
-    // Uses memory address for duplicate case
-    if (shuffle && sortedAbilities.length > 0) {
-      let globalIndex: number = sortedAbilities.findIndex((iter) => {
-        return iter.memory === selectedAbility.memory;
-      });
-      if (globalIndex === -1) throw new Error("Couldn't find ability index");
-      sortedAbilities.splice(globalIndex, 1);
+      // If shuffling abilities, remove the selected ability from the list
+      // Uses memory address for duplicate case
+      if (shuffle && sortedAbilities.length > 0) {
+        let globalIndex: number = sortedAbilities.findIndex((iter) => {
+          return iter.memory === selectedAbility.memory;
+        });
+        if (globalIndex === -1) throw new Error("Couldn't find ability index");
+        sortedAbilities.splice(globalIndex, 1);
+      }
+    } else {
+      newRaceAbilities.push(ability);
     }
   });
   return {
