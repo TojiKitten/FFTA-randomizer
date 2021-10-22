@@ -39,7 +39,7 @@ const initialRandomizerOptions = {
     partyMembers: [
       {
         name: "Marche",
-        raceChangeable: false,
+        raceChangeable: true,
         race: "human",
         job: "random",
         rngEquip: false,
@@ -49,7 +49,7 @@ const initialRandomizerOptions = {
       },
       {
         name: "Montblanc",
-        raceChangeable: false,
+        raceChangeable: true,
         race: "moogle",
         job: "random",
         rngEquip: false,

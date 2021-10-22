@@ -205,7 +205,7 @@ freeSpace equ 0x08A39920
                 .pool
 
             weaponAnimationTable equ 0x08a39c40
-            specialAnimationTable equ weaponAnimationTable+4 // To be implemented, calculate based on supported units
+            specialAnimationTable equ 0x08a80aa0
             AnimationHelper:
                 push lr
                 push r4,r5

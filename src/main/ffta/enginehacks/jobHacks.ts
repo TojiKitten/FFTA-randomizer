@@ -96,7 +96,7 @@ export function changeRaceAbilities(
     abilityRecord.push(...additionalAbilities);
   }
 
-  if (totalAbilities != abilityRecord.length) {
+  if (shuffled && totalAbilities != abilityRecord.length) {
     throw new Error("Number of Abilities not the same before replacement");
   }
 
@@ -114,7 +114,7 @@ export function changeRaceAbilities(
     abilityRecord = newSortedAbilities;
   }
 
-  if (totalAbilities != flattenRaceMapAbilities(newMap).length) {
+  if (shuffled && totalAbilities != flattenRaceMapAbilities(newMap).length) {
     throw new Error("Number of Abilities not the same after replacement");
   }
 
