@@ -1,4 +1,4 @@
-import { FFTAItem, FFTARewardItemSet } from "./DataWrapper/FFTAItem";
+import { FFTAItem, FFTARewardItemSet, ITEMTYPES } from "./DataWrapper/FFTAItem";
 import * as FFTAUtils from "./utils/FFTAUtils";
 import { FFTAFormation } from "./DataWrapper/FFTAFormation";
 import { FFTARaceAbility } from "./DataWrapper/FFTARaceAbility";
@@ -632,6 +632,10 @@ export class FFTAData {
     this.rom.set(FFTAUtils.getWordUint8Array(seed, true), 0xa3991c);
   }
 
+  /**
+   * Sets abilities to be not allowed, which removes them from random ability pools.
+   * @param bannedAbilities The ID's of abilities to be banned
+   */
   handleBannedAbilities(bannedAbilities: Array<string>) {
     const bannedRaceAbilities: Array<FFTARaceAbility> = Array.from(
       this.raceAbilities.entries()
@@ -643,6 +647,10 @@ export class FFTAData {
     bannedRaceAbilities.forEach((ability) => (ability.allowed = false));
   }
 
+  /**
+   * Sets items to be not allowed, which removes them from random item pools.
+   * @param bannedItems The ID's of items to be banned
+   */
   handleBannedItems(bannedItems: Array<number>) {
     const bannedFFTAItems: Array<FFTAItem> = this.items.filter((item) =>
       bannedItems.includes(item.memory)
@@ -877,6 +885,79 @@ export class FFTAData {
     }
   }
 
+  handleRandomJobItems(option: boolean, count: number) {
+    if (option) {
+      const weaponTypes = [
+        ITEMTYPES.Sword,
+        ITEMTYPES.Blade,
+        ITEMTYPES.Saber,
+        ITEMTYPES.KnightSword,
+        ITEMTYPES.GreatSword,
+        ITEMTYPES.BroadSword,
+        ITEMTYPES.Knife,
+        ITEMTYPES.Rapier,
+        ITEMTYPES.Katana,
+        ITEMTYPES.Staff,
+        ITEMTYPES.Rod,
+        ITEMTYPES.Mace,
+        ITEMTYPES.Bow,
+        ITEMTYPES.GreatBow,
+        ITEMTYPES.Spear,
+        ITEMTYPES.Instrument,
+        ITEMTYPES.Knuckle,
+        ITEMTYPES.Soul,
+        ITEMTYPES.Gun,
+      ];
+
+      const allJobs = Array.from(this.jobs.values()).flat();
+      let randomizedJobs: Array<number> = [];
+      allJobs.forEach((job) => {
+        if (!randomizedJobs.includes(job.allowedWeaponsID)) {
+          randomizedJobs.push(job.allowedWeaponsID);
+          let possibleTypes = [...weaponTypes];
+          const oldAllowedDataAddress =
+            allowedWeaponAddress + allowedWeaponSize * job.allowedWeaponsID;
+          let newAllowedData = FFTAUtils.convertWordUint8Array(
+            this.rom.slice(
+              oldAllowedDataAddress,
+              oldAllowedDataAddress + allowedWeaponSize
+            ),
+            true
+          );
+
+          while (possibleTypes.length > count) {
+            possibleTypes.splice(
+              this.rng.randomIntMax(possibleTypes.length),
+              1
+            );
+          }
+
+          weaponTypes.forEach((id) => {
+            const allowedBit = possibleTypes.includes(id) ? 1 : 0;
+            const mask = 0x1 << (id - 1);
+            newAllowedData =
+              (newAllowedData & ~mask) | (allowedBit << (id - 1));
+          });
+
+          this.rom.set(
+            FFTAUtils.getWordUint8Array(newAllowedData, true),
+            oldAllowedDataAddress
+          );
+
+          job.allowedWeapons = FFTAUtils.getWordUint8Array(
+            newAllowedData,
+            true
+          );
+        }
+      });
+
+      // Randomize Allowed Weapons
+      for (var i = 0; i < allowedWeaponSize; i++) {
+        let newAllowed = new Uint8Array(allowedWeaponSize);
+      }
+    }
+  }
+
   /**
    * Shuffles order that laws appear
    * @param option - State of law sets
@@ -977,7 +1058,8 @@ export class FFTAData {
     const raceKeys = ["human", "bangaa", "nuMou", "viera", "moogle"];
 
     raceKeys.forEach((key) => {
-      let uiJobs = [...jobSettings[key as keyof typeof jobSettings]];
+      const jobsForRace: any = jobSettings[key as keyof typeof jobSettings];
+      let uiJobs = [...jobsForRace];
       let fftaJobs = this.jobs.get(key);
       uiJobs.forEach((job: { jobName: string; enabled: boolean }, id) => {
         fftaJobs![id].setAllowed(job.enabled);
