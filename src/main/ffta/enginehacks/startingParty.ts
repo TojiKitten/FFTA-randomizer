@@ -268,7 +268,7 @@ function getValidLoadOut(
       job.isTypeAllowed(type)
     );
 
-    while (loadout.length < 5) {
+    while (loadout.length < 5 && additionalItemTypes.length > 0) {
       // Get a random item type
       const selectedType = allowedItemTypes.splice(
         rng.randomIntMax(allowedItemTypes.length - 1),
