@@ -274,6 +274,15 @@ function getValidLoadOut(
         rng.randomIntMax(allowedItemTypes.length - 1),
         1
       )[0];
+
+      // If hat or helemt is selected, remove the other fromt the list
+      if (selectedType === ITEMTYPES.Hat) {
+        allowedItemTypes.filter((type) => type != ITEMTYPES.Helmet);
+      }
+      if (selectedType === ITEMTYPES.Helmet) {
+        allowedItemTypes.filter((type) => type != ITEMTYPES.Hat);
+      }
+
       // For the item type, get all items that are allowed and not in viera only
       const itemsForType = items.filter(
         (item) =>
