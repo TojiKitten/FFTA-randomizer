@@ -101,6 +101,8 @@ const initialRandomizerOptions = {
   },
   jobSettings: {
     jobRequirements: "normal",
+    randomizedJobWeapons: false,
+    randomizedWeaponsAmount: 0,
     human: [
       { jobName: "Soldier", enabled: true },
       { jobName: "Paladin", enabled: true },
