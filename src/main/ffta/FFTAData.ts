@@ -1110,9 +1110,9 @@ export class FFTAData {
     ForcedHacks.ASMHacks(this.rom);
 
     if (options.abilitySettings.abilities != "normal") {
-      ForcedHacks.animationFixRaw(this.rom);
+      //ForcedHacks.animationFixRaw(this.rom);
       ForcedHacks.injectAnimationFixes(this.rom);
-      AnimationHacks.createWeaponAnimations(this);
+      AnimationHacks.createNewAnimations(this);
     }
     if (options.jobSettings.jobRequirements != "normal") {
       ForcedHacks.injectUnlockJobs(this.rom);
