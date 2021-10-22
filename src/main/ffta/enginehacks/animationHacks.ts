@@ -12,7 +12,6 @@ const animationLength = 0xbc0;
 
 const characterAbilityAnimationPointers =
   animationsTable + animationLength * supportedCharacters;
-console.log(characterAbilityAnimationPointers);
 const abilityAnimationPointers =
   characterAbilityAnimationPointers + 4 * supportedCharacters;
 const abilityAnimations = 0x150;
