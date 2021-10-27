@@ -74,7 +74,7 @@ export function createNewAnimations(fftaData: FFTAData) {
     const supportedCharacter = allSprites[i];
 
     // If the character does not have enough animations, skip them
-    if (Object.entries(supportedCharacter).length < 42) continue;
+    if (Object.entries(supportedCharacter).length < 38) continue;
 
     // Sort animations by offset
     const characterFrames = Object.entries(supportedCharacter).sort((a, b) => {
