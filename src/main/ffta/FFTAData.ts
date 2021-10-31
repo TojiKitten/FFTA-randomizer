@@ -956,6 +956,8 @@ export class FFTAData {
         let newAllowed = new Uint8Array(allowedWeaponSize);
       }
     }
+
+    JobHacks.randomizeElementalResist(this.jobs, this.rng);
   }
 
   /**

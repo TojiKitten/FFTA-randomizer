@@ -1,5 +1,5 @@
 import { ABILITYTYPE, FFTARaceAbility } from "../DataWrapper/FFTARaceAbility";
-import { FFTAJob } from "../DataWrapper/FFTAJob";
+import { ELEMENTALRESISTOFFSET, FFTAJob } from "../DataWrapper/FFTAJob";
 import NoiseGenerator from "../utils/NoiseGenerator";
 
 /**
@@ -40,6 +40,39 @@ export function lockAllJobs(jobs: Map<string, Array<FFTAJob>>) {
       job.requirements = 0x20;
     });
   }
+}
+
+export function randomizeElementalResist(
+  jobs: Map<string, Array<FFTAJob>>,
+  rng: NoiseGenerator
+) {
+  const allRaces = [...jobs.values()];
+
+  const types = [0, 1, 4];
+
+  allRaces.forEach((raceJobs) => {
+    const newResists = [
+      types[rng.randomIntMax(types.length - 1)],
+      types[rng.randomIntMax(types.length - 1)],
+      types[rng.randomIntMax(types.length - 1)],
+      types[rng.randomIntMax(types.length - 1)],
+      types[rng.randomIntMax(types.length - 1)],
+      types[rng.randomIntMax(types.length - 1)],
+      types[rng.randomIntMax(types.length - 1)],
+      types[rng.randomIntMax(types.length - 1)],
+    ];
+    console.log(newResists);
+    raceJobs.forEach((job) => {
+      job.fireResist = newResists[0];
+      job.windResist = newResists[1];
+      job.earthResist = newResists[2];
+      job.waterResist = newResists[3];
+      job.iceResist = newResists[4];
+      job.thunderResist = newResists[5];
+      job.holyResist = newResists[6];
+      job.darkResist = newResists[7];
+    });
+  });
 }
 
 /**
