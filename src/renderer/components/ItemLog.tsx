@@ -120,7 +120,6 @@ export const ItemLog = () => {
               item.displayName.toLowerCase().includes(searchName.toLowerCase())
             )
             .map((iter, id) => {
-              if (id === 1) console.log(raceAbilities);
               return (
                 <ItemView
                   key={id}
