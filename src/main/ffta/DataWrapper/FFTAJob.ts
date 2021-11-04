@@ -6,6 +6,7 @@ const enum OFFSET {
   RACEID = 0x04,
   ANIMATIONTYPE = 0x06, // ?? Might have to do with offsets available
   ANIMATIONS = 0x07,
+  ELEMENTALRESIST = 0x12,
   HPBASE = 0x17,
   MPBASE = 0x18,
   SPEEDBASE = 0x19,
@@ -24,6 +25,25 @@ const enum OFFSET {
   FIRSTABILITY = 0x2e,
   LASTABILITY = 0x2f,
   REQUIREMENTS = 0x30,
+}
+
+const enum RESISTLEVELS {
+  WEAK,
+  NORMAL,
+  NULLIFY,
+  ABSORB,
+  RESIST,
+}
+
+export const enum ELEMENTALRESISTOFFSET {
+  FIRE = 3,
+  WIND = 6,
+  EARTH = 9,
+  WATER = 12,
+  ICE = 15,
+  THUNDER = 18,
+  HOLY = 21,
+  DARK = 24,
 }
 
 export interface JobLite {
@@ -99,6 +119,77 @@ export class FFTAJob extends FFTAObject {
   isTypeAllowed(type: ITEMTYPES) {
     type -= 1; // Accounts for wrong offset
     return this.allowedWeapons[Math.floor(type / 8)] & (0x1 << type % 8);
+  }
+
+  private _elementalResist: ROMProperty = {
+    byteOffset: OFFSET.ELEMENTALRESIST,
+    byteLength: 4,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  get fireResist(): RESISTLEVELS {
+    return (this._elementalResist.value >> ELEMENTALRESISTOFFSET.FIRE) & 0x7;
+  }
+  set fireResist(level: RESISTLEVELS) {
+    this._elementalResist.value =
+      (this._elementalResist.value & ~(0x7 << ELEMENTALRESISTOFFSET.FIRE)) |
+      (level << ELEMENTALRESISTOFFSET.FIRE);
+  }
+  get windResist(): RESISTLEVELS {
+    return (this._elementalResist.value >> ELEMENTALRESISTOFFSET.WIND) & 0x7;
+  }
+  set windResist(level: RESISTLEVELS) {
+    this._elementalResist.value =
+      (this._elementalResist.value & ~(0x7 << ELEMENTALRESISTOFFSET.WIND)) |
+      (level << ELEMENTALRESISTOFFSET.WIND);
+  }
+  get earthResist(): RESISTLEVELS {
+    return (this._elementalResist.value >> ELEMENTALRESISTOFFSET.EARTH) & 0x7;
+  }
+  set earthResist(level: RESISTLEVELS) {
+    this._elementalResist.value =
+      (this._elementalResist.value & ~(0x7 << ELEMENTALRESISTOFFSET.EARTH)) |
+      (level << ELEMENTALRESISTOFFSET.EARTH);
+  }
+  get waterResist(): RESISTLEVELS {
+    return (this._elementalResist.value >> ELEMENTALRESISTOFFSET.WATER) & 0x7;
+  }
+  set waterResist(level: RESISTLEVELS) {
+    this._elementalResist.value =
+      (this._elementalResist.value & ~(0x7 << ELEMENTALRESISTOFFSET.WATER)) |
+      (level << ELEMENTALRESISTOFFSET.WATER);
+  }
+  get iceResist(): RESISTLEVELS {
+    return (this._elementalResist.value >> ELEMENTALRESISTOFFSET.ICE) & 0x7;
+  }
+  set iceResist(level: RESISTLEVELS) {
+    this._elementalResist.value =
+      (this._elementalResist.value & ~(0x7 << ELEMENTALRESISTOFFSET.ICE)) |
+      (level << ELEMENTALRESISTOFFSET.ICE);
+  }
+  get thunderResist(): RESISTLEVELS {
+    return (this._elementalResist.value >> ELEMENTALRESISTOFFSET.THUNDER) & 0x7;
+  }
+  set thunderResist(level: RESISTLEVELS) {
+    this._elementalResist.value =
+      (this._elementalResist.value & ~(0x7 << ELEMENTALRESISTOFFSET.THUNDER)) |
+      (level << ELEMENTALRESISTOFFSET.THUNDER);
+  }
+  get holyResist(): RESISTLEVELS {
+    return (this._elementalResist.value >> ELEMENTALRESISTOFFSET.HOLY) & 0x7;
+  }
+  set holyResist(level: RESISTLEVELS) {
+    this._elementalResist.value =
+      (this._elementalResist.value & ~(0x7 << ELEMENTALRESISTOFFSET.HOLY)) |
+      (level << ELEMENTALRESISTOFFSET.HOLY);
+  }
+  get darkResist(): RESISTLEVELS {
+    return (this._elementalResist.value >> ELEMENTALRESISTOFFSET.DARK) & 0x7;
+  }
+  set darkResist(level: RESISTLEVELS) {
+    this._elementalResist.value =
+      (this._elementalResist.value & ~(0x7 << ELEMENTALRESISTOFFSET.DARK)) |
+      (level << ELEMENTALRESISTOFFSET.DARK);
   }
 
   private _hpGrowth: ROMProperty = {

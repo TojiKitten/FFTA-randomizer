@@ -151,7 +151,6 @@ export function randomRewards(
   rng: NoiseGenerator
 ) {
   const numberRewards = 20;
-  const rewardSize = 2;
   // Get all reward items into one array
   rewardSets.forEach((set) => {
     const allowedItems = items.filter((item) => item.allowed);

@@ -5,8 +5,13 @@ export const JobSettings = () => {
   const dispatch = useRandomizerUpdate();
   const state = useRandomizer();
   const { jobSettings } = state;
-  const { jobRequirements, randomizedJobWeapons, randomizedWeaponsAmount } =
-    jobSettings;
+  const {
+    jobRequirements,
+    randomizeJobEquipment,
+    randomizedWeaponsAmount,
+    randomizeResistances,
+    randomizedArmorAmount,
+  } = jobSettings;
 
   const toggledJobs = [
     { raceName: "Human", jobs: state.jobSettings.human },
@@ -54,15 +59,15 @@ export const JobSettings = () => {
           <div className="help-text">{jobReqHelp}</div>
         </div>
         <div className="jobOption has-help-text">
-          <label htmlFor="randomizeJobWeapons">Randomize Job Weapons</label>
+          <label htmlFor="randomizeJobEquipment">Randomize Job Equipment</label>
           <input
             type="checkbox"
-            id="randomizeJobWeapons"
-            checked={randomizedJobWeapons}
+            id="randomizeJobEquipment"
+            checked={randomizeJobEquipment}
             onChange={(event) => {
               dispatch({
                 type: "jobSettings",
-                option: { randomizedJobWeapons: event.target.checked },
+                option: { randomizeJobEquipment: event.target.checked },
               });
             }}
           />
@@ -70,7 +75,7 @@ export const JobSettings = () => {
             When enabled, randomizes weapon types each job can equip.
           </div>
         </div>
-        {randomizedJobWeapons && (
+        {randomizeJobEquipment && (
           <div className="jobOption has-help-text">
             <label htmlFor="randomizeWeaponAmount">
               Randomize Job Weapon Amount
@@ -92,6 +97,49 @@ export const JobSettings = () => {
             </div>
           </div>
         )}
+
+        {randomizeJobEquipment && (
+          <div className="jobOption has-help-text">
+            <label htmlFor="randomizedArmorAmount">
+              Randomize Job Armor Amount
+            </label>
+            <input
+              type="number"
+              id="randomizedArmorAmount"
+              value={randomizedArmorAmount}
+              min={1}
+              onChange={(event) => {
+                dispatch({
+                  type: "jobSettings",
+                  option: { randomizedArmorAmount: event.target.value },
+                });
+              }}
+            />
+            <div className="help-text">
+              The number of armor types each job can equip.
+            </div>
+          </div>
+        )}
+        <div className="jobOption has-help-text">
+          <label htmlFor="randomizeResistances">
+            Randomize Race Resistances
+          </label>
+          <input
+            type="checkbox"
+            id="randomizeResistances"
+            checked={randomizeResistances}
+            onChange={(event) => {
+              dispatch({
+                type: "jobSettings",
+                option: { randomizeResistances: event.target.checked },
+              });
+            }}
+          />
+          <div className="help-text">
+            When enabled, randomizes elemental resistances for every race. 2
+            elements will be "Weak" and 2 elements will be "Half".
+          </div>
+        </div>
       </div>
       {toggledJobs.map((raceJobs: ToggledJobs) => {
         return (

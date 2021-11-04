@@ -241,13 +241,6 @@ function getValidLoadOut(
   let armorID = rng.randomIntMax(validArmor.length - 1);
   loadout.push(validArmor[armorID].itemID);
 
-  if (validWeapons[weaponID].worn == 1 && job.isTypeAllowed(ITEMTYPES.Shield)) {
-    let shieldID = items.findIndex(
-      (item) => item.itemType === ITEMTYPES.Shield
-    );
-    loadout.push(items[shieldID].itemID);
-  }
-
   //fill empty item slots with nothing if not randomized
   if (!randomized) {
     while (loadout.length < 5) {
@@ -257,31 +250,30 @@ function getValidLoadOut(
     }
   } else {
     const additionalItemTypes = [
-      ITEMTYPES.Helmet,
-      ITEMTYPES.Hat,
-      ITEMTYPES.Shoes,
-      ITEMTYPES.Armlet,
-      ITEMTYPES.Accessory,
+      [ITEMTYPES.Helmet, ITEMTYPES.Hat],
+      [ITEMTYPES.Shoes],
+      [ITEMTYPES.Armlet, ITEMTYPES.Accessory],
     ];
 
-    const allowedItemTypes = additionalItemTypes.filter((type) =>
-      job.isTypeAllowed(type)
-    );
+    if (
+      validWeapons[weaponID].worn == 1 &&
+      job.isTypeAllowed(ITEMTYPES.Shield)
+    ) {
+      additionalItemTypes.push([ITEMTYPES.Shield]);
+    }
 
     while (loadout.length < 5 && additionalItemTypes.length > 0) {
       // Get a random item type
-      const selectedType = allowedItemTypes.splice(
-        rng.randomIntMax(allowedItemTypes.length - 1),
+      const selectedRow = additionalItemTypes.splice(
+        rng.randomIntMax(additionalItemTypes.length - 1),
         1
       )[0];
 
-      // If hat or helemt is selected, remove the other fromt the list
-      if (selectedType === ITEMTYPES.Hat) {
-        allowedItemTypes.filter((type) => type != ITEMTYPES.Helmet);
-      }
-      if (selectedType === ITEMTYPES.Helmet) {
-        allowedItemTypes.filter((type) => type != ITEMTYPES.Hat);
-      }
+      const allowedTypes = selectedRow.filter((type) =>
+        job.isTypeAllowed(type)
+      );
+      const selectedType =
+        allowedTypes[rng.randomIntMax(allowedTypes.length - 1)];
 
       // For the item type, get all items that are allowed and not in viera only
       const itemsForType = items.filter(

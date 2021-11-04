@@ -1,5 +1,5 @@
 import { ABILITYTYPE, FFTARaceAbility } from "../DataWrapper/FFTARaceAbility";
-import { FFTAJob } from "../DataWrapper/FFTAJob";
+import { ELEMENTALRESISTOFFSET, FFTAJob } from "../DataWrapper/FFTAJob";
 import NoiseGenerator from "../utils/NoiseGenerator";
 
 /**
@@ -40,6 +40,39 @@ export function lockAllJobs(jobs: Map<string, Array<FFTAJob>>) {
       job.requirements = 0x20;
     });
   }
+}
+
+export function randomizeElementalResist(
+  jobs: Map<string, Array<FFTAJob>>,
+  rng: NoiseGenerator
+) {
+  const allRaces = [...jobs.values()];
+
+  allRaces.forEach((raceJobs) => {
+    const types = [0, 0, 1, 1, 1, 1, 4, 4];
+    types.sort(rng.randomSort);
+    const newResists = [
+      types[0],
+      types[1],
+      types[2],
+      types[3],
+      types[4],
+      types[5],
+      types[6],
+      types[7],
+    ];
+
+    raceJobs.forEach((job) => {
+      job.fireResist = newResists[0];
+      job.windResist = newResists[1];
+      job.earthResist = newResists[2];
+      job.waterResist = newResists[3];
+      job.iceResist = newResists[4];
+      job.thunderResist = newResists[5];
+      job.holyResist = newResists[6];
+      job.darkResist = newResists[7];
+    });
+  });
 }
 
 /**

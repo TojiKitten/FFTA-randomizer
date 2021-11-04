@@ -506,10 +506,10 @@ export class FFTAItem extends FFTAObject {
     value: 0,
   };
   get abilitySet() {
-    return this._effect3.value;
+    return this._abilitySet.value;
   }
   set abilitySet(id: number) {
-    this._effect3.value = id;
+    this._abilitySet.value = id;
   }
 }
 

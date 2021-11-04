@@ -18,9 +18,11 @@ export function randomizeFFTA(fftaData: FFTAData, options: RandomizerState) {
   fftaData.handleBannedAbilities(abilitySettings.bannedAbilities);
   fftaData.handleBannedItems(itemSettings.bannedItems);
   fftaData.handleRandomJobItems(
-    jobSettings.randomizedJobWeapons,
-    jobSettings.randomizedWeaponsAmount
+    jobSettings.randomizeJobEquipment,
+    jobSettings.randomizedWeaponsAmount,
+    jobSettings.randomizedArmorAmount
   );
+  fftaData.handleRandomResistances(jobSettings.randomizeResistances);
   fftaData.handleCutScene(generalSettings.cutscenes);
   fftaData.handleStartingGold(generalSettings.startingGold);
   fftaData.handleFrostyBoost(generalSettings.frostyMageBoost);
