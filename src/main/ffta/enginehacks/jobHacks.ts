@@ -61,7 +61,7 @@ export function randomizeElementalResist(
       types[rng.randomIntMax(types.length - 1)],
       types[rng.randomIntMax(types.length - 1)],
     ];
-    console.log(newResists);
+
     raceJobs.forEach((job) => {
       job.fireResist = newResists[0];
       job.windResist = newResists[1];

@@ -885,7 +885,11 @@ export class FFTAData {
     }
   }
 
-  handleRandomJobItems(option: boolean, count: number) {
+  handleRandomJobItems(
+    option: boolean,
+    weaponCount: number,
+    armorCount: number
+  ) {
     if (option) {
       const weaponTypes = [
         ITEMTYPES.Sword,
@@ -909,12 +913,26 @@ export class FFTAData {
         ITEMTYPES.Gun,
       ];
 
+      const armorTypes = [
+        ITEMTYPES.Shield,
+        ITEMTYPES.Helmet,
+        ITEMTYPES.Ribbon,
+        ITEMTYPES.Hat,
+        ITEMTYPES.Armor,
+        ITEMTYPES.Cloth,
+        ITEMTYPES.Robe,
+        ITEMTYPES.Shoes,
+        ITEMTYPES.Armlet,
+        ITEMTYPES.Accessory,
+      ];
+
       const allJobs = Array.from(this.jobs.values()).flat();
       let randomizedJobs: Array<number> = [];
       allJobs.forEach((job) => {
         if (!randomizedJobs.includes(job.allowedWeaponsID)) {
           randomizedJobs.push(job.allowedWeaponsID);
-          let possibleTypes = [...weaponTypes];
+          let possibleWeaponTypes = [...weaponTypes];
+          let possibleArmorTypes = [...armorTypes];
           const oldAllowedDataAddress =
             allowedWeaponAddress + allowedWeaponSize * job.allowedWeaponsID;
           let newAllowedData = FFTAUtils.convertWordUint8Array(
@@ -925,15 +943,26 @@ export class FFTAData {
             true
           );
 
-          while (possibleTypes.length > count) {
-            possibleTypes.splice(
-              this.rng.randomIntMax(possibleTypes.length),
+          while (possibleWeaponTypes.length > weaponCount) {
+            possibleWeaponTypes.splice(
+              this.rng.randomIntMax(possibleWeaponTypes.length),
               1
             );
+            while (possibleArmorTypes.length > armorCount) {
+              possibleArmorTypes.splice(
+                this.rng.randomIntMax(possibleArmorTypes.length),
+                1
+              );
+            }
           }
 
-          weaponTypes.forEach((id) => {
-            const allowedBit = possibleTypes.includes(id) ? 1 : 0;
+          // Enable all types
+          [...weaponTypes, ...armorTypes].forEach((id) => {
+            const allowedBit =
+              possibleWeaponTypes.includes(id) ||
+              possibleArmorTypes.includes(id)
+                ? 1
+                : 0;
             const mask = 0x1 << (id - 1);
             newAllowedData =
               (newAllowedData & ~mask) | (allowedBit << (id - 1));
@@ -950,14 +979,17 @@ export class FFTAData {
           );
         }
       });
-
-      // Randomize Allowed Weapons
-      for (var i = 0; i < allowedWeaponSize; i++) {
-        let newAllowed = new Uint8Array(allowedWeaponSize);
-      }
     }
+  }
 
-    JobHacks.randomizeElementalResist(this.jobs, this.rng);
+  /**
+   * Randomizes resistances for each race.
+   * @param option - If the option is enabled
+   */
+  handleRandomResistances(option: boolean) {
+    if (option) {
+      JobHacks.randomizeElementalResist(this.jobs, this.rng);
+    }
   }
 
   /**
