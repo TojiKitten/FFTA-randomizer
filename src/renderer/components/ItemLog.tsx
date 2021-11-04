@@ -2,7 +2,6 @@ import * as React from "react";
 import { ItemLite } from "_/main/ffta/DataWrapper/FFTAItem";
 import { JobLite } from "_/main/ffta/DataWrapper/FFTAJob";
 import { FFTARaceAbility } from "_/main/ffta/DataWrapper/FFTARaceAbility";
-import { Config } from "../utils/types";
 import ItemView from "./ItemView";
 import { useRandomizer, useRandomizerUpdate } from "./RandomizerProvider";
 
@@ -121,6 +120,7 @@ export const ItemLog = () => {
               item.displayName.toLowerCase().includes(searchName.toLowerCase())
             )
             .map((iter, id) => {
+              if (id === 1) console.log(raceAbilities);
               return (
                 <ItemView
                   key={id}

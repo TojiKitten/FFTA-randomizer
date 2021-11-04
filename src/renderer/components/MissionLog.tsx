@@ -150,6 +150,7 @@ export const MissionLog = (props: any) => {
             ]);
           })
           .filter((mission) => {
+            console.log(mission);
             return (
               (mission.Completed == 0 &&
                 (missionState.showMissingMissionItems ||
