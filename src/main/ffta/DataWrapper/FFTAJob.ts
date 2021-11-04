@@ -50,6 +50,19 @@ export interface JobLite {
   displayName: string;
   id: number;
   race: string;
+  fireResist: string;
+  windResist: string;
+  earthResist: string;
+  waterResist: string;
+  iceResist: string;
+  thunderResist: string;
+  holyResist: string;
+  darkResist: string;
+}
+
+function resistString(resistValue: number) {
+  const strings = ["Weak", "Normal", "Nullify", "Absorb", "Half"];
+  return strings[resistValue];
 }
 
 /**
@@ -92,6 +105,14 @@ export class FFTAJob extends FFTAObject {
       displayName: this.displayName!,
       id: this.jobId,
       race: this.race,
+      fireResist: resistString(this.fireResist),
+      windResist: resistString(this.windResist),
+      earthResist: resistString(this.earthResist),
+      waterResist: resistString(this.waterResist),
+      iceResist: resistString(this.iceResist),
+      thunderResist: resistString(this.thunderResist),
+      holyResist: resistString(this.holyResist),
+      darkResist: resistString(this.darkResist),
     };
   }
 

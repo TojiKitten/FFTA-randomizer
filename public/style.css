@@ -188,6 +188,12 @@ label {
   grid-column: span 12;
 }
 
+.jobList > ul {
+  grid-column: span 12;
+  list-style: none;
+  padding-left: 0;
+}
+
 .jobListJob {
   grid-column: span 12;
 }

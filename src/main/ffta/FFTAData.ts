@@ -914,9 +914,7 @@ export class FFTAData {
       ];
 
       const armorTypes = [
-        ITEMTYPES.Shield,
         ITEMTYPES.Helmet,
-        ITEMTYPES.Ribbon,
         ITEMTYPES.Hat,
         ITEMTYPES.Armor,
         ITEMTYPES.Cloth,

@@ -1,5 +1,10 @@
 import * as React from "react";
 import { useRandomizer, useRandomizerUpdate } from "./RandomizerProvider";
+import { JobLite } from "_/main/ffta/DataWrapper/FFTAJob";
+
+//window.api gets available at runtime so we can ignore that error
+// @ts-ignore
+const { api } = window;
 
 export const JobSettings = () => {
   const dispatch = useRandomizerUpdate();
@@ -36,6 +41,52 @@ export const JobSettings = () => {
         break;
     }
   }, [jobRequirements]);
+
+  const [jobsLite, setJobsLite] = React.useState(new Array<JobLite>());
+
+  React.useEffect(() => {
+    api.receive("get-fftaData", (parms: any) => {
+      setJobsLite(parms.jobs);
+    });
+    api.send("request-fftaData", {
+      jobs: true,
+    });
+    return () => api.remove("get-fftaData");
+  }, []);
+
+  const [resistanceHelpTexts, setResistanceHelpTexts] = React.useState([
+    [""],
+    [""],
+    [""],
+    [""],
+    [""],
+  ]);
+  React.useEffect(() => {
+    let newResistTexts: Array<Array<string>> = [];
+    // Create new text for each job[0] and push it to resist texts
+    const jobSamples = [
+      jobsLite.find((job) => job.race === "human"),
+      jobsLite.find((job) => job.race === "bangaa"),
+      jobsLite.find((job) => job.race === "nuMou"),
+      jobsLite.find((job) => job.race === "viera"),
+      jobsLite.find((job) => job.race === "moogle"),
+    ];
+
+    jobSamples.forEach((sample) => {
+      newResistTexts.push([
+        `Fire: ${sample?.fireResist}`,
+        `Wind: ${sample?.windResist}`,
+        `Earth: ${sample?.earthResist}`,
+        `Water: ${sample?.waterResist}`,
+        `Ice: ${sample?.iceResist}`,
+        `Thunder: ${sample?.thunderResist}`,
+        `Holy: ${sample?.holyResist}`,
+        `Dark: ${sample?.darkResist}`,
+      ]);
+    });
+
+    setResistanceHelpTexts(newResistTexts);
+  }, [jobsLite]);
 
   return (
     <div className="jobMenu">
@@ -141,10 +192,15 @@ export const JobSettings = () => {
           </div>
         </div>
       </div>
-      {toggledJobs.map((raceJobs: ToggledJobs) => {
+      {toggledJobs.map((raceJobs: ToggledJobs, i) => {
         return (
           <div key={raceJobs.raceName} className="jobList">
             <h3>{raceJobs.raceName}</h3>
+            <ul>
+              {resistanceHelpTexts[i].map((resist) => (
+                <li>{resist}</li>
+              ))}
+            </ul>
             {raceJobs.jobs.map(
               (value: { jobName: string; enabled: boolean }) => (
                 <div
