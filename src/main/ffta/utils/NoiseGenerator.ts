@@ -11,20 +11,24 @@ export class NoiseGenerator {
     this.position = 0;
   }
 
+  randomSort = (first: number, second: number) => {
+    return this.randomBit() === 1 ? 1 : -1;
+  };
+
   /**
    * Sets seed to a given value and resets position
-   * @param seed 
+   * @param seed
    */
   setSeed(seed: number) {
     this.position = 0;
     this.seed = +seed;
   }
 
- /**
-  *
-  * Sets the position to a given value
-  * @param position - Number to start RNG
-  */
+  /**
+   *
+   * Sets the position to a given value
+   * @param position - Number to start RNG
+   */
   setPosition(position: number) {
     this.position = position;
   }

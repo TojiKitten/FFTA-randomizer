@@ -136,7 +136,8 @@ export const JobSettings = () => {
             }}
           />
           <div className="help-text">
-            When enabled, randomizes elemental resistances for every race.
+            When enabled, randomizes elemental resistances for every race. 2
+            elements will be "Weak" and 2 elements will be "Half".
           </div>
         </div>
       </div>

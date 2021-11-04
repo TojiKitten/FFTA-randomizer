@@ -48,18 +48,18 @@ export function randomizeElementalResist(
 ) {
   const allRaces = [...jobs.values()];
 
-  const types = [0, 1, 4];
-
   allRaces.forEach((raceJobs) => {
+    const types = [0, 0, 1, 1, 1, 1, 4, 4];
+    types.sort(rng.randomSort);
     const newResists = [
-      types[rng.randomIntMax(types.length - 1)],
-      types[rng.randomIntMax(types.length - 1)],
-      types[rng.randomIntMax(types.length - 1)],
-      types[rng.randomIntMax(types.length - 1)],
-      types[rng.randomIntMax(types.length - 1)],
-      types[rng.randomIntMax(types.length - 1)],
-      types[rng.randomIntMax(types.length - 1)],
-      types[rng.randomIntMax(types.length - 1)],
+      types[0],
+      types[1],
+      types[2],
+      types[3],
+      types[4],
+      types[5],
+      types[6],
+      types[7],
     ];
 
     raceJobs.forEach((job) => {
