@@ -153,7 +153,7 @@ const initialRandomizerOptions = {
       { jobName: "Gunner", enabled: true },
       { jobName: "Thief", enabled: true },
       { jobName: "Juggler", enabled: true },
-      { jobName: "Gadeteer", enabled: true },
+      { jobName: "Gadgeteer", enabled: true },
       { jobName: "Black Mage", enabled: true },
       { jobName: "Time Mage", enabled: true },
     ],
