@@ -262,7 +262,9 @@ function getValidLoadOut(
       additionalItemTypes.push([ITEMTYPES.Shield]);
     }
 
-    while (loadout.length < 5 && additionalItemTypes.length > 0) {
+    let itemsToAdd = 5 - loadout.length;
+
+    while (itemsToAdd > 0 && additionalItemTypes.length > 0) {
       // Get a random item type
       const selectedRow = additionalItemTypes.splice(
         rng.randomIntMax(additionalItemTypes.length - 1),
@@ -285,8 +287,13 @@ function getValidLoadOut(
       // get a random item from all items
       const selectedItem =
         itemsForType[rng.randomIntMax(itemsForType.length - 1)];
-      // Push to loadout
-      loadout.push(selectedItem.itemID);
+
+      // If selectedItem is defined, add it otherwise continue on
+      if (selectedItem) {
+        // Push to loadout
+        loadout.push(selectedItem.itemID);
+      }
+      itemsToAdd--;
     }
   }
   return loadout;
