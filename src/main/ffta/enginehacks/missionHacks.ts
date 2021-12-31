@@ -162,6 +162,12 @@ export function randomRewards(
   });
 }
 
+/**
+ * Distributes items across all missions and replaces random rewards entirely.
+ * @param items An array of items to distribute
+ * @param missions An array of missions to distribute items over
+ * @param rng The {@link NoiseGenerator} for the randomizer
+ */
 export function distributeItems(
   items: Array<FFTAItem>,
   missions: Array<FFTAMission>,
