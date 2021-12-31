@@ -913,12 +913,12 @@ export class FFTAData {
         ITEMTYPES.Gun,
       ];
 
-      const armorTypes = [
+      const armorTypes = [ITEMTYPES.Armor, ITEMTYPES.Cloth, ITEMTYPES.Robe];
+
+      // Split out additional item types so a valid armor is always assigned
+      const additionalTypes = [
         ITEMTYPES.Helmet,
         ITEMTYPES.Hat,
-        ITEMTYPES.Armor,
-        ITEMTYPES.Cloth,
-        ITEMTYPES.Robe,
         ITEMTYPES.Shoes,
         ITEMTYPES.Armlet,
         ITEMTYPES.Accessory,
@@ -931,8 +931,12 @@ export class FFTAData {
           randomizedJobs.push(job.allowedWeaponsID);
           let possibleWeaponTypes = [...weaponTypes];
           let possibleArmorTypes = [...armorTypes];
+
+          // Get the pointer to the current allowed item set
           const oldAllowedDataAddress =
             allowedWeaponAddress + allowedWeaponSize * job.allowedWeaponsID;
+
+          // Get the data at the allowed item set pointer
           let newAllowedData = FFTAUtils.convertWordUint8Array(
             this.rom.slice(
               oldAllowedDataAddress,
@@ -941,17 +945,25 @@ export class FFTAData {
             true
           );
 
+          // Remove possible weapons from the list until it is within the weapon count
           while (possibleWeaponTypes.length > weaponCount) {
             possibleWeaponTypes.splice(
               this.rng.randomIntMax(possibleWeaponTypes.length),
               1
             );
-            while (possibleArmorTypes.length > armorCount) {
-              possibleArmorTypes.splice(
-                this.rng.randomIntMax(possibleArmorTypes.length),
-                1
-              );
-            }
+          }
+
+          // If the weapon count allows for at least 1 body armor, add in additional armor types
+          if (armorCount > 1) {
+            possibleArmorTypes.push(...additionalTypes);
+          }
+
+          // Remove possible armor from the list until it is within the armor count
+          while (possibleArmorTypes.length > armorCount) {
+            possibleArmorTypes.splice(
+              this.rng.randomIntMax(possibleArmorTypes.length),
+              1
+            );
           }
 
           // Enable all types
@@ -966,11 +978,13 @@ export class FFTAData {
               (newAllowedData & ~mask) | (allowedBit << (id - 1));
           });
 
+          // Set the data at the pointer to the new values
           this.rom.set(
             FFTAUtils.getWordUint8Array(newAllowedData, true),
             oldAllowedDataAddress
           );
 
+          // Set the data on the job for quick reference in the randomizer
           job.allowedWeapons = FFTAUtils.getWordUint8Array(
             newAllowedData,
             true
