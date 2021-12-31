@@ -162,6 +162,40 @@ export function randomRewards(
   });
 }
 
+/**
+ * Distributes items across all missions and replaces random rewards entirely.
+ * @param items An array of items to distribute
+ * @param missions An array of missions to distribute items over
+ * @param rng The {@link NoiseGenerator} for the randomizer
+ */
+export function distributeItems(
+  items: Array<FFTAItem>,
+  missions: Array<FFTAMission>,
+  rng: NoiseGenerator
+) {
+  let allowedItems = items.filter((item) => {
+    return item.allowed;
+  });
+
+  missions.forEach((mission) => {
+    if (mission.itemReward1 > 0xfff0) {
+      let removed = allowedItems.splice(
+        rng.randomIntMax(allowedItems.length - 1),
+        1
+      )[0];
+      mission.itemReward1 = allowedItems.length > 0 ? removed.itemID : 0;
+    }
+
+    if (mission.itemReward2 > 0xfff0) {
+      let removed = allowedItems.splice(
+        rng.randomIntMax(allowedItems.length - 1),
+        1
+      )[0];
+      mission.itemReward2 = allowedItems.length > 0 ? removed.itemID : 0;
+    }
+  });
+}
+
 export function hideRewardPreviews(missions: Array<FFTAMission>) {
   missions.forEach((mission) => {
     if (mission.itemReward1 != 0x00) mission.itemReward1Hidden = true;

@@ -122,6 +122,11 @@ export const MissionSettings = () => {
           "Mission reward items may appear in different sets."
         );
         break;
+      case "distributed":
+        setMissionRewardHelp(
+          "Allowed items are spread out across all missions and random rewards are removed."
+        );
+        break;
     }
   }, [missionRewards]);
 
@@ -306,6 +311,7 @@ export const MissionSettings = () => {
           <option value="normal">Normal</option>
           <option value="random">Random</option>
           <option value="shuffled">Shuffled</option>
+          <option value="distributed">Distributed</option>
         </select>
         <div className="help-text">{missionRewardHelp}</div>
       </div>

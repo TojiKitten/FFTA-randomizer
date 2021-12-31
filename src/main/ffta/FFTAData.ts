@@ -1042,6 +1042,9 @@ export class FFTAData {
       case "shuffled":
         MissionHacks.shuffleRewards(this.rewardItemSets, this.rng);
         break;
+      case "distributed":
+        MissionHacks.distributeItems(this.items, this.missions, this.rng);
+        break;
       default:
         throw new Error("Reward case: " + option + " unhandled!");
     }
