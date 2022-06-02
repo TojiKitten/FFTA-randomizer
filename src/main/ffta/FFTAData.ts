@@ -879,6 +879,7 @@ export class FFTAData {
         break;
       case "locked":
         JobHacks.lockAllJobs(this.jobs);
+        MissionHacks.clearMissionJobRequirements(this.missions);
         break;
       default:
         throw new Error("case: " + option + " unhandled!");

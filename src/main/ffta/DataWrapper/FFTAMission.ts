@@ -19,7 +19,7 @@ const enum OFFSET {
   REQITEM1 = 0x36, // 0x01 = Magic Trophy as required
   REQITEM2 = 0x37,
   REQSKILL = 0x38, // 0x01 = Combat
-  REQSKILLAMOUNT = 0x39, //0x01 = level 8? maybe tied to "difficulty"
+  REQJOB = 0x39, //0x01 = level 8? maybe tied to "difficulty"
   PRICE = 0x3e,
   TIMEOUTDAYS = 0x40,
   MISSIONDISPLAY = 0x41, // Hide Item 1, Hide Item 2, ?? ?? // Repeatable, ??, ??, No Cancel
@@ -381,17 +381,17 @@ export class FFTAMission extends FFTAObject {
     return this._requiredSkill.value;
   }
 
-  private _requiredSkillAmount: ROMProperty = {
-    byteOffset: OFFSET.REQSKILLAMOUNT,
+  private _requiredJob: ROMProperty = {
+    byteOffset: OFFSET.REQJOB,
     byteLength: 1,
     displayName: "Could not retrieve.",
     value: 0,
   };
-  set requiredSkillAmount(id: number) {
-    this._requiredSkillAmount.value = id;
+  set requiredJob(id: number) {
+    this._requiredJob.value = id;
   }
-  get requiredSkillAmount(): number {
-    return this._requiredSkillAmount.value;
+  get requiredJob(): number {
+    return this._requiredJob.value;
   }
 
   /*
