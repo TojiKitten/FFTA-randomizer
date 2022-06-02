@@ -368,6 +368,32 @@ export class FFTAMission extends FFTAObject {
     return this._requiredItem2.value;
   }
 
+  private _requiredSkill: ROMProperty = {
+    byteOffset: OFFSET.REQSKILL,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  set requiredSkill(id: number) {
+    this._requiredSkill.value = id;
+  }
+  get requiredSkill(): number {
+    return this._requiredSkill.value;
+  }
+
+  private _requiredSkillAmount: ROMProperty = {
+    byteOffset: OFFSET.REQSKILLAMOUNT,
+    byteLength: 1,
+    displayName: "Could not retrieve.",
+    value: 0,
+  };
+  set requiredSkillAmount(id: number) {
+    this._requiredSkillAmount.value = id;
+  }
+  get requiredSkillAmount(): number {
+    return this._requiredSkillAmount.value;
+  }
+
   /*
   private _requiredJob: ROMProperty = {
     byteOffset: ??,

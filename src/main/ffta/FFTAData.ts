@@ -1090,9 +1090,11 @@ export class FFTAData {
         break;
       case "none":
         this.rom = CutsceneHacks.skipCutscenes(this.rom, false);
+        MissionHacks.clearMissionStatRequirements(this.missions);
         break;
       case "noTutorial":
         this.rom = CutsceneHacks.skipCutscenes(this.rom, true);
+        MissionHacks.clearMissionStatRequirements(this.missions);
         break;
       default:
         throw new Error("case: " + option + " unhandled!");
