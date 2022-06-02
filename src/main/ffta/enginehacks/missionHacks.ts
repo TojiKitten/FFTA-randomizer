@@ -68,6 +68,26 @@ export function highestMissionLevels(fftaData: FFTAData) {
 }
 
 /**
+ * Removes the clan stat requirements for missions.
+ * @param missions - Array of missions to clear
+ */
+export function clearMissionStatRequirements(missions: Array<FFTAMission>) {
+  missions.forEach((mission) => {
+    mission.requiredSkill = 0;
+  });
+}
+
+/**
+ * Removes the clan stat requirements for missions.
+ * @param missions - Array of missions to clear
+ */
+export function clearMissionJobRequirements(missions: Array<FFTAMission>) {
+  missions.forEach((mission) => {
+    mission.requiredJob = 0;
+  });
+}
+
+/**
  * Sets the two orbs on Frosty Mage to level 50
  * @param rom - A buffer holding FFTA
  */
