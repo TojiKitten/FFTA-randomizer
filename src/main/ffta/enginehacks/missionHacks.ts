@@ -74,7 +74,6 @@ export function highestMissionLevels(fftaData: FFTAData) {
 export function clearMissionStatRequirements(missions: Array<FFTAMission>) {
   missions.forEach((mission) => {
     mission.requiredSkill = 0;
-    // mission.requiredSkillAmount = 0;
   });
 }
 
