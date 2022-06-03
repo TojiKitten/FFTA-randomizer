@@ -152,6 +152,7 @@ export const PartyMember = (unit: unitProp) => {
         >
           <option value="abilities">Number of Abilities</option>
           <option value="jobs">Number of Jobs</option>
+          <option value="even">Number of Abilities per Job</option>
         </select>
       </div>
       <div className="partyMemberOption">
