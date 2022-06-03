@@ -75,6 +75,15 @@ export function setUnitData(
           rng
         );
         break;
+      case "even":
+        mastered = getEvenJobMasteryAbilityIDs(
+          unit,
+          raceJobs.get(newJob.race)!,
+          raceAbilities.get(newJob.race)!,
+          options.masteredAbilities,
+          rng
+        );
+        break;
     }
     mastered.forEach((ability) => {
       unit.setMasterAbility(ability, true);
@@ -322,6 +331,49 @@ function getRandomAbilityIDs(
       abilityIndicies.push(abilityIndex);
     }
   }
+  return abilityIndicies;
+}
+
+function getEvenJobMasteryAbilityIDs(
+  unit: FFTAUnit,
+  raceJobs: Array<FFTAJob>,
+  raceAbilities: Array<FFTARaceAbility>,
+  count: number,
+  rng: NoiseGenerator
+): Array<number> {
+  let abilityIndicies: Array<number> = [];
+  let allJobs: Array<FFTAJob> = [...raceJobs];
+
+  // For each job, master the correct amount of abilities
+  allJobs.forEach((job) => {
+    // Put the job abilities into an array
+    let jobAbilities = job.getAbilityIDs();
+
+    // Remove duplicate A0 types
+    jobAbilities = removeDuplicateIndicies(jobAbilities, raceAbilities, [
+      ABILITYTYPE.ACTION0,
+    ]);
+
+    // Create a new array of abilities up to the count
+    let abilitiesToMaster = [];
+    while (abilitiesToMaster.length < count && jobAbilities.length > 0) {
+      // Get random job ability
+      let randomIndex = rng.randomIntMax(jobAbilities.length - 1);
+      // Add the ability to master
+      abilitiesToMaster.push(jobAbilities[randomIndex]);
+      // Remove the index
+      jobAbilities.splice(randomIndex, 1);
+    }
+
+    // Concat the array
+    abilityIndicies = abilityIndicies.concat(abilitiesToMaster);
+  });
+
+  abilityIndicies = removeDuplicateIndicies(abilityIndicies, raceAbilities, [
+    ABILITYTYPE.SUPPORT,
+    ABILITYTYPE.REACTION,
+    ABILITYTYPE.COMBO,
+  ]);
   return abilityIndicies;
 }
 

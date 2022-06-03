@@ -171,13 +171,16 @@ export function randomRewards(
   rng: NoiseGenerator
 ) {
   const numberRewards = 20;
-  // Get all reward items into one array
-  rewardSets.forEach((set) => {
-    const allowedItems = items.filter((item) => item.allowed);
 
+  //Create an array of allowed items
+  const allowedItems = items.filter((item) => item.allowed);
+
+  // Distribute items across reward sets with no repeats
+  rewardSets.forEach((set) => {
     for (var i = 0; i < numberRewards; i++) {
-      let randomItemID = rng.randomIntRange(1, allowedItems.length);
-      set.setItem(randomItemID, i);
+      let randomItemIndex = rng.randomIntRange(0, allowedItems.length - 1);
+      set.setItem(allowedItems[randomItemIndex].itemID, i);
+      allowedItems.splice(randomItemIndex, 1);
     }
   });
 }
