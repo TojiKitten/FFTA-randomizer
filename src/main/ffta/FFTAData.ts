@@ -1033,6 +1033,7 @@ export class FFTAData {
         break;
       case "linear":
         MissionHacks.randomizeLinearStory(this.missions, length, this.rng);
+        MissionHacks.clearMissionStatRequirements(this.missions);
         break;
       case "branching":
         //MissionHacks.randomizeBranchingStory(this.missions, length, this.rng);
