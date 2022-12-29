@@ -40,6 +40,15 @@ const enum ENCOUNTERTYPE {
   WALKON = 0x2,
 }
 
+const enum RECRUITTYPE {
+  NONE = 0x0,
+  HUMAN = 0x03,
+  BANGAA = 0x0f,
+  NUMOU = 0x17,
+  VIERA = 0x20,
+  MOOGLE = 0x29,
+}
+
 const enum RANKOFFSET {
   RANK = 0x4,
   ELITE = 0x07,

@@ -925,6 +925,9 @@ export class FFTAData {
         ITEMTYPES.Accessory,
       ];
 
+      weaponCount = Math.max(1, weaponCount);
+      armorCount = Math.max(5, armorCount);
+
       const allJobs = Array.from(this.jobs.values()).flat();
       let randomizedJobs: Array<number> = [];
       allJobs.forEach((job) => {
@@ -1072,6 +1075,14 @@ export class FFTAData {
    */
   handleRewardPreview(disable: boolean) {
     disable ? MissionHacks.hideRewardPreviews(this.missions) : false;
+  }
+
+  /**
+   * Sets mission recruitment to force a recruit every time
+   * @param enable - True means missions will have forced recruits
+   */
+  handleForcedRecruits(enable: boolean) {
+    enable ? MissionHacks.enableForcedRecruits(this.missions, this.rng) : false;
   }
 
   /**

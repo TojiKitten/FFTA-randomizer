@@ -11,6 +11,7 @@ export const MissionSettings = () => {
     gilReward,
     missionRewards,
     disableRewardPreview,
+    forcedRecruits,
     missionScaling,
     missionScalingValue,
     randomEnemies,
@@ -107,6 +108,13 @@ export const MissionSettings = () => {
         break;
     }
   }, [missionScaling]);
+
+  // Update UI based on forced recruits setting
+  React.useEffect(() => {
+    forcedRecruits
+      ? setMissionPreviewHelp("All missions will result in a recruit.")
+      : setMissionPreviewHelp("Mission recruits are unchanged.");
+  }, [forcedRecruits]);
 
   // Update UI based on mission reward option
   React.useEffect(() => {
@@ -295,6 +303,21 @@ export const MissionSettings = () => {
             });
           }}
         />
+      </div>
+      <div className="missionSettingsOption has-help-text">
+        <label htmlFor="forcedRecruits">Force Mission Recruits</label>
+        <input
+          id="forcedRecruits"
+          type="checkbox"
+          checked={forcedRecruits}
+          onChange={(event) => {
+            dispatch({
+              type: "missionSettings",
+              option: { forcedRecruits: event.target.checked },
+            });
+          }}
+        />
+        <div className="help-text">{missionPreviewHelp}</div>
       </div>
       <div className="missionSettingsOption has-help-text">
         <label htmlFor="missionRewardOption">Item Rewards</label>
