@@ -113,8 +113,8 @@ export const MissionSettings = () => {
   // Update UI based on forced recruits setting
   React.useEffect(() => {
     forcedRecruits
-      ? setMissionPreviewHelp("All missions will result in a recruit.")
-      : setMissionPreviewHelp("Mission recruits are unchanged.");
+      ? setForcedRecruitHelp("All missions will result in a recruit.")
+      : setForcedRecruitHelp("Mission recruits are unchanged.");
   }, [forcedRecruits]);
 
   // Update UI based on mission reward option
