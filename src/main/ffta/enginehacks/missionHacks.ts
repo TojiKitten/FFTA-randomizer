@@ -283,6 +283,8 @@ export function randomizeLinearStory(
     );
   });
 
+  storyLength = Math.min(storyLength, validMissions.length);
+
   // Create new "path" for the story
   let newStory: Array<FFTAMission> = [];
   for (var i = 0; i < storyLength - 1; i++) {
