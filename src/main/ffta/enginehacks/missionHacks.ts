@@ -267,6 +267,8 @@ export function randomizeLinearStory(
     "Snowball Fight",
     "Memories",
     "Decision Time",
+    "Present Day",
+    "Quiet Sands",
   ];
 
   // Filter to all encounter missions
