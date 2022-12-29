@@ -30,6 +30,7 @@ export const MissionSettings = () => {
   const [showLevelModifier, setShowLevelModifier] = React.useState(false);
   const [minLevelModifier, setMinLevelModifier] = React.useState(0);
 
+  const [forcedRecruitHelp, setForcedRecruitHelp] = React.useState("");
   const [missionRewardHelp, setMissionRewardHelp] = React.useState("");
   const [missionPreviewHelp, setMissionPreviewHelp] = React.useState("");
 
@@ -317,7 +318,7 @@ export const MissionSettings = () => {
             });
           }}
         />
-        <div className="help-text">{missionPreviewHelp}</div>
+        <div className="help-text">{forcedRecruitHelp}</div>
       </div>
       <div className="missionSettingsOption has-help-text">
         <label htmlFor="missionRewardOption">Item Rewards</label>
