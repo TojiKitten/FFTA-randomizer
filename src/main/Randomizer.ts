@@ -33,6 +33,7 @@ export function randomizeFFTA(fftaData: FFTAData, options: RandomizerState) {
     missionSettings.storySetting,
     missionSettings.storyLength
   );
+  fftaData.handleForcedRecruits(missionSettings.forcedRecruits);
   fftaData.handleMissionScaling(
     missionSettings.missionScaling,
     missionSettings.missionScalingValue

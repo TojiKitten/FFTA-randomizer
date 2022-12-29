@@ -28,6 +28,7 @@ const initialRandomizerOptions = {
     missionScalingValue: 1,
     missionRewards: "normal",
     disableRewardPreview: false,
+    forcedRecruits: false,
     apBoost: -1,
     gilReward: -1,
     randomEnemies: false,

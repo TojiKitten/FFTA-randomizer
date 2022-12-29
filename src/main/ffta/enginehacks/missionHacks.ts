@@ -237,6 +237,18 @@ const setNewUnlockFlag = (mission: FFTAMission, previousMissionID: number) => {
   mission.setUnlockFlag3(0x00, 0x00, 0x00);
 };
 
+export function enableForcedRecruits(
+  missions: Array<FFTAMission>,
+  rng: NoiseGenerator
+) {
+  const recruitTypes = [0x03, 0x0f, 0x17, 0x20, 0x29];
+
+  missions.forEach((mission) => {
+    mission.recruit =
+      recruitTypes[rng.randomIntRange(0, recruitTypes.length - 1)];
+  });
+}
+
 export function randomizeLinearStory(
   missions: Array<FFTAMission>,
   storyLength: number,
