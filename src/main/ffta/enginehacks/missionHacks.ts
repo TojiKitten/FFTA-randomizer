@@ -245,6 +245,7 @@ export function enableForcedRecruits(
   const specialRecruits = [0x98, 0x9e, 0x9a, 0x96];
 
   missions.forEach((mission) => {
+    if (!specialRecruits.includes(mission.recruit)) {
       mission.recruit =
         recruitTypes[rng.randomIntRange(0, recruitTypes.length - 1)];
     }
