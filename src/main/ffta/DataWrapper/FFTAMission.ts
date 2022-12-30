@@ -73,6 +73,19 @@ const enum MISSIONTYPE {
   DISPATCH = 0x20,
 }
 
+const enum MISSIONITEMS {
+  FIGHTTROPHY = 0x0178,
+  MAGICTROPHY = 0x0179,
+  SPORTTROPHY = 0x017a,
+  ELDASCUP = 0x017b,
+  OGMASSEAL = 0x017c,
+  GOLDVESSEL = 0x017d,
+  MAGICMEDAL = 0x017e,
+  ANCIENTMEDAL = 0x017f,
+  COASTMEDAL = 0x0180,
+  GUARDMEDAL = 0x0181,
+}
+
 type FFTAMonth = "Kingmoon" | "Madmoon" | "Sagemoon" | "Huntmoon" | "Bardmoon";
 
 /**

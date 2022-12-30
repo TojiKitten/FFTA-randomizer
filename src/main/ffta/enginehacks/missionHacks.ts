@@ -242,10 +242,12 @@ export function enableForcedRecruits(
   rng: NoiseGenerator
 ) {
   const recruitTypes = [0x03, 0x0f, 0x17, 0x20, 0x29];
+  const specialRecruits = [0x98, 0x9e, 0x9a, 0x96];
 
   missions.forEach((mission) => {
-    mission.recruit =
-      recruitTypes[rng.randomIntRange(0, recruitTypes.length - 1)];
+      mission.recruit =
+        recruitTypes[rng.randomIntRange(0, recruitTypes.length - 1)];
+    }
   });
 }
 

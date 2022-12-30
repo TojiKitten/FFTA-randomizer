@@ -293,14 +293,17 @@ function getValidLoadOut(
           item.allowed &&
           !FEMALEONLY.includes(item.displayName!)
       );
-      // get a random item from all items
-      const selectedItem =
-        itemsForType[rng.randomIntMax(itemsForType.length - 1)];
 
-      // If selectedItem is defined, add it otherwise continue on
-      if (selectedItem) {
-        // Push to loadout
-        loadout.push(selectedItem.itemID);
+      // get a random item from all items if there are any to pick
+      if (itemsForType.length > 0) {
+        const selectedItem =
+          itemsForType[rng.randomIntMax(itemsForType.length - 1)];
+
+        // If selectedItem is defined, add it otherwise continue on
+        if (selectedItem) {
+          // Push to loadout
+          loadout.push(selectedItem.itemID);
+        }
       }
       itemsToAdd--;
     }

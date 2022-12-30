@@ -241,3 +241,7 @@ export function randomizeLocations(rom: Uint8Array, rng: NoiseGenerator) {
     rom.set(newLocations, ASMLOCATION);
   }
 }
+
+export function guaranteeRecruitment(rom: Uint8Array) {
+  rom.set([0x00, 0x20], 0xd2494);
+}
