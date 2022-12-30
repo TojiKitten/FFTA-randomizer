@@ -1082,7 +1082,10 @@ export class FFTAData {
    * @param enable - True means missions will have forced recruits
    */
   handleForcedRecruits(enable: boolean) {
-    enable ? MissionHacks.enableForcedRecruits(this.missions, this.rng) : false;
+    if (enable) {
+      MissionHacks.enableForcedRecruits(this.missions, this.rng);
+      ForcedHacks.guaranteeRecruitment(this.rom);
+    }
   }
 
   /**
